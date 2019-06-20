@@ -10,6 +10,27 @@
 {% if not message %}
 	<a href="/login">Login</a>
 	<a href="/register">Register</a>
+  <h1>Search for flights</h1>
+  <form action="/search" method="POST">
+    source <br>
+    <input type="text" name = "source" placeholder="source" required/> <br>
+    destination <br>
+    <input type="text" name = "destination" placeholder="destination" required/> <br>
+    <input type="checkbox" name = "trip-type" value="round trip" />round trip<br>
+    departure date <br>
+    <input type="date" name = "departure-date" placeholder="departure date" required/> <br>
+  	return date <br>
+    <input id="return-date" type="date" name = "return-date" placeholder="return date" required/> <br>
+  	<input type="submit" value = Search />
+  </form>
+  <h2>Check flight status</h2>
+  <form action="/check" method="POST">
+    <input type="text" name = "airline-name" placeholder="airline name" required/> <br>
+    <input type="text" name = "flight-number" placeholder="flight number" required/> <br>
+    <input type="date" name = "departure-date" placeholder="departure date" required/> <br>
+    <input type="date" name = "arrival-date" placeholder="arrival date" required/> <br>
+    <input type="submit" value = Check />
+  </form>
 {% endif %}
 
 {% if message %}
@@ -20,14 +41,7 @@
 	<a href="/search">Search for flights</a> <br>
 	<a href="/rate">Rate flights</a> <br>
 	<br>
-
-        <h4>15 most recent tweets from you and your followers </h4> <br>
-
-	{% for line in tweets%}
-	        <p>{{line}}</p>
-	        <hr>
-	{% endfor %}
-	{% endif %}
+{% endif %}
 </body>
 
 </html>

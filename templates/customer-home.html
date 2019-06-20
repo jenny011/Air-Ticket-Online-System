@@ -7,29 +7,34 @@
 </head>
 
 <body>
-<form action="/post" method="POST">
-	<h1>Welcome {{name}}</h1>
-	<input type="text" name = "blog" placeholder="post" required/> <br>
-	<input type="submit" value = Post />
+<h1>Welcome {{name}}</h1>
+<h2>Search for flights</h2>
+<form action="/search" method="POST">
+  source <br>
+  <input type="text" name = "source" placeholder="source" required/> <br>
+  destination <br>
+  <input type="text" name = "destination" placeholder="destination" required/> <br>
+  <input type="checkbox" name = "trip-type" value="round trip" />round trip<br>
+  departure date <br>
+  <input type="date" name = "departure-date" required/> <br>
+  return date <br>
+  <input id="return-date" type="date" name = "return-date" required/> <br>
+  <input type="submit" value = Search />
 </form>
 
-<style type="text/css">
-	table, th, td{
-		border: 1px solid black;
-	}
-</style>
-
-<table>
-	<th>Time</th>
-	<th>Post</th>
-
-{% for line in posts %}
-	<tr>
-		<td>{{line['ts']}}</td>
-		<td>{{line['blog_post']}}</td>
-	</tr>
-{% endfor %}
-</table>
+<h3>View my flights</h3>
+<form action="/view" method="POST">
+  date range <br>
+  from <input type="date" name = "date1" /> <br>
+  to <input type="date" name = "date2" /> <br>
+  source <br>
+  <input type="text" name = "source" placeholder="source" /> <br>
+  destination <br>
+  <input type="text" name = "destination" placeholder="destination" /> <br>
+  departure date <br>
+  <input type="date" name = "departure-date" /> <br>
+  <input type="submit" value = View />
+</form>
 
 <a href="/logout">Logout</a>
 
