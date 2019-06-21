@@ -16,7 +16,10 @@
     <input type="text" name = "source" placeholder="source" required/> <br>
     destination <br>
     <input type="text" name = "destination" placeholder="destination" required/> <br>
-    <input type="checkbox" name = "trip-type" value="round trip" />round trip<br>
+    <input type="radio" id="radio-one" name="switch-one" value="one-way" checked/>
+    <label for="radio-one">one-way trip</label>
+    <input type="radio" id="radio-two" name="switch-one" value="round" />
+    <label for="radio-two">round trip</label><br>
     departure date <br>
     <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
   	return date <br>
@@ -25,10 +28,15 @@
   </form>
   <h2>Check flight status</h2>
   <form action="/check" method="POST">
+    airline<br>
     <input type="text" name = "airline-name" placeholder="airline name" required/> <br>
+    flight number<br>
     <input type="text" name = "flight-number" placeholder="flight number" required/> <br>
-    <input type="date" name = "departure-date" placeholder="departure date" required/> <br>
-    <input type="date" name = "arrival-date" placeholder="arrival date" required/> <br>
+    <input type="radio" id="radio-one" name="switch-one" value="departure-date" checked/>
+    <label for="radio-one">departure date</label>
+    <input type="radio" id="radio-two" name="switch-one" value="arrival-date" />
+    <label for="radio-two">arrival date</label><br>
+    <input type="date" name = "date" placeholder="YYYY/MM/DD" required/> <br>
     <input type="submit" value = Check />
   </form>
 {% endif %}

@@ -7,6 +7,7 @@
 </head>
 
 <body>
+<a href="/logout">Logout</a>
 <h1>Welcome</h1>
 <h2>Search for flights</h2>
 <form action="/search" method="POST">
@@ -14,7 +15,10 @@
   <input type="text" name = "source" placeholder="source" required/> <br>
   destination <br>
   <input type="text" name = "destination" placeholder="destination" required/> <br>
-  <input type="checkbox" name = "trip-type" value="round trip" />round trip<br>
+  <input type="radio" id="radio-one" name="switch-one" value="one-way" checked/>
+  <label for="radio-one">one-way trip</label>
+  <input type="radio" id="radio-two" name="switch-one" value="round" />
+  <label for="radio-two">round trip</label><br>
   departure date <br>
   <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
   return date <br>
@@ -24,20 +28,22 @@
 
 <h3>View my flights</h3>
 <form action="/view" method="POST">
+  <input type="radio" id="radio-one" name="switch-one" value="future" checked/>
+  <label for="radio-one">future flights</label>
+  \<input type="radio" id="radio-two" name="switch-one" value="historical" />
+  <label for="radio-two">historical flights</label>
+  <input type="radio" id="radio-three" name="switch-one" value="all" />
+  <label for="radio-three">all flights</label><br>
   date range <br>
-  from <input type="date" name = "date1" /> <br>
-  to <input type="date" name = "date2" /> <br>
+  from <input type="date" name = "YYYY/MM/DD" /> <br>
+  to <input type="date" name = "YYYY/MM/DD" /> <br>
   source <br>
   <input type="text" name = "source" placeholder="source" /> <br>
   destination <br>
   <input type="text" name = "destination" placeholder="destination" /> <br>
-  departure date <br>
-  <input type="date" name = "departure-date" /> <br>
   <input type="submit" value = View />
 </form>
 <div>placeholder</div>
-
-<a href="/logout">Logout</a>
 
 </body>
 
