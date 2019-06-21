@@ -14,7 +14,17 @@ conn = pymysql.connect(host='localhost',
                        cursorclass=pymysql.cursors.DictCursor)
 
 
-
+'''
+on Eileen's server:
+conn = pymysql.connect(host='localhost',
+                       port=8889,
+                       user='root',
+                       password='root',
+                       db='Air-Ticket',
+                       charset='utf8mb4',
+                       cursorclass=pymysql.cursors.DictCursor)
+        
+'''
 
 @app.route('/')
 def public():
@@ -49,6 +59,14 @@ def register_customer():
 def login():
 	return render_template('login.html')
 #login page, choose staff or customer
+
+@app.route("/loginAuth", methods=['GET', 'POST'])
+def loginAuth():
+    usertype = request.form['usertype']
+    if usertype == 'Staff':
+        return redirect(url_for('login_staff'))
+    elif usertype == 'Customer':
+        return redirect(url_for('login_customer'))
 
 @app.route('/login_staff')
 def login_staff():
