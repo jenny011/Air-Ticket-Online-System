@@ -10,18 +10,39 @@ conn = pymysql.connect(host='localhost',
                        port=8889,
                        user='root',
                        password='root',
-                       db='blog',
+                       db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
 
-'
+
 
 @app.route('/')
 def public():
     #publc info
     return render_template('index.html')
 
+
+# Define route for register
+@app.route('/register')
+def register():
+	return render_template('register.html')
+
+@app.route("/registerAuth", methods=['GET', 'POST'])
+def registerAuth():
+    usertype = request.form['usertype']
+    if usertype == 'Staff':
+        return redirect(url_for('register_staff'))
+    elif usertype == 'Customer':
+        return redirect(url_for('register_customer'))
+
+@app.route('/register_staff')
+def register_staff():
+    return render_template('register-staff.html')
+
+@app.route('/register_customer')
+def register_customer():
+    return render_template('register-customer.html')
 
 # Define route for login
 
@@ -38,20 +59,6 @@ def login_staff():
 def login_customer():
     return render_template('login-customer.html')
 
-# Define route for register
-@app.route('/register')
-def register():
-	return render_template('register.html')
-
-@app.route('/register_staff')
-def register_staff():
-    return render_template('register-staff.html')
-
-@app.route('/register_customer')
-def register_customer():
-    return render_template('register-customer.html')
-
-
 # Authenticates the login
 @app.route("/loginStaffAuth", methods=['GET', 'POST'])
 def loginStaffAuth():
@@ -62,7 +69,7 @@ def loginStaffAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    query = 'SELECT * FROM staff WHERE username = %s and password = %s'
+    query = 'SELECT * FROM airline_staff WHERE username = %s and password = %s'
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -108,6 +115,8 @@ def loginCustomerAuth():
     # communicate between python and html
 
 
+
+
 # Authenticates the register
 @app.route("/registerStaffAuth", methods=['GET', 'POST'])
 def registerStaffAuth():
@@ -123,7 +132,7 @@ def registerStaffAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    query = 'SELECT * FROM staff WHERE username = %s'
+    query = 'SELECT * FROM airline_staff WHERE user_name = %s'
     cursor.execute(query, (username))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -134,7 +143,7 @@ def registerStaffAuth():
         error = "This user already exists"
         return render_template('register-staff.html', error=error)
     else:
-        ins = 'INSERT INTO staff VALUES(%s, %s, %s, %s, %s, %s, %s)'
+        ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(ins, (username, airline_name, password,
                              first_name, last_name, DOB, phone_number))
         conn.commit()
@@ -193,7 +202,7 @@ def logout():
 def home():
     username = session['username']
     cursor = conn.cursor();
-    query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
+    query = 'SELECT ts, blog_post FROM blog WHERE user_name = %s ORDER BY ts DESC'
     cursor.execute(query, (username))
     data1 = cursor.fetchall()
     for each in data1:
@@ -226,7 +235,7 @@ app.secret_key = 'some key that you will never guess'
 #================Customer use case================
 def customer_home():
 
-
+    pass
 
 
 #===============Airline Staff use case============
