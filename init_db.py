@@ -23,7 +23,7 @@ conn = pymysql.connect(host='localhost',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
-        
+
 '''
 
 @app.route('/')
@@ -86,7 +86,7 @@ def loginStaffAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    query = 'SELECT * FROM airline_staff WHERE username = %s and password = %s'
+    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = %s'
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -97,7 +97,7 @@ def loginStaffAuth():
         # creates a session for the the user
         # session is a built in
         session['username'] = username
-        return redirect(url_for('home'))
+        return render_template('staff-home.html')
     else:
         # returns an error message to the html page
         error = 'Invalid login or username'
@@ -113,7 +113,7 @@ def loginCustomerAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    query = 'SELECT * FROM customer WHERE username = %s and password = %s'
+    query = 'SELECT * FROM customer WHERE email = %s and password = %s'
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -124,7 +124,8 @@ def loginCustomerAuth():
         # creates a session for the the user
         # session is a built in
         session['username'] = username
-        return redirect(url_for('home'))
+        return render_template('customer-home.html')
+        #redirect(url_for('home'))
     else:
         # returns an error message to the html page
         error = 'Invalid login or username'
@@ -212,7 +213,7 @@ def registerCustomerAuth():
 @app.route('/logout')
 def logout():
     session.pop('username')
-    return redirect('logout.html')
+    return render_template("logout.html")
 #=========below I did not edit==========================
 
 @app.route('/home')
