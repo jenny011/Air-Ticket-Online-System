@@ -182,6 +182,11 @@ def registerCustomerAuth():
         #todo: redirect to customer login page?
         return render_template('login-customer.html')
 
+#logout is the same for customer and staff
+@app.route('/logout')
+def logout():
+    session.pop('username')
+    return redirect('logout.html')
 #=========below I did not edit==========================
 
 @app.route('/home')
@@ -209,15 +214,35 @@ def post():
     return redirect(url_for('home'))
 
 
-@app.route('/logout')
-def logout():
-    session.pop('username')
-    return redirect('/')
-#todo: goodbye page
 
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
 # debug = True -> you don't have to restart flask
 # for changes to go through, TURN OFF FOR PRODUCTION
+
+
+
+
+#================Customer use case================
+def customer_home():
+
+
+
+
+#===============Airline Staff use case============
+@app.route('/staff_home')
+def staff_home():
+    username = session['username']
+    cursor = conn.cursor();
+    query = 'SELECT * FROM flight WHERE airline_name = %s ORDER BY ts DESC'
+
+    cursor.execute(query, (username))
+    data1 = cursor.fetchall()
+    for each in data1:
+        print(each['blog_post'])
+    cursor.close()
+    return render_template('home.html', username=username, posts=data1)
+
+
 if __name__ == "__main__":
     app.run('127.0.0.1', 5000, debug=True)
