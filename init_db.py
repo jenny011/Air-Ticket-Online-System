@@ -7,9 +7,8 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
+                       password='',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -127,7 +126,7 @@ def registerStaffAuth():
     first_name = request.form['first-name']
     last_name = request.form['last-name']
     DOB = request.form['DOB']
-    phone_number = request.form['phone-number']
+    # phone_number = request.form['phone-number']
 
     # cursor used to send queries
     cursor = conn.cursor()
@@ -143,9 +142,9 @@ def registerStaffAuth():
         error = "This user already exists"
         return render_template('register-staff.html', error=error)
     else:
-        ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s, %s)'
+        ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
         cursor.execute(ins, (username, airline_name, password,
-                             first_name, last_name, DOB, phone_number))
+                             first_name, last_name, DOB))
         conn.commit()
         cursor.close()
         #todo: redirect to staff login page?
@@ -154,12 +153,12 @@ def registerStaffAuth():
 @app.route("/registerCustomerAuth", methods=['GET', 'POST'])
 def registerCustomerAuth():
     # grabs information from the forms
-    email = request.form['email']
+    email = request.form['username']
     password = request.form['password']
     name = request.form['name']
     DOB = request.form['DOB']
     phone_number = request.form['phone-number']
-    building_number = request.form['building_number']
+    building_number = request.form['building-number']
     street = request.form['street']
     city = request.form['city']
     state = request.form['state']
