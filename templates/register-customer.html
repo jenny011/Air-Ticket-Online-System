@@ -8,18 +8,26 @@
 
 <body>
   <form action="/registerCustomerAuth" method="POST">
-  	<input type="email" name = "username" placeholder="email" required/> <br>
-  	<input type="password" name = "password" placeholder="password" required/><br>
+  	username(email)<br>
+    <input type="email" name = "username" placeholder="email" required/> <br>
+  	password<br>
+    <input type="password" name = "password" placeholder="password" required/><br>
+    name<br>
     <input type="text" name = "name" placeholder="name" required/><br>
-    <input type="date" name = "DOB" placeholder="date of birth (YYYY/MM/DD)" required/> <br>
+    date of birth<br>
+    <input type="date" name = "DOB" placeholder="YYYY/MM/DD" required/> <br>
+    phone number<br>
     <input type="tel" name = "phone-number" placeholder="phone number" required/><br>
-    <p>address:</p><br>
-    <input type="number" name = "building_number" placeholder="building number" required/><br>
-    <input type="text" name = "street" placeholder="street" required/><br>
-    <input type="text" name = "city" placeholder="city" required/><br>
-    <input type="text" name = "state" placeholder="state" required/><br>
+    address<br>
+    building number <input type="text" name = "building-number" placeholder="building number" required/><br>
+    street <input type="text" name = "street" placeholder="street" required/><br>
+    city <input type="text" name = "city" placeholder="city" required/><br>
+    state <input type="text" name = "state" placeholder="state" required/><br>
+    passport number<br>
     <input type="text" name = "passport-number" placeholder="passport number" required/><br>
-    <input type="date" name = "passport-expiration" placeholder="passport expiration (YYYY/MM/DD)" required/><br>
+    passport expiration<br>
+    <input type="date" name = "passport-expiration" placeholder="YYYY/MM/DD" required/><br>
+    passport country<br>
     <input type="text" name = "passport-country" placeholder="passport country" required/><br>
   	<input type="submit" value = Register />
   	{% if error %}

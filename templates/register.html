@@ -8,9 +8,9 @@
 
 <body>
   <form action="/registerAuth" method="POST">
-    <p>User Type</p>
-    <input type="submit" name="staff" value = Staff />
-    <input type="submit" name="customer" value = Customer />
+    User Type<br>
+    <input type="submit" name="usertype" value = Staff />
+    <input type="submit" name="usertype" value = Customer />
   	{% if error %}
   		<p class="error"><strong>Error:</strong> {{error}}</p>
   	{% endif %}
