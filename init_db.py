@@ -31,19 +31,10 @@ def public():
     #publc info
     return render_template('index.html')
 
-
-# Define route for register
+#-------Define route for register
 @app.route('/register')
 def register():
 	return render_template('register.html')
-
-@app.route("/registerAuth", methods=['GET', 'POST'])
-def registerAuth():
-    usertype = request.form['usertype']
-    if usertype == 'Staff':
-        return redirect(url_for('register_staff'))
-    elif usertype == 'Customer':
-        return redirect(url_for('register_customer'))
 
 @app.route('/register_staff')
 def register_staff():
@@ -53,21 +44,11 @@ def register_staff():
 def register_customer():
     return render_template('register-customer.html')
 
-# Define route for login
-
+#--------Define route for login
 @app.route('/login')
 def login():
 	return render_template('login.html')
 #login page, choose staff or customer
-
-@app.route("/loginAuth", methods=['GET', 'POST'])
-def loginAuth():
-    usertype = request.form['usertype']
-    if usertype == 'Staff':
-        return redirect(url_for('login_staff'))
-    elif usertype == 'Customer':
-        return redirect(url_for('login_customer'))
-
 @app.route('/login_staff')
 def login_staff():
     return render_template('login-staff.html')
@@ -76,66 +57,24 @@ def login_staff():
 def login_customer():
     return render_template('login-customer.html')
 
-# Authenticates the login
-@app.route("/loginStaffAuth", methods=['GET', 'POST'])
-def loginStaffAuth():
-    # grabs information from the forms
-    username = request.form['username']
-    password = request.form['password']
+#--------customer home
+@app.route("/customer_home")
+def customer_home():
+    #rate data
+    #track data
+    return render_template('customer_home.html')
 
-    # cursor used to send queries
-    cursor = conn.cursor()
-    # executes query
-    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = %s'
-    cursor.execute(query, (username, password))
-    # stores the results in a variable
-    data = cursor.fetchone()
-    # use fetchall() if you are expecting more than 1 data row
-    cursor.close()
-    error = None
-    if (data):
-        # creates a session for the the user
-        # session is a built in
-        session['username'] = username
-        return render_template('staff-home.html')
-    else:
-        # returns an error message to the html page
-        error = 'Invalid login or username'
-        return render_template('login-staff.html', error=error)  # send the error msg to html
-    # communicate between python and html
+#==========================================================#
 
-@app.route('/loginCustomerAuth', methods=['GET', 'POST'])
-def loginCustomerAuth():
-    # grabs information from the forms
-    username = request.form['username']
-    password = request.form['password']
+#----------------Authenticates the register----------------#
+@app.route("/registerAuth", methods=['GET', 'POST'])
+def registerAuth():
+    usertype = request.form['usertype']
+    if usertype == 'Staff':
+        return redirect(url_for('register_staff'))
+    elif usertype == 'Customer':
+        return redirect(url_for('register_customer'))
 
-    # cursor used to send queries
-    cursor = conn.cursor()
-    # executes query
-    query = 'SELECT * FROM customer WHERE email = %s and password = %s'
-    cursor.execute(query, (username, password))
-    # stores the results in a variable
-    data = cursor.fetchone()
-    # use fetchall() if you are expecting more than 1 data row
-    cursor.close()
-    error = None
-    if (data):
-        # creates a session for the the user
-        # session is a built in
-        session['username'] = username
-        return render_template('customer-home.html')
-        #redirect(url_for('home'))
-    else:
-        # returns an error message to the html page
-        error = 'Invalid login or username'
-        return render_template('login-customer.html', error=error)  # send the error msg to html
-    # communicate between python and html
-
-
-
-
-# Authenticates the register
 @app.route("/registerStaffAuth", methods=['GET', 'POST'])
 def registerStaffAuth():
     # grabs information from the forms
@@ -208,6 +147,151 @@ def registerCustomerAuth():
         cursor.close()
         #todo: redirect to customer login page?
         return render_template('login-customer.html')
+
+
+#-----------------Authenticates the login------------------#
+@app.route("/loginAuth", methods=['GET', 'POST'])
+def loginAuth():
+    usertype = request.form['usertype']
+    if usertype == 'Staff':
+        return redirect(url_for('login_staff'))
+    elif usertype == 'Customer':
+        return redirect(url_for('login_customer'))
+
+@app.route("/loginStaffAuth", methods=['GET', 'POST'])
+def loginStaffAuth():
+    # grabs information from the forms
+    username = request.form['username']
+    password = request.form['password']
+
+    # cursor used to send queries
+    cursor = conn.cursor()
+    # executes query
+    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = %s'
+    cursor.execute(query, (username, password))
+    # stores the results in a variable
+    data = cursor.fetchone()
+    # use fetchall() if you are expecting more than 1 data row
+    cursor.close()
+    error = None
+    if (data):
+        # creates a session for the the user
+        # session is a built in
+        session['username'] = username
+        return render_template('staff-home.html')
+    else:
+        # returns an error message to the html page
+        error = 'Invalid login or username'
+        return render_template('login-staff.html', error=error)  # send the error msg to html
+    # communicate between python and html
+
+@app.route('/loginCustomerAuth', methods=['GET', 'POST'])
+def loginCustomerAuth():
+    # grabs information from the forms
+    username = request.form['username']
+    password = request.form['password']
+
+    # cursor used to send queries
+    cursor = conn.cursor()
+    # executes query
+    query = 'SELECT * FROM customer WHERE email = %s and password = %s'
+    cursor.execute(query, (username, password))
+    # stores the results in a variable
+    data = cursor.fetchone()
+    # use fetchall() if you are expecting more than 1 data row
+    cursor.close()
+    error = None
+    if (data):
+        # creates a session for the the user
+        # session is a built in
+        session['username'] = username
+        return render_template('customer-home.html')
+        #redirect(url_for('home'))
+    else:
+        # returns an error message to the html page
+        error = 'Invalid login or username'
+        return render_template('login-customer.html', error=error)  # send the error msg to html
+    # communicate between python and html
+
+
+#-----------------public_index------------------#
+#search_index TODO
+@app.route('/searchIndex', methods=['GET', 'POST'])
+def searchIndex():
+    source = request.form['source']
+    destination = request.form['destination']
+    triptype = request.form['triptype']
+    departure_date = request.form['departure-date']
+    return_date = request.form['return-date']
+
+    return render_template('search.html')
+
+#check_index TODO
+@app.route('/checkIndex', methods=['GET', 'POST'])
+def checkIndex():
+    airline = request.form['airline-name']
+    flight_number = request.form['flight-number']
+    datetype = request.form['datetype']
+    date = request.form['date']
+
+    return render_template('check.html')
+
+
+#-----------------customer_home------------------#
+#search_home TODO
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    source = request.form['source']
+    destination = request.form['destination']
+    triptype = request.form['triptype']
+    departure_date = request.form['departure-date']
+    return_date = request.form['return-date']
+
+    cursor = conn.cursor()
+    # executes query
+    query = '***query***'
+    cursor.execute(query, (username, password))
+    # stores the results in a variable
+    data = cursor.fetchone()
+    # use fetchall() if you are expecting more than 1 data row
+    cursor.close()
+    error = None
+    if (data):
+        # creates a session for the the user
+        # session is a built in
+        session['username'] = username
+        return render_template('search_customer.html')
+        #redirect(url_for('home'))
+
+#view_home TODO
+@app.route('/view', methods=['GET', 'POST'])
+def view():
+    viewtype = request.form['viewtype']
+    source = request.form['source']
+    destination = request.form['destination']
+    from_date = request.form['from-date']
+    to_date = request.form['to-date']
+
+    cursor = conn.cursor()
+    # executes query
+    query = '***query***'
+    cursor.execute(query, (username, password))
+    # stores the results in a variable
+    data = cursor.fetchone()
+    # use fetchall() if you are expecting more than 1 data row
+    cursor.close()
+    error = None
+    if (data):
+        # creates a session for the the user
+        # session is a built in
+        session['username'] = username
+        return render_template('view_customer.html')
+        #redirect(url_for('home'))
+
+#Rate TODO
+
+#track TODO
+
 
 #logout is the same for customer and staff
 @app.route('/logout')
