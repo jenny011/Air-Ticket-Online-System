@@ -6,6 +6,12 @@
   <title>Air Ticket Online</title>
 </head>
 
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
 <body>
 <a href="/logout">Logout</a>
 <h1>Welcome</h1>
@@ -26,24 +32,63 @@
   <input type="submit" value = Search />
 </form>
 
-<h3>View my flights</h3>
+<h2>View my flights</h2>
 <form action="/view" method="POST">
   <input type="radio" id="radio-one" name="switch-one" value="future" checked/>
   <label for="radio-one">future flights</label>
-  \<input type="radio" id="radio-two" name="switch-one" value="historical" />
+  <input type="radio" id="radio-two" name="switch-one" value="historical" />
   <label for="radio-two">historical flights</label>
   <input type="radio" id="radio-three" name="switch-one" value="all" />
   <label for="radio-three">all flights</label><br>
   date range <br>
-  from <input type="date" name = "YYYY/MM/DD" /> <br>
-  to <input type="date" name = "YYYY/MM/DD" /> <br>
+  from <input type="date" name = "date1" placeholder="YYYY/MM/DD" /> <br>
+  to <input type="date" name = "date2" placeholder="YYYY/MM/DD" /> <br>
   source <br>
   <input type="text" name = "source" placeholder="source" /> <br>
   destination <br>
   <input type="text" name = "destination" placeholder="destination" /> <br>
   <input type="submit" value = View />
 </form>
-<div>placeholder</div>
+
+<h2>Rate my flights</h2>
+<table>
+	<th>Airline</th>
+	<th>Flight Number</th>
+  <th>Departure Date</th>
+  <th>Departure Time</th>
+  <th>Arrival Date</th>
+  <th>Arrival Time</th>
+  <th>Source</th>
+  <th>Destination</th>
+  <th>Price</th>
+  <th></th>
+
+{% for line in unrated %}
+<form action="/rate" methods="POST">
+	<tr>
+		<td>{{line['airline-name']}}</td>
+		<td>{{line['flight-number']}}</td>
+    <td>{{line['departure-date']}}</td>
+    <td>{{line['departure-time']}}</td>
+    <td>{{line['arrival-date']}}</td>
+    <td>{{line['arrival-time']}}</td>
+    <td>{{line['source']}}</td>
+    <td>{{line['destination']}}</td>
+    <td>{{line['price']}}</td>
+    <td><input type="submit" name="rate" value=Rate /></td>
+	</tr>
+</form>
+{% endfor %}
+</table>
+
+<h2>Track my spending</h2>
+<form action="/track" method="POST">
+  date range <br>
+  from <input type="date" name = "date1" placeholder="YYYY/MM/DD" /> <br>
+  to <input type="date" name = "date2" placeholder="YYYY/MM/DD" /> <br>
+  <input type="submit" value = Track />
+</form>
+<div></div>
 
 </body>
 

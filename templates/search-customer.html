@@ -8,9 +8,9 @@
 
 <body>
 <a href="/logout">Logout</a>
-<a href="/customer-home">Back</a>
+/ <a href="/customer-home">Back</a>
 <h1>Search for flights</h1>
-<form action="/search" method="POST">
+<form action="/searchCustomer" method="POST">
   source <br>
   <input type="text" name = "source" placeholder="source" required/> <br>
   destination <br>
@@ -26,5 +26,40 @@
   <input type="submit" value = Search />
 </form>
 
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<table>
+	<th>Airline</th>
+	<th>Flight Number</th>
+  <th>Departure Date</th>
+  <th>Departure Time</th>
+  <th>Arrival Date</th>
+  <th>Arrival Time</th>
+  <th>Source</th>
+  <th>Destination</th>
+  <th>Price</th>
+  <th></th>
+
+{% for line in flights %}
+<form action="/purchaseCustomer" methods="POST">
+	<tr>
+		<td>{{line['airline-name']}}</td>
+		<td>{{line['flight-number']}}</td>
+    <td>{{line['departure-date']}}</td>
+    <td>{{line['departure-time']}}</td>
+    <td>{{line['arrival-date']}}</td>
+    <td>{{line['arrival-time']}}</td>
+    <td>{{line['source']}}</td>
+    <td>{{line['destination']}}</td>
+    <td>{{line['price']}}</td>
+    <td><input type="submit" name="purchase" value=Purchase /></td>
+	</tr>
+</form>
+{% endfor %}
+</table>
 
 </html>

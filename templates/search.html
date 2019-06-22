@@ -8,7 +8,7 @@
 
 <body>
 <h1>Search for flights</h1>
-<form action="/search" method="POST">
+<form action="/searchPublic" method="POST">
   source <br>
   <input type="text" name = "source" placeholder="source" required/> <br>
   destination <br>
@@ -23,6 +23,39 @@
   <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
   <input type="submit" value = Search />
 </form>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<table>
+	<th>Airline</th>
+	<th>Flight Number</th>
+  <th>Departure Date</th>
+  <th>Departure Time</th>
+  <th>Arrival Date</th>
+  <th>Arrival Time</th>
+  <th>Source</th>
+  <th>Destination</th>
+  <th>Price</th>
+
+{% for line in flights %}
+<tr>
+	<td>{{line['airline-name']}}</td>
+	<td>{{line['flight-number']}}</td>
+  <td>{{line['departure-date']}}</td>
+  <td>{{line['departure-time']}}</td>
+  <td>{{line['arrival-date']}}</td>
+  <td>{{line['arrival-time']}}</td>
+  <td>{{line['source']}}</td>
+  <td>{{line['destination']}}</td>
+  <td>{{line['price']}}</td>
+</tr>
+{% endfor %}
+</table>
+
 </body>
 
 </html>
