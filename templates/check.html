@@ -6,4 +6,53 @@
   <title>Air Ticket Online</title>
 </head>
 
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<body>
+<a href="/">Back</a>
+<h1>Check flight status</h1>
+<form action="/checkPublic" method="POST">
+  airline<br>
+  <input type="text" name = "airline-name" placeholder="airline name" required/> <br>
+  flight number<br>
+  <input type="text" name = "flight-number" placeholder="flight number" required/> <br>
+  <input type="radio" id="radio-one" name="switch-one" value="departure-date" checked/>
+  <label for="radio-one">departure date</label>
+  <input type="radio" id="radio-two" name="switch-one" value="arrival-date" />
+  <label for="radio-two">arrival date</label><br>
+  <input type="date" name = "date" placeholder="YYYY/MM/DD" required/> <br>
+  <input type="submit" value = Check />
+</form>
+
+<table>
+	<th>Airline</th>
+	<th>Flight Number</th>
+  <th>Departure Date</th>
+  <th>Departure Time</th>
+  <th>Arrival Date</th>
+  <th>Arrival Time</th>
+  <th>Source</th>
+  <th>Destination</th>
+  <th>Status</th>
+
+{% for line in statuses %}
+<tr>
+	<td>{{line['airline-name']}}</td>
+	<td>{{line['flight-number']}}</td>
+  <td>{{line['departure-date']}}</td>
+  <td>{{line['departure-time']}}</td>
+  <td>{{line['arrival-date']}}</td>
+  <td>{{line['arrival-time']}}</td>
+  <td>{{line['source']}}</td>
+  <td>{{line['destination']}}</td>
+  <td>{{line['status']}}</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+
 </html>
