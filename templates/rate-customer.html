@@ -1,0 +1,52 @@
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <!-- <link rel="stylesheet" href="css/style.css"> -->
+  <title>Air Ticket Online</title>
+</head>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<body>
+<a href="/logout">Logout</a>
+/ <a href="/customer-home">Back</a>
+<h1>Rate my flights</h1>
+<table>
+	<th>Airline</th>
+	<th>Flight Number</th>
+  <th>Departure Date</th>
+  <th>Departure Time</th>
+  <th>Arrival Date</th>
+  <th>Arrival Time</th>
+  <th>Source</th>
+  <th>Destination</th>
+  <th>Price</th>
+{% for line in flights %}
+<tr>
+	<td>{{line['airline-name']}}</td>
+	<td>{{line['flight-number']}}</td>
+  <td>{{line['departure-date']}}</td>
+  <td>{{line['departure-time']}}</td>
+  <td>{{line['arrival-date']}}</td>
+  <td>{{line['arrival-time']}}</td>
+  <td>{{line['source']}}</td>
+  <td>{{line['destination']}}</td>
+  <td>{{line['price']}}</td>
+</tr>
+{% endfor %}
+</table>
+<form action="/rateCustomer" method="POST">
+  rate <br>
+  <input type="text" name = "rate" placeholder="rate" required/> <br>
+  comment <br>
+  <input type="text" name = "comment" placeholder="comments" required/> <br>
+  <input type="submit" value = Rate-one />
+</form>
+</body>
+
+</html>

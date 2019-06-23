@@ -1,0 +1,57 @@
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <!-- <link rel="stylesheet" href="css/style.css"> -->
+  <title>Air Ticket Online</title>
+</head>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<body>
+<a href="/logout">Logout</a>
+/ <a href="/customer-home">Back</a>
+<h1>Purchase flight ticket(s)</h1>
+<table>
+	<th>Airline</th>
+	<th>Flight Number</th>
+  <th>Departure Date</th>
+  <th>Departure Time</th>
+  <th>Arrival Date</th>
+  <th>Arrival Time</th>
+  <th>Source</th>
+  <th>Destination</th>
+  <th>Price</th>
+{% for line in flights %}
+<tr>
+	<td>{{line['airline-name']}}</td>
+	<td>{{line['flight-number']}}</td>
+  <td>{{line['departure-date']}}</td>
+  <td>{{line['departure-time']}}</td>
+  <td>{{line['arrival-date']}}</td>
+  <td>{{line['arrival-time']}}</td>
+  <td>{{line['source']}}</td>
+  <td>{{line['destination']}}</td>
+  <td>{{line['price']}}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h2>Total price: {{total}}</h2>
+
+<form action="/payCustomer" method="POST">
+  card number <br>
+  <input type="text" name = "card-number" placeholder="card number" required/> <br>
+  name on card <br>
+  <input type="text" name = "name-on-card" placeholder="name on card" required/> <br>
+  card expiration date<br>
+  <input type="date" name = "card-expiration" placeholder="YYYY/MM/DD" required/> <br>
+  <input type="submit" value = Pay />
+</form>
+</body>
+
+</html>

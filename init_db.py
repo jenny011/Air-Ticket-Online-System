@@ -23,6 +23,14 @@ conn = pymysql.connect(host='localhost',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
+    
+on Jenny's server                       
+conn = pymysql.connect(host='localhost',
+                       user='root',
+                       password='',
+                       db='Air-Ticket',
+                       charset='utf8mb4',
+                       cursorclass=pymysql.cursors.DictCursor)
 
 '''
 
@@ -191,6 +199,7 @@ def loginCustomerAuth():
     username = request.form['username']
     password = request.form['password']
 
+
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
@@ -298,6 +307,8 @@ def view():
 def logout():
     session.pop('username')
     return render_template("logout.html")
+
+
 #=========below I did not edit==========================
 
 @app.route('/home')
@@ -330,14 +341,6 @@ app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
 # debug = True -> you don't have to restart flask
 # for changes to go through, TURN OFF FOR PRODUCTION
-
-
-
-
-#================Customer use case================
-def customer_home():
-
-    pass
 
 
 #===============Airline Staff use case============
