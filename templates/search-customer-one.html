@@ -6,31 +6,35 @@
   <title>Air Ticket Online</title>
 </head>
 
-<body>
-<a href="/logout">Logout</a>
-/ <a href="/customer-home">Back</a>
-<h1>Search for flights</h1>
-<form action="/searchCustomer" method="POST">
-  source <br>
-  <input type="text" name = "source" placeholder="source" required/> <br>
-  destination <br>
-  <input type="text" name = "destination" placeholder="destination" required/> <br>
-  <input type="radio" id="radio-one" name="switch-one" value="one-way" checked/>
-  <label for="radio-one">one-way trip</label>
-  <input type="radio" id="radio-two" name="switch-one" value="round" />
-  <label for="radio-two">round trip</label><br>
-  departure date <br>
-  <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
-  return date <br>
-  <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
-  <input type="submit" value = Search />
-</form>
-
 <style type="text/css">
 	table, th, td{
 		border: 1px solid black;
 	}
 </style>
+
+<body>
+<a href="/logout">Logout</a>
+/ <a href="/customer-home">Back</a>
+<h1>Search for flights</h1>
+<form action="/searchCustomerOneWay" method="POST">
+  source <br>
+  <input type="text" name = "source" placeholder="source" required/> <br>
+  destination <br>
+  <input type="text" name = "destination" placeholder="destination" required/> <br>
+  <div id="radio-one-div">
+    <input type="radio" id="radio-one" name="switch-one" value="one-way" />
+    <label for="radio-one">one-way trip</label>
+    <input type="radio" id="radio-round" name="switch-one" value="round" checked/>
+    <label for="radio-round">round trip</label><br>
+  </div>
+  departure date <br>
+  <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
+  <div id='return-date-div' style="visibility:visible;">
+    return date <br>
+    <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
+  </div>
+  <input type="submit" value = Search />
+</form>
 
 <table>
 	<th>Airline</th>
@@ -61,5 +65,18 @@
 </form>
 {% endfor %}
 </table>
+
+<script>
+  document.getElementById("radio-one-div").addEventListener("click",function(){
+    console.log(0);
+    if(document.getElementById('radio-one').checked) {
+      console.log(1);
+      document.getElementById('return-date-div').style.visibility = "hidden";
+    }else if(document.getElementById('radio-round').checked) {
+      console.log(2);
+      document.getElementById('return-date-div').style.visibility = "visible";
+    }
+  });
+</script>
 
 </html>
