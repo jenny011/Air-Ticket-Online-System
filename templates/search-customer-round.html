@@ -13,10 +13,10 @@
 </style>
 
 <body>
-<a href="/">Back</a>
+<a href="/logout">Logout</a>
+/ <a href="/customer-home">Back</a>
 <h1>Search for flights</h1>
-<form id="search-form" action="/searchPublicRound" method="POST">
-  <!-- get value from init -->
+<form action="/searchCustomer" method="POST">
   source <br>
   <input type="text" name = "source" placeholder="source" required/> <br>
   destination <br>
@@ -53,23 +53,25 @@
   <th>Source</th>
   <th>Destination</th>
   <th>Price</th>
+  <th></th>
 
 {% for line in flights %}
-<tr>
-	<td>{{line['airline_name']}}</td>
-	<td>{{line['flight_number']}}</td>
-  <td>{{line['departure_date']}}</td>
-  <td>{{line['departure_time']}}</td>
-  <td>{{line['arrival_date']}}</td>
-  <td>{{line['arrival_time']}}</td>
-  <td>{{line['arrival_airport']}}</td>
-  <td>{{line['departure_airport']}}</td>
-  <td>{{line['price']}}</td>
-</tr>
+<form action="/purchaseCustomer" methods="POST">
+	<tr>
+		<td>{{line['airline-name']}}</td>
+		<td>{{line['flight-number']}}</td>
+    <td>{{line['departure-date']}}</td>
+    <td>{{line['departure-time']}}</td>
+    <td>{{line['arrival-date']}}</td>
+    <td>{{line['arrival-time']}}</td>
+    <td>{{line['source']}}</td>
+    <td>{{line['destination']}}</td>
+    <td>{{line['price']}}</td>
+    <td><input type="submit" name="purchase" value=Purchase /></td>
+	</tr>
+</form>
 {% endfor %}
 </table>
-
-</body>
 
 <script>
   document.getElementById("radio-departure").onclick = function() {
