@@ -20,8 +20,10 @@
   <label for="radio-two">round trip</label><br>
   departure date <br>
   <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
-  return date <br>
-  <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
+  <div id='return-date'>
+    return date <br>
+    <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
+  </div>
   <input type="submit" value = Search />
 </form>
 
@@ -44,14 +46,14 @@
 
 {% for line in flights %}
 <tr>
-	<td>{{line['airline-name']}}</td>
-	<td>{{line['flight-number']}}</td>
-  <td>{{line['departure-date']}}</td>
-  <td>{{line['departure-time']}}</td>
-  <td>{{line['arrival-date']}}</td>
-  <td>{{line['arrival-time']}}</td>
-  <td>{{line['source']}}</td>
-  <td>{{line['destination']}}</td>
+	<td>{{line['airline_name']}}</td>
+	<td>{{line['flight_number']}}</td>
+  <td>{{line['departure_date']}}</td>
+  <td>{{line['departure_time']}}</td>
+  <td>{{line['arrival_date']}}</td>
+  <td>{{line['arrival_time']}}</td>
+  <td>{{line['arrival_airport']}}</td>
+  <td>{{line['departure_airport']}}</td>
   <td>{{line['price']}}</td>
 </tr>
 {% endfor %}
