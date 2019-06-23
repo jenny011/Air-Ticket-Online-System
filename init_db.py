@@ -224,16 +224,37 @@ def loginCustomerAuth():
 
 
 #-----------------public_index------------------#
+
 #search_index TODO
 @app.route('/searchIndex', methods=['GET', 'POST'])
 def searchIndex():
+    #get search info from page and execute in sql db
     source = request.form['source']
     destination = request.form['destination']
     triptype = request.form['triptype']
     departure_date = request.form['departure-date']
     return_date = request.form['return-date']
 
-    return render_template('search.html')
+    # get the info and pass it onto the next page.
+
+    if triptype == "one-way":
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = % s'
+        cursor.execute(query, (source, destination,departure_date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        return render_template('search.html')
+
+
+@app.route('/searchPublic', methods=['GET', 'POST'])
+def searchPublic():
+    # how to display the fetched data?
+
+
+
+
 
 #check_index TODO
 @app.route('/checkIndex', methods=['GET', 'POST'])
@@ -250,6 +271,7 @@ def checkIndex():
 #search_home TODO
 @app.route('/search', methods=['GET', 'POST'])
 def search():
+    #display the search result
     source = request.form['source']
     destination = request.form['destination']
     triptype = request.form['triptype']

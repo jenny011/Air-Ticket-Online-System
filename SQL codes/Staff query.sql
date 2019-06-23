@@ -32,6 +32,28 @@ and departure_airport = s% and arrival_airport = %s
 INSERT INTO flight (airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, base_price, status)
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 
-/*6. change the statues of flights*/
 
+/*6. change the status of flights*/
+
+--ideally, the user could choose the flight to update
+--the user could choose the flight status to change into
+
+--get the (airline_name, fligh_number, departure_date, departure_time)
+update flight
+set status = %s
+where (airline_name, fligh_number, departure_date, departure_time) = (%s, %s, %s, %s)
+
+
+/*7. add airplane in the system*/
+INSERT INTO airplane (airline_name, id, amount_of_seats)
+VALUES (%s, %s, %s)
+
+
+/*8. add airport in the system*/
+insert into airport (airport_name, city)
+values (%s, %s)
+
+
+/*9. view flight ratings*/
+--aveage ratings
 
