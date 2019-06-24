@@ -43,6 +43,7 @@
   <th>Source</th>
   <th>Destination</th>
   <th>Price</th>
+  <th>Status</th>
 
 {% for line in flights %}
 <tr>
@@ -55,6 +56,7 @@
   <td>{{line['source']}}</td>
   <td>{{line['destination']}}</td>
   <td>{{line['price']}}</td>
+  <td>{{line['status']}}</td>
 </tr>
 {% endfor %}
 </table>

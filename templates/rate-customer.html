@@ -15,7 +15,7 @@
 <body>
 <a href="/logout">Logout</a>
 / <a href="/customer-home">Back</a>
-<h1>Rate my flights</h1>
+<h1>Rate my flight</h1>
 <table>
 	<th>Airline</th>
 	<th>Flight Number</th>
@@ -40,12 +40,13 @@
 </tr>
 {% endfor %}
 </table>
+<br>
 <form action="/rateCustomer" method="POST">
-  rate <br>
-  <input type="text" name = "rate" placeholder="rate" required/> <br>
-  comment <br>
-  <input type="text" name = "comment" placeholder="comments" required/> <br>
-  <input type="submit" value = Rate-one />
+  rate (1-5)<br>
+  <input style="width:30px;" type="number" name = "rate" min="1" max="5" step="1" value="1" required/> <br>
+  comments <br>
+  <input style="word-break:break-word;height:80px;width:30%;" type="text" name = "comment" placeholder="type your comments" required/> <br>
+  <input type="submit" value = Submit />
 </form>
 </body>
 
