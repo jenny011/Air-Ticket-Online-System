@@ -37,10 +37,8 @@ conn = pymysql.connect(host='localhost',
 
 @app.route('/')
 def public():
-    #publc info
     return render_template('index.html')
 
-#-------Define route for register
 @app.route('/register')
 def register():
 	return render_template('register.html')
@@ -53,7 +51,7 @@ def register_staff():
 def register_customer():
     return render_template('register-customer.html')
 
-#--------Define route for login
+
 @app.route('/login')
 def login():
 	return render_template('login.html')
@@ -149,9 +147,10 @@ def registerCustomerAuth():
     else:
         ins = 'INSERT INTO customer VALUES' \
               '(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-        cursor.execute(ins, (email, password, name, DOB, phone_number,
+        cursor.execute(ins, (email, name, password,
                              building_number, street, city, state,
-                             passport_number, passport_expiration, passport_country))
+                             phone_number, passport_number, passport_expiration,
+                             passport_country, DOB))
         conn.commit()
         cursor.close()
         #todo: redirect to customer login page?
@@ -187,7 +186,7 @@ def loginStaffAuth():
         # creates a session for the the user
         # session is a built in
         session['username'] = username
-        return render_template('staff-home.html')
+        return redirect(url_for('customer_home'))
     else:
         # returns an error message to the html page
         error = 'Invalid login or username'
@@ -199,7 +198,6 @@ def loginCustomerAuth():
     # grabs information from the forms
     username = request.form['username']
     password = request.form['password']
-
 
     # cursor used to send queries
     cursor = conn.cursor()
@@ -216,12 +214,12 @@ def loginCustomerAuth():
         # session is a built in
         session['username'] = username
         return render_template('customer-home.html')
-        #redirect(url_for('home'))
+
     else:
         # returns an error message to the html page
         error = 'Invalid login or username'
         return render_template('login-customer.html', error=error)  # send the error msg to html
-    # communicate between python and html
+
 
 
 #============== public_index =====================#
@@ -244,7 +242,7 @@ def searchPublic():
         cursor.execute(query, (source, destination,departure_date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('search-one.html', source = source, flights = data1)
+        return render_template('search-one.html', source=source, flights=data1)
 
     elif triptype == "round":
         pass
@@ -337,8 +335,13 @@ def checkPublic():
         cursor.close()
         return render_template('check.html', statuses=data1)
 
-#-----------------customer_home------------------#
-#search_home TODO
+
+# ================ customer_home ===================
+
+@app.route('/customer_home')
+def customer_home():
+    return render_template('customer-home.html')
+
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     #display the search result
@@ -349,24 +352,45 @@ def search():
     return_date = request.form['return-date']
 
     if triptype == "one-way":
+        print('execuated')
         cursor = conn.cursor()
-        # executes query
         query = 'select * from flight ' \
-                'where departure_time > now() and departure_airport = %s and arrival_airport = %s and departure_date = %s'
-        cursor.execute(query, (username, password))
-        # stores the results in a variable
-        data = cursor.fetchone()
-        # use fetchall() if you are expecting more than 1 data row
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (source, destination, departure_date))
+        data1 = cursor.fetchall()
         cursor.close()
-        error = None
-    if (data):
-        # creates a session for the the user
-        # session is a built in
-        session['username'] = username
-        return render_template('search-customer-one.html')
-        #redirect(url_for('home'))
+        # return render_template('search-customer-one.html', source=source, flights=data1)
+        return render_template('search-customer-one.html', flights=data1)
 
-#view_home TODO
+    elif triptype == "round":
+        pass
+        return render_template('search-customer-round.html')
+
+
+@app.route('/searchCustomerOneWay', methods=['GET', 'POST'])
+def searchCustomerOneWay():
+    source = request.form['source']
+    destination = request.form['destination']
+    triptype = request.form['triptype']
+    departure_date = request.form['departure-date']
+    return_date = request.form['return-date']
+
+    if triptype == "one-way":
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (source, destination, departure_date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        return render_template('search-customer-one.html', source=source, flights=data1)
+
+    elif triptype == "round":
+        pass
+        return render_template('search-customer-round.html')
+
+
 @app.route('/view', methods=['GET', 'POST'])
 def view():
     viewtype = request.form['viewtype']
