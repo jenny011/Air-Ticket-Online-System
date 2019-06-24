@@ -18,17 +18,16 @@
     destination <br>
     <input type="text" name = "destination" placeholder="destination" required/> <br>
     <div id="radio-one-div">
-      <input type="radio" id="radio-one" name="switch-one" value="one-way" />
+      <input type="radio" id="radio-one" name="triptype" value="one-way" />
       <label for="radio-one">one-way trip</label>
-      <input type="radio" id="radio-round" name="switch-one" value="round" checked/>
+      <input type="radio" id="radio-round" name="triptype" value="round" checked/>
       <label for="radio-round">round trip</label><br>
     </div>
     departure date <br>
     <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
-    <div id='return-date-div' style="visibility:visible;">
-      return date <br>
-      <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
-    </div>
+    return date <br>
+    <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/><br>
+
   	<input type="submit" value = Search />
   </form>
   <h2>Check flight status</h2>
@@ -58,13 +57,13 @@
 </body>
 
 <script>
-  document.getElementById("radio-one-div").addEventListener("click",function(){
-    if(document.getElementById('radio-one').checked) {
-      document.getElementById('return-date-div').style.visibility = "hidden";
-    }else if(document.getElementById('radio-round').checked) {
-      document.getElementById('return-date-div').style.visibility = "visible";
-    }
-  });
+  // document.getElementById("radio-one-div").addEventListener("click",function(){
+  //   if(document.getElementById('radio-one').checked) {
+  //     document.getElementById('return-date-div').disabled;
+  //   }else if(document.getElementById('radio-round').checked) {
+  //
+  //   }
+  // });
 </script>
 
 </html>

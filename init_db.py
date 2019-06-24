@@ -23,8 +23,8 @@ conn = pymysql.connect(host='localhost',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
-    
-on Jenny's server                       
+
+on Jenny's server
 conn = pymysql.connect(host='localhost',
                        user='root',
                        password='',
@@ -226,7 +226,7 @@ def loginCustomerAuth():
 #-----------------public_index------------------#
 
 #search_index TODO
-@app.route('/searchIndex', methods=['GET', 'POST'])
+@app.route('/searchPublic', methods=['GET', 'POST'])
 def searchPublic():
     #get search info from page and execute in sql db
     source = request.form['source']
@@ -241,27 +241,27 @@ def searchPublic():
         cursor = conn.cursor()
         query = 'select * from flight ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
-                'and departure_airport = %s and arrival_airport = %s and departure_date = % s'
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (source, destination,departure_date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('search_one.html', source = source, flight = data1)
+        return render_template('search-one.html', source = source, flights = data1)
 
 @app.route("/searchPublicOneWay", methods=['GET', 'POST'])
 def searchPublicOneWay():
     pass
 
 
-@app.route('/searchPublic', methods=['GET', 'POST'])
-def searchPublic():
-    # how to display the fetched data?
-    pass
+# @app.route('/searchPublic', methods=['GET', 'POST'])
+# def searchPublic():
+#     # how to display the fetched data?
+#     pass
 
 
 
 
 #check_index TODO
-@app.route('/checkIndex', methods=['GET', 'POST'])
+@app.route('/checkPublic', methods=['GET', 'POST'])
 def checkIndex():
     airline = request.form['airline-name']
     flight_number = request.form['flight-number']
@@ -282,22 +282,22 @@ def search():
     departure_date = request.form['departure-date']
     return_date = request.form['return-date']
 
-    if triptype = "one-way":
-    cursor = conn.cursor()
-    # executes query
-    query = 'select * from flight ' \
-            'where departure_time > now() and departure_airport = %s and arrival_airport = %s and departure_date = %s'
-    cursor.execute(query, (username, password))
-    # stores the results in a variable
-    data = cursor.fetchone()
-    # use fetchall() if you are expecting more than 1 data row
-    cursor.close()
-    error = None
+    if triptype == "one-way":
+        cursor = conn.cursor()
+        # executes query
+        query = 'select * from flight ' \
+                'where departure_time > now() and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (username, password))
+        # stores the results in a variable
+        data = cursor.fetchone()
+        # use fetchall() if you are expecting more than 1 data row
+        cursor.close()
+        error = None
     if (data):
         # creates a session for the the user
         # session is a built in
         session['username'] = username
-        return render_template('search_one.html')
+        return render_template('search-customer-one.html')
         #redirect(url_for('home'))
 
 #view_home TODO
@@ -322,7 +322,7 @@ def view():
         # creates a session for the the user
         # session is a built in
         session['username'] = username
-        return render_template('view_customer.html')
+        return render_template('view-customer.html')
         #redirect(url_for('home'))
 
 #Rate TODO
