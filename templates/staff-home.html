@@ -6,11 +6,87 @@
   <title>Air Ticket Online</title>
 </head>
 
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
 <body>
 <h1>Welcome</h1>
-<form action="/search" method="POST">
-	<input type="text" name = "blog" placeholder="post" required/> <br>
-	<input type="submit" value = Post />
+<h2>View flights</h2>
+<form action="/viewFlights" method="POST">
+  <input type="radio" id="radio-one" name="viewtype" value="future" checked/>
+  <label for="radio-one">future flights</label>
+  <input type="radio" id="radio-two" name="viewtype" value="all" />
+  <label for="radio-three">current flights</label><br>
+  <input type="radio" id="radio-three" name="viewtype" value="historical" />
+  <label for="radio-two">historical flights</label>
+  date range <br>
+  from <input type="date" name = "from-date" placeholder="YYYY/MM/DD" /> <br>
+  to <input type="date" name = "to-date" placeholder="YYYY/MM/DD" /> <br>
+  source <br>
+  <input type="text" name = "source" placeholder="source" /> <br>
+  destination <br>
+  <input type="text" name = "destination" placeholder="destination" /> <br>
+  <input type="submit" value = View />
+</form>
+<table>
+	<th>Airline</th>
+	<th>Flight Number</th>
+  <th>Departure Date</th>
+  <th>Departure Time</th>
+  <th>Arrival Date</th>
+  <th>Arrival Time</th>
+  <th>Source</th>
+  <th>Destination</th>
+  <th>Price</th>
+  <th>Status</th>
+  <th>Ratings</th>
+
+{% for line in flights %}
+<tr>
+	<td>{{line['airline-name']}}</td>
+	<td>{{line['flight-number']}}</td>
+  <td>{{line['departure-date']}}</td>
+  <td>{{line['departure-time']}}</td>
+  <td>{{line['arrival-date']}}</td>
+  <td>{{line['arrival-time']}}</td>
+  <td>{{line['source']}}</td>
+  <td>{{line['destination']}}</td>
+  <td>{{line['price']}}</td>
+  <td>{{line['status']}}</td>
+  <td>{{line['ratings']}}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h2>Create new flights</h2>
+<form action="/createFlights" method="POST">
+  <input type="text" name="flight-number" placeholder="flight number" required/><br>
+  <input type="date" name="departure-date" placeholder="YYYY/MM/DD" required/><br>
+  <input type="time" name="departure-time" placeholder="HH:MM:SS" required/><br>
+  <input type="date" name="arrival-date" placeholder="YYYY/MM/DD" required/><br>
+  <input type="time" name="arrival-time" placeholder="HH:MM:SS" required/><br>
+  <input type="text" name="departure-airport" placeholder="departure airport" required/><br>
+  <input type="text" name="arrival-airport" placeholder="arrival airport" required/><br>
+  <input type="number" name="base-price" placeholder="base price" required/><br>
+  <input type="text" name="airplane-id" placeholder="airplane id" required/><br>
+  <input type="submit" value = Submit />
+</form>
+
+<h2>Add airplane</h2>
+<form action="/createAirplane" method="POST">
+  <input type="text" name="airplane-id" placeholder="airplane id" required/><br>
+  <input type="number" name="seats" placeholder="seating capacity" min="1" step="1" required/><br>
+  <input type="submit" value = Submit />
+</form>
+
+<h2>Add airport</h2>
+<form action="/createAirport" method="POST">
+  <input type="text" name="airport" placeholder="airport name" required/><br>
+  <input type="text" name="city" placeholder="city" required/><br>
+  <input type="submit" value = Submit />
 </form>
 
 
