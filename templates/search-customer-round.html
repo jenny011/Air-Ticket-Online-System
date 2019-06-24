@@ -16,7 +16,7 @@
 <a href="/logout">Logout</a>
 / <a href="/customer-home">Back</a>
 <h1>Search for flights</h1>
-<form action="/searchCustomer" method="POST">
+<form action="/searchCustomerRound" method="POST">
   source <br>
   <input type="text" name = "source" placeholder="source" required/> <br>
   destination <br>
@@ -36,12 +36,12 @@
   <input type="submit" value = Search />
 </form>
 
-<form id="submit-form" action="switchViewPublic" method="POST">
-  <input type="radio" id="radio-departure" name="switch-two" value="departure" checked/>
-  <label for="radio-departure">departure</label>
-  <input type="radio" id="radio-return" name="switch-two" value="return" />
-  <label for="radio-return">return</label><br>
-</form>
+{%if not message%}
+<div>departure</div>
+{%endif%}
+{%if message%}
+<div>return</div>
+{%endif%}
 
 <table>
 	<th>Airline</th>
@@ -56,7 +56,7 @@
   <th></th>
 
 {% for line in flights %}
-<form action="/purchaseCustomer" methods="POST">
+<form action="/purchaseCustomerRound" methods="POST">
 	<tr>
 		<td>{{line['airline-name']}}</td>
 		<td>{{line['flight-number']}}</td>
@@ -81,12 +81,9 @@
    document.getElementById("submit-form").submit();
   };
   document.getElementById("radio-one-div").addEventListener("click",function(){
-    console.log(0);
     if(document.getElementById('radio-one').checked) {
-      console.log(1);
       document.getElementById('return-date-div').style.visibility = "hidden";
     }else if(document.getElementById('radio-round').checked) {
-      console.log(2);
       document.getElementById('return-date-div').style.visibility = "visible";
     }
   });

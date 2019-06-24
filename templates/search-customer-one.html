@@ -49,7 +49,7 @@
   <th></th>
 
 {% for line in flights %}
-<form action="/purchaseCustomer" methods="POST">
+<form action="/purchaseCustomerOneWay" methods="POST">
 	<tr>
 		<td>{{line['airline-name']}}</td>
 		<td>{{line['flight-number']}}</td>
@@ -68,12 +68,9 @@
 
 <script>
   document.getElementById("radio-one-div").addEventListener("click",function(){
-    console.log(0);
     if(document.getElementById('radio-one').checked) {
-      console.log(1);
       document.getElementById('return-date-div').style.visibility = "hidden";
     }else if(document.getElementById('radio-round').checked) {
-      console.log(2);
       document.getElementById('return-date-div').style.visibility = "visible";
     }
   });
