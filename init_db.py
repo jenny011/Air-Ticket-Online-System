@@ -227,7 +227,7 @@ def loginCustomerAuth():
 
 #search_index TODO
 @app.route('/searchIndex', methods=['GET', 'POST'])
-def searchIndex():
+def searchPublic():
     #get search info from page and execute in sql db
     source = request.form['source']
     destination = request.form['destination']
@@ -245,13 +245,17 @@ def searchIndex():
         cursor.execute(query, (source, destination,departure_date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('search.html')
+        return render_template('search_one.html', source = source, flight = data1)
+
+@app.route("/searchPublicOneWay", methods=['GET', 'POST'])
+def searchPublicOneWay():
+    pass
 
 
 @app.route('/searchPublic', methods=['GET', 'POST'])
 def searchPublic():
     # how to display the fetched data?
-
+    pass
 
 
 
@@ -278,9 +282,11 @@ def search():
     departure_date = request.form['departure-date']
     return_date = request.form['return-date']
 
+    if triptype = "one-way":
     cursor = conn.cursor()
     # executes query
-    query = '***query***'
+    query = 'select * from flight ' \
+            'where departure_time > now() and departure_airport = %s and arrival_airport = %s and departure_date = %s'
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -291,7 +297,7 @@ def search():
         # creates a session for the the user
         # session is a built in
         session['username'] = username
-        return render_template('search_customer.html')
+        return render_template('search_one.html')
         #redirect(url_for('home'))
 
 #view_home TODO
