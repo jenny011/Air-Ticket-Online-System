@@ -7,8 +7,9 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -223,9 +224,9 @@ def loginCustomerAuth():
     # communicate between python and html
 
 
-#-----------------public_index------------------#
+#============== public_index =====================#
 
-#search_index TODO
+# public search
 @app.route('/searchPublic', methods=['GET', 'POST'])
 def searchPublic():
     #get search info from page and execute in sql db
@@ -234,8 +235,6 @@ def searchPublic():
     triptype = request.form['triptype']
     departure_date = request.form['departure-date']
     return_date = request.form['return-date']
-
-    # get the info and pass it onto the next page.
 
     if triptype == "one-way":
         cursor = conn.cursor()
@@ -247,29 +246,96 @@ def searchPublic():
         cursor.close()
         return render_template('search-one.html', source = source, flights = data1)
 
+    elif triptype == "round":
+        pass
+        return render_template('search-round.html')
+
 @app.route("/searchPublicOneWay", methods=['GET', 'POST'])
 def searchPublicOneWay():
+    source = request.form['source']
+    destination = request.form['destination']
+    triptype = request.form['triptype']
+    departure_date = request.form['departure-date']
+    return_date = request.form['return-date']
+
+    if triptype == "one-way":
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (source, destination,departure_date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        return render_template('search-one.html', source=source, flights=data1)
+
+    elif triptype == "round":
+        pass
+        return render_template('search-round.html')
+
+@app.route("/searchPublicRound", methods=['GET', 'POST'])
+def searchPublicRound():
     pass
 
 
-# @app.route('/searchPublic', methods=['GET', 'POST'])
-# def searchPublic():
-#     # how to display the fetched data?
-#     pass
-
-
-
-
-#check_index TODO
-@app.route('/checkPublic', methods=['GET', 'POST'])
+# ------------- public check ------------------
+@app.route("/checkIndex", methods=['GET', 'POST'])
 def checkIndex():
-    airline = request.form['airline-name']
+    airline_name = request.form['airline_name']
+    flight_number = request.form['flight_number']
+    datetype = request.form['datetype']
+    date = request.form['date']
+
+    if datetype == "departure_date":
+        cursor = conn.cursor()
+        query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                'from flight ' \
+                'where airline_name = %s and flight_number = %s and departure_date = %s'
+        cursor.execute(query, (airline_name, flight_number, date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        return render_template('check.html', statuses=data1)
+
+    elif datetype == "arrival_date":
+        cursor = conn.cursor()
+        query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                'from flight ' \
+                'where airline_name = %s and flight_number = %s and arrival_date = %s'
+        cursor.execute(query, (airline_name, flight_number, date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        return render_template('check.html', statuses=data1)
+
+@app.route("/checkPublic", methods=['GET', 'POST'])
+def checkPublic():
+    airline_name = request.form['airline-name']
     flight_number = request.form['flight-number']
     datetype = request.form['datetype']
     date = request.form['date']
 
-    return render_template('check.html')
+    if datetype == "departure-date":
+        cursor = conn.cursor()
+        query = 'select airline_name , flight_number, departure_date, departure_time, ' \
+                'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                'from flight ' \
+                'where airline_name = %s and flight_number = %s and departure_date = %s'
+        cursor.execute(query, (airline_name, flight_number, date))
+        data1 = cursor.fetchall()
+        print(data1)
+        cursor.close()
+        return render_template('check.html', statuses=data1)
 
+    elif datetype == "arrival-date":
+        cursor = conn.cursor()
+        query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                'from flight ' \
+                'where airline_name = %s and flight_number = %s and arrival_date = %s'
+        cursor.execute(query, (airline_name, flight_number, date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        return render_template('check.html', statuses=data1)
 
 #-----------------customer_home------------------#
 #search_home TODO

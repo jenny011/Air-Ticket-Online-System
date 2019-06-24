@@ -19,12 +19,12 @@
 <h1>Check flight status</h1>
 <form action="/checkPublic" method="POST">
   airline<br>
-  <input type="text" name = "airline-name" placeholder="airline name" required/> <br>
+  <input type="text" name = "airline_name" placeholder="airline name" required/> <br>
   flight number<br>
-  <input type="text" name = "flight-number" placeholder="flight number" required/> <br>
-  <input type="radio" id="radio-one" name="switch-one" value="departure-date" checked/>
+  <input type="text" name = "flight_number" placeholder="flight number" required/> <br>
+  <input type="radio" id="radio-one" name="switch-one" value="departure_date" checked/>
   <label for="radio-one">departure date</label>
-  <input type="radio" id="radio-two" name="switch-one" value="arrival-date" />
+  <input type="radio" id="radio-two" name="switch-one" value="arrival_date" />
   <label for="radio-two">arrival date</label><br>
   <input type="date" name = "date" placeholder="YYYY/MM/DD" required/> <br>
   <input type="submit" value = Check />
@@ -43,14 +43,14 @@
 
 {% for line in statuses %}
 <tr>
-	<td>{{line['airline-name']}}</td>
-	<td>{{line['flight-number']}}</td>
-  <td>{{line['departure-date']}}</td>
-  <td>{{line['departure-time']}}</td>
-  <td>{{line['arrival-date']}}</td>
-  <td>{{line['arrival-time']}}</td>
-  <td>{{line['source']}}</td>
-  <td>{{line['destination']}}</td>
+	<td>{{line['airline_name']}}</td>
+	<td>{{line['flight_number']}}</td>
+  <td>{{line['departure_date']}}</td>
+  <td>{{line['departure_time']}}</td>
+  <td>{{line['arrival_date']}}</td>
+  <td>{{line['arrival_time']}}</td>
+  <td>{{line['departure_airport']}}</td>
+  <td>{{line['arrival_airport']}}</td>
   <td>{{line['status']}}</td>
 </tr>
 {% endfor %}

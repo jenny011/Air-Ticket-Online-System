@@ -20,7 +20,7 @@ and departure_date = %s
 /*1.b see flight status*/
 select status
 from flight
-where airline_name = %s and flight_number = %s and departure_date = %search
+where airline_name = %s and flight_number = %s and departure_date = %s
 --give the user only one option: input the departure_date?
 --or the user could choose to view according to the daparture_date/arrival_date?
 --no need to input time?
