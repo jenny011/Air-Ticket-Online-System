@@ -49,17 +49,20 @@
   <th>Price</th>
 
 {% for line in flights %}
-<tr>
-	<td>{{line['airline_name']}}</td>
-	<td>{{line['flight_number']}}</td>
-  <td>{{line['departure_date']}}</td>
-  <td>{{line['departure_time']}}</td>
-  <td>{{line['arrival_date']}}</td>
-  <td>{{line['arrival_time']}}</td>
-  <td>{{line['arrival_airport']}}</td>
-  <td>{{line['departure_airport']}}</td>
-  <td>{{line['price']}}</td>
-</tr>
+<form action="/purchaseCustomerRound" methods="POST">
+	<tr>
+		<td>{{line['airline-name']}}</td>
+		<td>{{line['flight-number']}}</td>
+    <td>{{line['departure-date']}}</td>
+    <td>{{line['departure-time']}}</td>
+    <td>{{line['arrival-date']}}</td>
+    <td>{{line['arrival-time']}}</td>
+    <td>{{line['source']}}</td>
+    <td>{{line['destination']}}</td>
+    <td>{{line['price']}}</td>
+    <td><input type="submit" name="purchase" value=Purchase /></td>
+	</tr>
+</form>
 {% endfor %}
 </table>
 
