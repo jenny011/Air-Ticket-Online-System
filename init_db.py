@@ -1,15 +1,15 @@
 # Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
+from datetime import date
 
 # Initialize the app from Flask
 app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
+                       password='',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -192,7 +192,7 @@ def loginCustomerAuth():
     # grabs information from the forms
     username = request.form['username']
     password = request.form['password']
-
+    from_date = date.today()
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
@@ -202,12 +202,21 @@ def loginCustomerAuth():
     data = cursor.fetchone()
     # use fetchall() if you are expecting more than 1 data row
     cursor.close()
+    cursor = conn.cursor()
+    query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+            'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+            'from (flight natural join ticket) join purchase using (ticket_id)' \
+            'where email = %s'
+         # and departure_date between %s and %s
+    cursor.execute(query, (username))
+    data1 = cursor.fetchall()
+    cursor.close()
     error = None
     if (data):
         # creates a session for the the user
         # session is a built in
         session['username'] = username
-        return redirect(url_for('customer_home'))
+        return render_template('customer-home.html',from_date=from_date,flights=data1)
 
     else:
         # returns an error message to the html page
@@ -281,7 +290,32 @@ def searchPublicOneWay():
 
 @app.route("/searchPublicRound", methods=['GET', 'POST'])
 def searchPublicRound():
-    pass
+        source = request.form['source']
+        destination = request.form['destination']
+        triptype = request.form['triptype']
+        departure_date = request.form['departure-date']
+
+        if triptype == "one-way":
+            cursor = conn.cursor()
+            query = 'select * from flight ' \
+                    'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                    'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+            cursor.execute(query, (source, destination,departure_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+            return render_template('search-one.html', source=source, destination=destination, departure_date = departure_date, flights=data1)
+
+        elif triptype == "round":#------!!!!!!!todo
+            return_date = request.form['return-date']
+            cursor = conn.cursor()
+            query = 'select * from flight ' \
+                    'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                    'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+            cursor.execute(query, (source, destination,departure_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+            return render_template('search-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
+
 
 @app.route("/switchPublicView", methods=['GET', 'POST'])
 def switchPublicView():
@@ -305,7 +339,7 @@ def checkIndex():
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('check.html', statuses=data1)
+        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date)
 
     elif datetype == "arrival_date":
         cursor = conn.cursor()
@@ -316,7 +350,7 @@ def checkIndex():
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('check.html', statuses=data1)
+        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date)
 
 @app.route("/checkPublic", methods=['GET', 'POST'])
 def checkPublic():
@@ -335,7 +369,7 @@ def checkPublic():
         data1 = cursor.fetchall()
         # print(data1)
         cursor.close()
-        return render_template('check.html', statuses=data1)
+        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date)
 
     elif datetype == "arrival-date":
         cursor = conn.cursor()
@@ -346,7 +380,7 @@ def checkPublic():
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('check.html', statuses=data1)
+        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date)
 
 
 # ================ !customer!-home ===================
@@ -416,7 +450,25 @@ def searchCustomerOneWay():
 
 @app.route("/searchCustomerRound", methods=['GET', 'POST'])
 def searchCustomerRound():
-    pass
+    source = request.form['source']
+    destination = request.form['destination']
+    triptype = request.form['triptype']
+    departure_date = request.form['departure-date']
+
+    if triptype == "one-way":
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (source, destination, departure_date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        return render_template('search-customer-one.html', source=source, destination=destination, departure_date=departure_date, flights=data1)
+
+    elif triptype == "round":
+        return_date = request.form['return-date']
+        pass
+        return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
 
 @app.route("/switchCustomerView", methods=['GET', 'POST'])
 def switchCustomerView():
@@ -427,44 +479,117 @@ def switchCustomerView():
 @app.route('/view', methods=['GET', 'POST'])
 def view():
     username = session['username']
-    # viewtype = request.form['viewtype']
     source = request.form['source']
     destination = request.form['destination']
     from_date = request.form['from-date']
     to_date = request.form['to-date']
-
-    cursor = conn.cursor()
-    query = 'select airline_name, flight_number, departure_date, departure_time, ' \
-            'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-            'from (flight natural join ticket) join purchase using (ticket_id)' \
-            'where email = %s and departure_airport = %s and arrival_airport = %s ' \
-            'and departure_date between %s and %s'
-    cursor.execute(query, (username, source, destination, from_date, to_date))
-    data1 = cursor.fetchall()
-    cursor.close()
-    return render_template('view-customer.html', from_date=from_date, to_date=to_date,
+    if from_date == "/":
+        from_date = date.today()
+    if to_date == "":
+        if source == "/" and destination == "/":
+            cursor = conn.cursor()
+            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                    'from (flight natural join ticket) join purchase using (ticket_id)' \
+                    'where email = %s and departure_date between %s and %s'
+            cursor.execute(query, (username, from_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source == "/" and destination != "/":
+            cursor = conn.cursor()
+            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                    'from (flight natural join ticket) join purchase using (ticket_id)' \
+                    'where email = %s and arrival_airport = %s' \
+                    'and departure_date between %s and %s'
+            cursor.execute(query, (username, destination, from_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "/" and destination == "/":
+            cursor = conn.cursor()
+            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                    'from (flight natural join ticket) join purchase using (ticket_id)' \
+                    'where email = %s and departure_airport = %s' \
+                    'and departure_date between %s and %s'
+            cursor.execute(query, (username, source, from_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "/" and destination != "/":
+            cursor = conn.cursor()
+            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                    'from (flight natural join ticket) join purchase using (ticket_id)' \
+                    'where email = %s and departure_airport = %s and arrival_airport = %s ' \
+                    'and departure_date between %s and %s'
+            cursor.execute(query, (username, source, destination, from_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+    else:
+        if source == "/" and destination == "/":
+            cursor = conn.cursor()
+            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                    'from (flight natural join ticket) join purchase using (ticket_id)' \
+                    'where email = %s and departure_date between %s and %s'
+            cursor.execute(query, (username, from_date, to_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source == "/" and destination != "/":
+            cursor = conn.cursor()
+            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                    'from (flight natural join ticket) join purchase using (ticket_id)' \
+                    'where email = %s and arrival_airport = %s' \
+                    'and departure_date between %s and %s'
+            cursor.execute(query, (username, destination, from_date, to_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "/" and destination == "/":
+            cursor = conn.cursor()
+            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                    'from (flight natural join ticket) join purchase using (ticket_id)' \
+                    'where email = %s and departure_airport = %s' \
+                    'and departure_date between %s and %s'
+            cursor.execute(query, (username, source, from_date, to_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "/" and destination == "/":
+            cursor = conn.cursor()
+            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                    'from (flight natural join ticket) join purchase using (ticket_id)' \
+                    'where email = %s and departure_airport = %s and arrival_airport = %s ' \
+                    'and departure_date between %s and %s'
+            cursor.execute(query, (username, source, destination, from_date, to_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+    return render_template('customer-home.html', from_date=from_date, to_date=to_date,
                            source=source, destination=destination, flights=data1)
+    # return render_template('view-customer.html', from_date=from_date, to_date=to_date,
+    #                        source=source, destination=destination, flights=data1)
 
-@app.route("/viewCustomer", methods=['GET', 'POST'])
-def viewCustomer():
-    username = session['username']
-    # viewtype = request.form['viewtype']
-    source = request.form['source']
-    destination = request.form['destination']
-    from_date = request.form['from-date']
-    to_date = request.form['to-date']
-
-    cursor = conn.cursor()
-    query = 'select airline_name, flight_number, departure_date, departure_time, ' \
-            'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-            'from (flight natural join ticket) join purchase using (ticket_id)' \
-            'where email = %s and departure_airport = %s and arrival_airport = %s ' \
-            'and departure_date between %s and %s'
-    cursor.execute(query, (username, source, destination, from_date, to_date))
-    data1 = cursor.fetchall()
-    cursor.close()
-    return render_template('view-customer.html', from_date=from_date, to_date=to_date,
-                           source=source, destination=destination, flights=data1)
+# @app.route("/viewCustomer", methods=['GET', 'POST'])
+# def viewCustomer():
+#     username = session['username']
+#     # viewtype = request.form['viewtype']
+#     source = request.form['source']
+#     destination = request.form['destination']
+#     from_date = request.form['from-date']
+#     to_date = request.form['to-date']
+#
+#     cursor = conn.cursor()
+#     query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+#             'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+#             'from (flight natural join ticket) join purchase using (ticket_id)' \
+#             'where email = %s and departure_airport = %s and arrival_airport = %s ' \
+#             'and departure_date between %s and %s'
+#     cursor.execute(query, (username, source, destination, from_date, to_date))
+#     data1 = cursor.fetchall()
+#     cursor.close()
+#     return render_template('view-customer.html', from_date=from_date, to_date=to_date,
+#                            source=source, destination=destination, flights=data1)
 
 
 #Rate TODO
