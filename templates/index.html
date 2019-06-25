@@ -25,8 +25,10 @@
     </div>
     departure date <br>
     <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
-    return date <br>
-    <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/><br>
+    <div id='return-date-div' style="visibility:visible;">
+      return date <br>
+      <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
+    </div>
 
   	<input type="submit" value = Search />
   </form>
@@ -57,13 +59,15 @@
 </body>
 
 <script>
-  // document.getElementById("radio-one-div").addEventListener("click",function(){
-  //   if(document.getElementById('radio-one').checked) {
-  //     document.getElementById('return-date-div').disabled;
-  //   }else if(document.getElementById('radio-round').checked) {
-  //
-  //   }
-  // });
+  document.getElementById("radio-one-div").addEventListener("click",function(){
+    if(document.getElementById('radio-one').checked) {
+      document.getElementById('return-date-div').style.visibility = "hidden";
+      document.getElementById('return-date').removeAttribute("required");
+    }else if(document.getElementById('radio-round').checked) {
+      document.getElementById('return-date-div').style.visibility = "visible";
+      document.getElementById('return-date').setAttribute("required","");
+    }
+  });
 </script>
 
 </html>
