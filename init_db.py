@@ -377,7 +377,9 @@ def checkPublic():
 @app.route('/customer_home')
 def customer_home():
     username = session['username']
-    from_date = date.today()
+    today = date.today()
+    from_date = date(today.year-1, today.month, today.day)
+    to_date = today
 
     print("customer home query")
     # view
@@ -385,7 +387,7 @@ def customer_home():
     query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
     from (flight natural join ticket) join purchase using (ticket_id)
     where email = %s and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s'''
-    cursor.execute(query, (username,from_date))
+    cursor.execute(query, (username,today))
     data1 = cursor.fetchall()
     cursor.close()
     #rate
@@ -398,8 +400,14 @@ def customer_home():
     data2 = cursor.fetchall()
     print(data2)
     cursor.close()
+    #Track
+    cursor = conn.cursor()
+    query = '''select sum(sold_price) from purchase where email = %s and purchase_date between %s and %s'''
+    cursor.execute(query, (username, from_date, to_date))
+    total_spending = cursor.fetchall()
+    cursor.close()
 
-    return render_template('customer-home.html', from_date=from_date,flights=data1,unrated=data2)
+    return render_template('customer-home.html', flights=data1,unrated=data2,total=total_spending[0]['sum(sold_price)'],from_date=from_date,to_date=to_date)
 
 #------------------------------------------------------------------------------
 #---------!customer! search flights-------------
@@ -645,22 +653,17 @@ def track():
     from_date = request.form['from-date']
     to_date = request.form['to-date']
     cursor = conn.cursor()
-    query = 'select sum(sold_price) ' \
-            'from purchase ' \
-            'where email = %s ' \
-            'and purchase_date between %s and %s'
+    query = '''select sum(sold_price) from purchase where email = %s and purchase_date between %s and %s'''
     cursor.execute(query, (username, from_date, to_date))
     total_spending = cursor.fetchall()
+    print(total_spending)
     cursor.close()
-    return render_template('customer-home.html', total=total_spending[0]['sum(sold_price)'])
+    return render_template('customer-home.html', total=total_spending[0]['sum(sold_price)'], from_date=from_date, to_date=to_date)
 
     '''
     # default:
     # total money last year
-    q_last_year = 'select sum(sold_price) ' \
-            'from purchase ' \
-            'where email = %s ' \
-            'and purchase_date between NOW() - INTERVAL 1 year and NOW()'
+    q_last_year = 'select sum(sold_price) from purchase where email = %s and purchase_date between date(today.x) and date.today()'
 
     # monthwise spending
     q_month_wise = 'select sum(sold_price) ' \

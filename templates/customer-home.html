@@ -101,8 +101,8 @@
 <h2>Track my spending</h2>
 <form action="/track" method="POST">
   date range <br>
-  from <input id="from" type="date" name = "from-date" placeholder="YYYY/MM/DD" /> <br>
-  to <input id="to" type="date" name = "to-date" placeholder="YYYY/MM/DD" /> <br>
+  from <input id="from" type="date" name = "from-date" placeholder="YYYY/MM/DD" value={{from_date}} /> <br>
+  to <input id="to" type="date" name = "to-date" placeholder="YYYY/MM/DD" value={{to_date}} /> <br>
   <input type="submit" value = Track />
 </form>
 <div>Total Spending: {{total}}</div>
@@ -119,11 +119,6 @@
       document.getElementById('return-date').setAttribute("required","");
     }
   });
-  if('{{submitted}}' == false){
-    let d = new Date();
-    document.getElementById('to').valueAsDate = d;
-    document.getElementById('from').valueAsDate = new Date(d.getFullYear()-1,d.getMonth(),d.getDate()+1);
-  }
   //draw bar chart
   window.onload = function () {
     var chart = new CanvasJS.Chart("barchart", {
