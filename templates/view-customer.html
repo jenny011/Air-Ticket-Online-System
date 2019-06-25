@@ -16,20 +16,14 @@
 <a href="/logout">Logout</a>
 / <a href="/customer-home">Back</a>
 <h1>View my flights</h1>
-<form action="/view" method="POST">
-  <input type="radio" id="radio-one" name="switch-one" value="future" checked/>
-  <label for="radio-one">future flights</label>
-  <input type="radio" id="radio-two" name="switch-one" value="historical" />
-  <label for="radio-two">historical flights</label>
-  <input type="radio" id="radio-three" name="switch-one" value="all" />
-  <label for="radio-three">all flights</label><br>
+<form action="/viewCustomer" method="POST">
   date range <br>
-  from <input type="date" name = "YYYY/MM/DD" /> <br>
-  to <input type="date" name = "YYYY/MM/DD" /> <br>
+  from <input type="date" name = "from-date" placeholder="YYYY/MM/DD" value={{from_date}} /> <br>
+  to <input type="date" name = "to-date" placeholder="YYYY/MM/DD" value={{to_date}} /> <br>
   source <br>
-  <input type="text" name = "source" placeholder="source" /> <br>
+  <input type="text" name = "source" placeholder="source" value={{source}} /> <br>
   destination <br>
-  <input type="text" name = "destination" placeholder="destination" /> <br>
+  <input type="text" name = "destination" placeholder="destination" value={{destination}} /> <br>
   <input type="submit" value = View />
 </form>
 
