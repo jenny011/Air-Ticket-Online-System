@@ -418,6 +418,7 @@ def switchCustomerView():
 #------------!customer! view my flights-----------
 @app.route('/view', methods=['GET', 'POST'])
 def view():
+    username = session['username']
     viewtype = request.form['viewtype']
     source = request.form['source']
     destination = request.form['destination']
@@ -425,8 +426,9 @@ def view():
     to_date = request.form['to-date']
 
     cursor = conn.cursor()
-    # executes query
-    query = '***query***'
+    query = 'select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, sold_price ' \
+            'from (flight natural join ticket) join purchase using (ticket_id)' \
+            'where email = %s and '
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()

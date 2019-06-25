@@ -30,3 +30,5 @@ INSERT INTO purchase VALUES ('a11000100', 'jz2915@nyu.edu', '2019-07-11', '07:06
 /* below are added inserted data */
 INSERT INTO `rates` (`email`, `airline_name`, `flight_number`, `departure_date`, `departure_time`, `rating`, `comments`) 
 VALUES ('js123@outlook.com', 'China Eastern', '987', '2019-06-01', '22:50:00', '1', 'I enjoyed the flight.');
+
+INSERT INTO purchase VALUES ('a11000100', 'hello@world.com', '2019-07-11', '07:06:05', '8000', 'credit card', '111177334444555', 'HELLO WORLD', '2021-04-01');
