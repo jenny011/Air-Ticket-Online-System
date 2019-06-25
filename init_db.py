@@ -603,16 +603,62 @@ def view():
 @app.route("/rate", methods=['GET', 'POST'])
 def rate():
     # todo: get line in unrated
-    print(line)
-    return render_template('rate-customer.html', flight=line)
+    #print(line)
+    return render_template('rate-customer.html')
 
 
 @app.route("/rateCustomer", methods=['GET', 'POST'])
 def rateCustomer():
     username = session['username']
+    airline_
     rate = request.form['rate']
+
     comment = request.form['comment']
 
+
+#------------!customer! track my spending-----------
+@app.route("/track", methods=['GET', 'POST'])
+def track():
+    # when the user specify from-date and to-date
+    username = session['username']
+    from_date = request.form['from-date']
+    to_date = request.form['to-date']
+    cursor = conn.cursor()
+    query = 'select sum(sold_price) ' \
+            'from purchase ' \
+            'where email = %s ' \
+            'and purchase_date between %s and %s'
+    cursor.execute(query, (username, from_date, to_date))
+    total_spending = cursor.fetchall()
+    cursor.close()
+    return render_template('customer-home.html', total=total_spending[0]['sum(sold_price)'])
+
+    '''
+    # default:
+    # total money last year
+    q_last_year = 'select sum(sold_price) ' \
+            'from purchase ' \
+            'where email = %s ' \
+            'and purchase_date between NOW() - INTERVAL 1 year and NOW()'
+    
+    # monthwise spending
+    q_month_wise = 'select sum(sold_price) ' \
+            'from purchase ' \
+            'where email = %s ' \
+            'and purchase_date between %s and %s'
+    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 1 month', 'now()'))
+    month1 = cursor.fetchall()
+    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 2 month', 'NOW() - INTERVAL 1 month'))
+    month2 = cursor.fetchall()
+    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 3 month', 'NOW() - INTERVAL 2 month'))
+    month3 = cursor.fetchall()
+    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 4 month', 'NOW() - INTERVAL 3 month'))
+    month4 = cursor.fetchall()
+    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 5 month', 'NOW() - INTERVAL 4 month'))
+    month5 = cursor.fetchall()
+    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 6 month', 'NOW() - INTERVAL 5 month'))
+    month6 = cursor.fetchall()
+    '''
 
 
 #logout is the same for customer and staff
