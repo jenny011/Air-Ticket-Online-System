@@ -14,7 +14,7 @@
 
 <body>
 <a href="/logout">Logout</a>
-/ <a href="/customer-home">Back</a>
+/ <a href="/customer_home">Back</a>
 <h1>View my flights</h1>
 <form action="/viewCustomer" method="POST">
   date range <br>
@@ -36,22 +36,24 @@
   <th>Arrival Time</th>
   <th>Source</th>
   <th>Destination</th>
+  <!--
   <th>Price</th>
+  -->
   <th>Status</th>
 
 {% for line in flights %}
 <tr>
-	<td>{{line['airline-name']}}</td>
-	<td>{{line['flight-number']}}</td>
-  <td>{{line['departure-date']}}</td>
-  <td>{{line['departure-time']}}</td>
-  <td>{{line['arrival-date']}}</td>
-  <td>{{line['arrival-time']}}</td>
-  <td>{{line['source']}}</td>
-  <td>{{line['destination']}}</td>
+	<td>{{line['airline_name']}}</td>
+	<td>{{line['flight_number']}}</td>
+  <td>{{line['departure_date']}}</td>
+  <td>{{line['departure_time']}}</td>
+  <td>{{line['arrival_date']}}</td>
+  <td>{{line['arrival_time']}}</td>
+  <td>{{line['departure_airport']}}</td>
+  <td>{{line['arrival_airport']}}</td>
   <!--
   <td>{{line['price']}}</td>
-
+  -->
   <td>{{line['status']}}</td>
 </tr>
 {% endfor %}

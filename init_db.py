@@ -236,8 +236,6 @@ def searchPublic():
         cursor.execute(query, (source, destination, departure_date))
         data1 = cursor.fetchall()
         cursor.close()
-        print('triptype one way')
-        print(data1)
         return render_template('search-one.html',
                                source=source, destination=destination, departure_date=departure_date, flights=data1)
 
@@ -335,7 +333,7 @@ def checkPublic():
                 'where airline_name = %s and flight_number = %s and departure_date = %s'
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
-        print(data1)
+        # print(data1)
         cursor.close()
         return render_template('check.html', statuses=data1)
 
@@ -356,7 +354,17 @@ def checkPublic():
 @app.route('/customer_home')
 def customer_home():
     username = session['username']
-    return render_template('customer-home.html')
+
+    cursor = conn.cursor()
+    query = 'select airline_name, flight_number, departure_airport, arrival_airport ' \
+            'from (flight natural join ticket) join purchase using (ticket_id) ' \
+            'where timestamp(cast(arrival_date as datetime)+cast(arrival_time as time)) < now() ' \
+            'and email = %s'
+    cursor.execute(query, (username))
+    data1 = cursor.fetchall()
+    print(data1)
+    cursor.close()
+    return render_template('customer-home.html', unrated=data1)
 
 #---------!customer! search flights-------------
 @app.route('/search', methods=['GET', 'POST'])
@@ -419,28 +427,45 @@ def switchCustomerView():
 @app.route('/view', methods=['GET', 'POST'])
 def view():
     username = session['username']
-    viewtype = request.form['viewtype']
+    # viewtype = request.form['viewtype']
     source = request.form['source']
     destination = request.form['destination']
     from_date = request.form['from-date']
     to_date = request.form['to-date']
 
     cursor = conn.cursor()
-    query = 'select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, sold_price ' \
+    query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+            'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
             'from (flight natural join ticket) join purchase using (ticket_id)' \
-            'where email = %s and '
-    cursor.execute(query, (username, password))
-    # stores the results in a variable
-    data = cursor.fetchone()
-    # use fetchall() if you are expecting more than 1 data row
+            'where email = %s and departure_airport = %s and arrival_airport = %s ' \
+            'and departure_date between %s and %s'
+    cursor.execute(query, (username, source, destination, from_date, to_date))
+    data1 = cursor.fetchall()
     cursor.close()
-    error = None
-    if (data):
-        # creates a session for the the user
-        # session is a built in
-        session['username'] = username
-        return render_template('view-customer.html')
-        #redirect(url_for('home'))
+    return render_template('view-customer.html', from_date=from_date, to_date=to_date,
+                           source=source, destination=destination, flights=data1)
+
+@app.route("/viewCustomer", methods=['GET', 'POST'])
+def viewCustomer():
+    username = session['username']
+    # viewtype = request.form['viewtype']
+    source = request.form['source']
+    destination = request.form['destination']
+    from_date = request.form['from-date']
+    to_date = request.form['to-date']
+
+    cursor = conn.cursor()
+    query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+            'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+            'from (flight natural join ticket) join purchase using (ticket_id)' \
+            'where email = %s and departure_airport = %s and arrival_airport = %s ' \
+            'and departure_date between %s and %s'
+    cursor.execute(query, (username, source, destination, from_date, to_date))
+    data1 = cursor.fetchall()
+    cursor.close()
+    return render_template('view-customer.html', from_date=from_date, to_date=to_date,
+                           source=source, destination=destination, flights=data1)
+
 
 #Rate TODO
 

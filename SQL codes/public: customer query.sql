@@ -28,6 +28,11 @@ where airline_name = %s and flight_number = %s and departure_date = %s
 
 /*7. give ratings and comment on previous flights*/
 
+--get unrated flights
+select *
+from (flight natural join ticket) join purchase using (ticket_id)
+where timestamp(cast(arrival_date as datetime)+cast(arrival_time as time)) < now() and email = %s
+
 --Assume: web returns the FLIGHT INFO on which the user wants to rate
 --get user input: rating and comment
 INSERT INTO `rates` (`email`, `airline_name`, `flight_number`, `departure_date`, `departure_time`, `rating`, `comments`) 
