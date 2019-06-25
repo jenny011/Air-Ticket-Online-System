@@ -376,6 +376,7 @@ def checkPublic():
 
 # ================ !customer!-home ===================
 
+#------------------------------------------------------------------------------
 @app.route('/customer_home')
 def customer_home():
     username = session['username']
@@ -455,7 +456,7 @@ def customer_home():
     cursor.close()
     print(monthly_spending)
 
-    return render_template('customer-home.html', flights=data1, unrated=data2, total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date=from_date,to_date=to_date)
+    return render_template('customer-home.html', flights=data1, unrated=data2, total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date=to_date, from_date_track=from_date,to_date_track=to_date)
 
 #------------------------------------------------------------------------------
 #---------!customer! search flights-------------
@@ -483,7 +484,6 @@ def search():
         return_date = request.form['return-date']
         pass
         return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
-
 
 @app.route('/searchCustomerOneWay', methods=['GET', 'POST'])
 def searchCustomerOneWay():
@@ -543,15 +543,15 @@ def view():
     from_date = request.form['from-date']
     to_date = request.form['to-date']
 
-    cursor = conn.cursor()
-    query = 'select airline_name, flight_number, departure_date, departure_time, departure_airport, arrival_airport ' \
-            'from (flight natural join ticket) join purchase using (ticket_id)' \
-            'where timestamp(cast(arrival_date as datetime)+cast(arrival_time as time)) < now() ' \
-            'and email = %s and not exists (select * from (flight natural join ticket) natural join purchase natural join rates)'
-    cursor.execute(query, (username))
-    data2 = cursor.fetchall()
-    print(data2)
-    cursor.close()
+    # cursor = conn.cursor()
+    # query = 'select airline_name, flight_number, departure_date, departure_time, departure_airport, arrival_airport ' \
+    #         'from (flight natural join ticket) join purchase using (ticket_id)' \
+    #         'where timestamp(cast(arrival_date as datetime)+cast(arrival_time as time)) < now() ' \
+    #         'and email = %s and not exists (select * from (flight natural join ticket) natural join purchase natural join rates)'
+    # cursor.execute(query, (username))
+    # data2 = cursor.fetchall()
+    # print(data2)
+    # cursor.close()
 
     if from_date == "":
         from_date = date.today()
@@ -631,32 +631,99 @@ def view():
             cursor.execute(query, (username, source, destination, from_date, to_date))
             data1 = cursor.fetchall()
             cursor.close()
-    return render_template('customer-home.html', from_date=from_date, to_date=to_date,
-                           source=source, destination=destination, flights=data1, unrated=data2)
-    # return render_template('view-customer.html', from_date=from_date, to_date=to_date,
-    #                        source=source, destination=destination, flights=data1)
+    # return render_template('customer-home.html', from_date=from_date, to_date=to_date,
+    #                        source=source, destination=destination, flights=data1, unrated=data2)
+    return render_template('view-customer.html', from_date=from_date, to_date=to_date,
+                           source=source, destination=destination, flights=data1)
 
-# @app.route("/viewCustomer", methods=['GET', 'POST'])
-# def viewCustomer():
-#     username = session['username']
-#     # viewtype = request.form['viewtype']
-#     source = request.form['source']
-#     destination = request.form['destination']
-#     from_date = request.form['from-date']
-#     to_date = request.form['to-date']
-#
-#     cursor = conn.cursor()
-#     query = 'select airline_name, flight_number, departure_date, departure_time, ' \
-#             'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-#             'from (flight natural join ticket) join purchase using (ticket_id)' \
-#             'where email = %s and departure_airport = %s and arrival_airport = %s ' \
-#             'and departure_date between %s and %s'
-#     cursor.execute(query, (username, source, destination, from_date, to_date))
-#     data1 = cursor.fetchall()
-#     cursor.close()
-#     return render_template('view-customer.html', from_date=from_date, to_date=to_date,
-#                            source=source, destination=destination, flights=data1)
+@app.route("/viewCustomer", methods=['GET', 'POST'])
+def viewCustomer():
+    username = session['username']
+    source = request.form['source']
+    destination = request.form['destination']
+    from_date = request.form['from-date']
+    to_date = request.form['to-date']
 
+    if from_date == "":
+        from_date = date.today()
+    if to_date == "":
+        if source == "" and destination == "":
+            cursor = conn.cursor()
+            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
+            from (flight natural join ticket) join purchase using (ticket_id)
+            where email = %s and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s'''
+            cursor.execute(query, (username, from_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source == "" and destination != "":
+            cursor = conn.cursor()
+            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
+            from (flight natural join ticket) join purchase using (ticket_id)
+            where email = %s and arrival_airport = %s
+            and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s'''
+            cursor.execute(query, (username, destination, from_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "" and destination == "":
+            cursor = conn.cursor()
+            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
+            from (flight natural join ticket) join purchase using (ticket_id)
+            where email = %s and departure_airport = %s
+            and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s'''
+            cursor.execute(query, (username, source, from_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "" and destination != "":
+            cursor = conn.cursor()
+            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
+            from (flight natural join ticket) join purchase using (ticket_id)
+            where email = %s and departure_airport = %s and arrival_airport = %s
+            and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s'''
+            cursor.execute(query, (username, source, destination, from_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+    else:
+        if source == "" and destination == "":
+            cursor = conn.cursor()
+            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                    'from (flight natural join ticket) join purchase using (ticket_id)' \
+                    'where email = %s and departure_date between %s and %s'
+            cursor.execute(query, (username, from_date, to_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source == "" and destination != "":
+            cursor = conn.cursor()
+            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                    'from (flight natural join ticket) join purchase using (ticket_id)' \
+                    'where email = %s and arrival_airport = %s' \
+                    'and departure_date between %s and %s'
+            cursor.execute(query, (username, destination, from_date, to_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "" and destination == "":
+            cursor = conn.cursor()
+            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                    'from (flight natural join ticket) join purchase using (ticket_id)' \
+                    'where email = %s and departure_airport = %s' \
+                    'and departure_date between %s and %s'
+            cursor.execute(query, (username, source, from_date, to_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "" and destination != "":
+            cursor = conn.cursor()
+            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                    'from (flight natural join ticket) join purchase using (ticket_id)' \
+                    'where email = %s and departure_airport = %s and arrival_airport = %s ' \
+                    'and departure_date between %s and %s'
+            cursor.execute(query, (username, source, destination, from_date, to_date))
+            data1 = cursor.fetchall()
+            cursor.close()
+    return render_template('view-customer.html', from_date=from_date, to_date=to_date,
+                           source=source, destination=destination, flights=data1)
 
 #------------------------------------------------------------------------------
 #------------!customer! rate my flights-----------
@@ -699,11 +766,11 @@ def rateCustomer():
 def track():
     # when the user specify from-date and to-date
     username = session['username']
-    from_date = request.form['from-date']
-    to_date = request.form['to-date']
+    from_date_track = request.form['from-date']
+    to_date_track = request.form['to-date']
     cursor = conn.cursor()
     query = '''select sum(sold_price) from purchase where email = %s and purchase_date between %s and %s'''
-    cursor.execute(query, (username, from_date, to_date))
+    cursor.execute(query, (username, from_date_track, to_date_track))
     total_spending = cursor.fetchall()
     if total_spending[0]['sum(sold_price)']==None:
         total_spending[0]['sum(sold_price)']=0
@@ -711,8 +778,8 @@ def track():
     #Track-monthly
     cursor = conn.cursor()
     monthly_spending = []
-    date1 = datetime.strptime(from_date, '%Y-%m-%d')
-    date2 = datetime.strptime(to_date, '%Y-%m-%d')
+    date1 = datetime.strptime(from_date_track, '%Y-%m-%d')
+    date2 = datetime.strptime(to_date_track, '%Y-%m-%d')
     # r = relativedelta.relativedelta(date2, date1)
     # month_number = r.months + r.years*12
     month_number = (date2.year-date1.year)*12 + date2.month - date1.month
@@ -753,7 +820,7 @@ def track():
         monthly_spending.append(monthly)
     cursor.close()
     print(monthly_spending)
-    return render_template('customer-home.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date=from_date, to_date=to_date)
+    return render_template('customer-home.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date_track=from_date_track, to_date_track=to_date_track)
 
     '''
     # default:
