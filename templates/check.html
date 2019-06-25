@@ -57,4 +57,14 @@
 </table>
 </body>
 
+<script>
+  if("{{datetype}}"=="departure_date"){
+    document.getElementById('radio-one').setAttribute("checked","");
+    document.getElementById('radio-two').removeAttribute("checked");
+  }else{
+    document.getElementById('radio-two').setAttribute("checked","");
+    document.getElementById('radio-one').removeAttribute("checked");
+  }
+</script>
+
 </html>

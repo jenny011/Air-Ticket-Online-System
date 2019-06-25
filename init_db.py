@@ -331,7 +331,7 @@ def checkIndex():
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date)
+        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date,datetype=datetype)
 
     elif datetype == "arrival_date":
         cursor = conn.cursor()
@@ -342,7 +342,7 @@ def checkIndex():
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date)
+        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date,datetype=datetype)
 
 @app.route("/checkPublic", methods=['GET', 'POST'])
 def checkPublic():
@@ -359,7 +359,7 @@ def checkPublic():
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date)
+        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date,datetype=datetype)
 
     elif datetype == "arrival_date":
         cursor = conn.cursor()
@@ -369,7 +369,7 @@ def checkPublic():
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date)
+        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date,datetype=datetype)
 
 
 # ================ !customer!-home ===================
