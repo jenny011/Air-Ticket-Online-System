@@ -2,6 +2,8 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
 from datetime import date
+from datetime import datetime
+from dateutil import relativedelta
 
 # Initialize the app from Flask
 app = Flask(__name__)
@@ -378,8 +380,8 @@ def checkPublic():
 def customer_home():
     username = session['username']
     today = date.today()
-    from_date = date(today.year-1, today.month, today.day)
     to_date = today
+    from_date = date(today.year-1, today.month, today.day)
 
     print("customer home query")
     # view
@@ -398,16 +400,62 @@ def customer_home():
             'and email = %s and not exists (select * from (flight natural join ticket) natural join purchase natural join rates)'
     cursor.execute(query, (username))
     data2 = cursor.fetchall()
-    print(data2)
     cursor.close()
-    #Track
+    #Track-total
     cursor = conn.cursor()
     query = '''select sum(sold_price) from purchase where email = %s and purchase_date between %s and %s'''
     cursor.execute(query, (username, from_date, to_date))
     total_spending = cursor.fetchall()
+    if total_spending[0]['sum(sold_price)']==None:
+        total_spending[0]['sum(sold_price)']=0
     cursor.close()
+    #Track-monthly
+    cursor = conn.cursor()
+    monthly_spending = []
+    date1 = datetime.strptime(str(from_date), '%Y-%m-%d')
+    date2 = datetime.strptime(str(to_date), '%Y-%m-%d')
+    # r = relativedelta.relativedelta(date2, date1)
+    # month_number = r.months + r.years*12
+    month_number = (date2.year-date1.year)*12 + date2.month - date1.month
+    if from_date.day != 1:
+        month_number += 1
+    for i in range(month_number):
+        query = '''select sum(sold_price) from purchase where email = %s
+        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
+        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
+        if from_date.month+i <= 12:
+            from_d_year = from_date.year
+            from_d_month = from_date.month+i
+        else:
+            from_d_year = from_date.year+1
+            from_d_month = from_date.month+i-12
+        if from_date.month+i+1 <= 12:
+            to_d_year = from_date.year
+            to_d_month = from_date.month+i+1
+        else:
+            to_d_year = from_date.year+1
+            to_d_month = from_date.month+i-11
+        if i == 0:
+            from_d_day = from_date.day
+        else:
+            from_d_day = 1
+        if i == month_number-1:
+            to_d_month = to_date.month
+            to_d_day = to_date.day
+        else:
+            to_d_day = 1
+        from_d = date(from_d_year,from_d_month,from_d_day)
+        to_d = date(to_d_year,to_d_month,to_d_day)
+        print(from_d,to_d)
+        cursor.execute(query, (username, from_d, to_d))
+        monthly=cursor.fetchall()
+        if monthly[0]['sum(sold_price)']==None:
+            monthly[0]['sum(sold_price)']=0
+        monthly_spending.append(monthly)
+    cursor.close()
+    print(monthly_spending)
 
-    return render_template('customer-home.html', flights=data1,unrated=data2,total=total_spending[0]['sum(sold_price)'],from_date=from_date,to_date=to_date)
+    return render_template('customer-home.html', flights=data1, unrated=data2, total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date=from_date,to_date=to_date)
 
 #------------------------------------------------------------------------------
 #---------!customer! search flights-------------
@@ -612,6 +660,7 @@ def view():
 
 #------------------------------------------------------------------------------
 #------------!customer! rate my flights-----------
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!PROBLEM
 @app.route("/rate", methods=['GET', 'POST'])
 def rate():
     airline_name = request.form['airline-name']
@@ -656,9 +705,55 @@ def track():
     query = '''select sum(sold_price) from purchase where email = %s and purchase_date between %s and %s'''
     cursor.execute(query, (username, from_date, to_date))
     total_spending = cursor.fetchall()
-    print(total_spending)
+    if total_spending[0]['sum(sold_price)']==None:
+        total_spending[0]['sum(sold_price)']=0
     cursor.close()
-    return render_template('customer-home.html', total=total_spending[0]['sum(sold_price)'], from_date=from_date, to_date=to_date)
+    #Track-monthly
+    cursor = conn.cursor()
+    monthly_spending = []
+    date1 = datetime.strptime(from_date, '%Y-%m-%d')
+    date2 = datetime.strptime(to_date, '%Y-%m-%d')
+    # r = relativedelta.relativedelta(date2, date1)
+    # month_number = r.months + r.years*12
+    month_number = (date2.year-date1.year)*12 + date2.month - date1.month
+    if date2.day != 1:
+        month_number += 1
+    for i in range(month_number):
+        query = '''select sum(sold_price) from purchase where email = %s
+        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
+        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
+        if date1.month+i <= 12:
+            from_d_year = date1.year
+            from_d_month = date1.month+i
+        else:
+            from_d_year = date1.year+1
+            from_d_month = date1.month+i-12
+        if date1.month+i+1 <= 12:
+            to_d_year = date1.year
+            to_d_month = date1.month+i+1
+        else:
+            to_d_year = date1.year+1
+            to_d_month = date1.month+i-11
+        if i == 0:
+            from_d_day = date1.day
+        else:
+            from_d_day = 1
+        if i == month_number-1:
+            to_d_month = date2.month
+            to_d_day = date2.day
+        else:
+            to_d_day = 1
+        from_d = date(from_d_year,from_d_month,from_d_day)
+        to_d = date(to_d_year,to_d_month,to_d_day)
+        print(from_d,to_d)
+        cursor.execute(query, (username, from_d, to_d))
+        monthly=cursor.fetchall()
+        if monthly[0]['sum(sold_price)']==None:
+            monthly[0]['sum(sold_price)']=0
+        monthly_spending.append(monthly)
+    cursor.close()
+    print(monthly_spending)
+    return render_template('customer-home.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date=from_date, to_date=to_date)
 
     '''
     # default:
