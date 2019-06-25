@@ -382,12 +382,10 @@ def customer_home():
     print("customer home query")
     # view
     cursor = conn.cursor()
-    query = 'select airline_name, flight_number, departure_date, departure_time, ' \
-            'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-            'from (flight natural join ticket) join purchase using (ticket_id)' \
-            'where email = %s'
-         # and departure_date between %s and %s
-    cursor.execute(query, (username))
+    query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
+    from (flight natural join ticket) join purchase using (ticket_id)
+    where email = %s and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s'''
+    cursor.execute(query, (username,from_date))
     data1 = cursor.fetchall()
     cursor.close()
     #rate
@@ -403,6 +401,7 @@ def customer_home():
 
     return render_template('customer-home.html', from_date=from_date,flights=data1,unrated=data2)
 
+#------------------------------------------------------------------------------
 #---------!customer! search flights-------------
 @app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -478,7 +477,7 @@ def searchCustomerRound():
 def switchCustomerView():
     pass
 
-
+#------------------------------------------------------------------------------
 #------------!customer! view my flights-----------
 @app.route('/view', methods=['GET', 'POST'])
 def view():
@@ -501,47 +500,43 @@ def view():
     if from_date == "":
         from_date = date.today()
     if to_date == "":
-        if source == "/" and destination == "/":
+        if source == "" and destination == "":
             cursor = conn.cursor()
-            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
-                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-                    'from (flight natural join ticket) join purchase using (ticket_id)' \
-                    'where email = %s and departure_date between %s and %s'
+            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
+            from (flight natural join ticket) join purchase using (ticket_id)
+            where email = %s and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s'''
             cursor.execute(query, (username, from_date))
             data1 = cursor.fetchall()
             cursor.close()
-        elif source == "/" and destination != "/":
+        elif source == "" and destination != "":
             cursor = conn.cursor()
-            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
-                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-                    'from (flight natural join ticket) join purchase using (ticket_id)' \
-                    'where email = %s and arrival_airport = %s' \
-                    'and departure_date between %s and %s'
+            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
+            from (flight natural join ticket) join purchase using (ticket_id)
+            where email = %s and arrival_airport = %s
+            and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s'''
             cursor.execute(query, (username, destination, from_date))
             data1 = cursor.fetchall()
             cursor.close()
-        elif source != "/" and destination == "/":
+        elif source != "" and destination == "":
             cursor = conn.cursor()
-            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
-                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-                    'from (flight natural join ticket) join purchase using (ticket_id)' \
-                    'where email = %s and departure_airport = %s' \
-                    'and departure_date between %s and %s'
+            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
+            from (flight natural join ticket) join purchase using (ticket_id)
+            where email = %s and departure_airport = %s
+            and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s'''
             cursor.execute(query, (username, source, from_date))
             data1 = cursor.fetchall()
             cursor.close()
-        elif source != "/" and destination != "/":
+        elif source != "" and destination != "":
             cursor = conn.cursor()
-            query = 'select airline_name, flight_number, departure_date, departure_time, ' \
-                    'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-                    'from (flight natural join ticket) join purchase using (ticket_id)' \
-                    'where email = %s and departure_airport = %s and arrival_airport = %s ' \
-                    'and departure_date between %s and %s'
+            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
+            from (flight natural join ticket) join purchase using (ticket_id)
+            where email = %s and departure_airport = %s and arrival_airport = %s
+            and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s'''
             cursor.execute(query, (username, source, destination, from_date))
             data1 = cursor.fetchall()
             cursor.close()
     else:
-        if source == "/" and destination == "/":
+        if source == "" and destination == "":
             cursor = conn.cursor()
             query = 'select airline_name, flight_number, departure_date, departure_time, ' \
                     'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
@@ -550,7 +545,7 @@ def view():
             cursor.execute(query, (username, from_date, to_date))
             data1 = cursor.fetchall()
             cursor.close()
-        elif source == "/" and destination != "/":
+        elif source == "" and destination != "":
             cursor = conn.cursor()
             query = 'select airline_name, flight_number, departure_date, departure_time, ' \
                     'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
@@ -560,7 +555,7 @@ def view():
             cursor.execute(query, (username, destination, from_date, to_date))
             data1 = cursor.fetchall()
             cursor.close()
-        elif source != "/" and destination == "/":
+        elif source != "" and destination == "":
             cursor = conn.cursor()
             query = 'select airline_name, flight_number, departure_date, departure_time, ' \
                     'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
@@ -570,7 +565,7 @@ def view():
             cursor.execute(query, (username, source, from_date, to_date))
             data1 = cursor.fetchall()
             cursor.close()
-        elif source != "/" and destination == "/":
+        elif source != "" and destination != "":
             cursor = conn.cursor()
             query = 'select airline_name, flight_number, departure_date, departure_time, ' \
                     'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
@@ -607,6 +602,7 @@ def view():
 #                            source=source, destination=destination, flights=data1)
 
 
+#------------------------------------------------------------------------------
 #------------!customer! rate my flights-----------
 @app.route("/rate", methods=['GET', 'POST'])
 def rate():
@@ -639,6 +635,8 @@ def rateCustomer():
     cursor.close()
     return redirect(url_for('customer_home'))
 
+
+#------------------------------------------------------------------------------
 #------------!customer! track my spending-----------
 @app.route("/track", methods=['GET', 'POST'])
 def track():
