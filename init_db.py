@@ -207,7 +207,15 @@ def loginCustomerAuth():
         # creates a session for the the user
         # session is a built in
         session['username'] = username
+<<<<<<< HEAD
         return redirect(url_for('customer_home'))
+=======
+# <<<<<<< HEAD
+#         return redirect(url_for('customer_home'),from_date=from_date, flights=data1)
+# =======
+        return redirect(url_for('customer_home'))
+# >>>>>>> cb6acd8cb2b700e1ecb823b40baf91efa03e1c90
+>>>>>>> f3f18704ed2c5f1b5cf6a8aed52755591d1dcc5b
 
     else:
         # returns an error message to the html page
@@ -597,15 +605,68 @@ def view():
 #------------!customer! rate my flights-----------
 @app.route("/rate", methods=['GET', 'POST'])
 def rate():
-    airline_name = request.form['airline-name']
-    flight_number = request.form['flight-number']
-    departure_date = request.form['departure-date']
-    departure_time = request.form['departure-time']
-    source =request.form['source']
-    destination = request.form['destination']
+    # airline_name = request.form['airline-name']
+    # flight_number = request.form['flight-number']
+    # departure_date = request.form['departure-date']
+    # departure_time = request.form['departure-time']
+    # source =request.form['source']
+    # destination = request.form['destination']
 
     return render_template('rate-customer.html', airline_name=airline_name,flight_number=flight_number,departure_date=departure_date,
     departure_time=departure_time,source=source,destination=destination)
+
+@app.route("/rateCustomer", methods=['GET', 'POST'])
+def rateCustomer():
+    username = session['username']
+    airline_
+    rate = request.form['rate']
+
+    comment = request.form['comment']
+
+
+#------------!customer! track my spending-----------
+@app.route("/track", methods=['GET', 'POST'])
+def track():
+    # when the user specify from-date and to-date
+    username = session['username']
+    from_date = request.form['from-date']
+    to_date = request.form['to-date']
+    cursor = conn.cursor()
+    query = 'select sum(sold_price) ' \
+            'from purchase ' \
+            'where email = %s ' \
+            'and purchase_date between %s and %s'
+    cursor.execute(query, (username, from_date, to_date))
+    total_spending = cursor.fetchall()
+    cursor.close()
+    return render_template('customer-home.html', total=total_spending[0]['sum(sold_price)'])
+
+    '''
+    # default:
+    # total money last year
+    q_last_year = 'select sum(sold_price) ' \
+            'from purchase ' \
+            'where email = %s ' \
+            'and purchase_date between NOW() - INTERVAL 1 year and NOW()'
+
+    # monthwise spending
+    q_month_wise = 'select sum(sold_price) ' \
+            'from purchase ' \
+            'where email = %s ' \
+            'and purchase_date between %s and %s'
+    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 1 month', 'now()'))
+    month1 = cursor.fetchall()
+    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 2 month', 'NOW() - INTERVAL 1 month'))
+    month2 = cursor.fetchall()
+    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 3 month', 'NOW() - INTERVAL 2 month'))
+    month3 = cursor.fetchall()
+    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 4 month', 'NOW() - INTERVAL 3 month'))
+    month4 = cursor.fetchall()
+    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 5 month', 'NOW() - INTERVAL 4 month'))
+    month5 = cursor.fetchall()
+    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 6 month', 'NOW() - INTERVAL 5 month'))
+    month6 = cursor.fetchall()
+    '''
 
 
 #logout is the same for customer and staff
