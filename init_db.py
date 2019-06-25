@@ -180,6 +180,7 @@ def loginStaffAuth():
         # creates a session for the the user
         # session is a built in
         session['username'] = username
+        session['usertype'] = "staff"
         return redirect(url_for('staff_home'))
     else:
         # returns an error message to the html page
@@ -205,18 +206,10 @@ def loginCustomerAuth():
     error = None
     if (data):
         # creates a session for the the user
-        # session is a built in
+        # session is a built in dictionary
         session['username'] = username
-<<<<<<< HEAD
+        session['usertype'] = "customer"
         return redirect(url_for('customer_home'))
-=======
-# <<<<<<< HEAD
-#         return redirect(url_for('customer_home'),from_date=from_date, flights=data1)
-# =======
-        return redirect(url_for('customer_home'))
-# >>>>>>> cb6acd8cb2b700e1ecb823b40baf91efa03e1c90
->>>>>>> f3f18704ed2c5f1b5cf6a8aed52755591d1dcc5b
-
     else:
         # returns an error message to the html page
         error = 'Invalid login or username'
@@ -400,11 +393,12 @@ def customer_home():
     #rate
     cursor = conn.cursor()
     query = 'select airline_name, flight_number, departure_date, departure_time, departure_airport, arrival_airport ' \
-            'from (flight natural join ticket) join purchase using (ticket_id) ' \
+            'from (flight natural join ticket) join purchase using (ticket_id)' \
             'where timestamp(cast(arrival_date as datetime)+cast(arrival_time as time)) < now() ' \
-            'and email = %s'
+            'and email = %s and not exists (select * from (flight natural join ticket) natural join purchase natural join rates)'
     cursor.execute(query, (username))
     data2 = cursor.fetchall()
+    print(data2)
     cursor.close()
 
     return render_template('customer-home.html', from_date=from_date,flights=data1,unrated=data2)
@@ -413,6 +407,7 @@ def customer_home():
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     #display the search result
+    usertype = session['usertype']
     source = request.form['source']
     destination = request.form['destination']
     triptype = request.form['triptype']
@@ -605,12 +600,12 @@ def view():
 #------------!customer! rate my flights-----------
 @app.route("/rate", methods=['GET', 'POST'])
 def rate():
-    # airline_name = request.form['airline-name']
-    # flight_number = request.form['flight-number']
-    # departure_date = request.form['departure-date']
-    # departure_time = request.form['departure-time']
-    # source =request.form['source']
-    # destination = request.form['destination']
+    airline_name = request.form['airline-name']
+    flight_number = request.form['flight-number']
+    departure_date = request.form['departure-date']
+    departure_time = request.form['departure-time']
+    source = request.form['source']
+    destination = request.form['destination']
 
     return render_template('rate-customer.html', airline_name=airline_name,flight_number=flight_number,departure_date=departure_date,
     departure_time=departure_time,source=source,destination=destination)
@@ -618,11 +613,21 @@ def rate():
 @app.route("/rateCustomer", methods=['GET', 'POST'])
 def rateCustomer():
     username = session['username']
-    airline_
+    airline_name = request.form['airline_name']
+    flight_number = request.form['flight_number']
+    departure_date = "2019-06-01"
+    departure_time = "22:50:00"
     rate = request.form['rate']
-
     comment = request.form['comment']
 
+    cursor = conn.cursor()
+    ins = 'INSERT INTO rates VALUES' \
+          '(%s, %s, %s, %s, %s, %s, %s)'
+    cursor.execute(ins, (username, airline_name, flight_number,
+                         departure_date, departure_time, rate, comment))
+    conn.commit()
+    cursor.close()
+    return redirect(url_for('customer_home'))
 
 #------------!customer! track my spending-----------
 @app.route("/track", methods=['GET', 'POST'])
@@ -673,6 +678,7 @@ def track():
 @app.route('/logout')
 def logout():
     session.pop('username')
+    session.pop('usertype')
     return render_template("logout.html")
 
 
