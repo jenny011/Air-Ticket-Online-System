@@ -345,29 +345,26 @@ def checkIndex():
 
 @app.route("/checkPublic", methods=['GET', 'POST'])
 def checkPublic():
-    airline_name = request.form['airline-name']
-    flight_number = request.form['flight-number']
+    airline_name = request.form['airline_name']
+    flight_number = request.form['flight_number']
     datetype = request.form['datetype']
     date = request.form['date']
 
-    if datetype == "departure-date":
-        cursor = conn.cursor()
-        query = 'select airline_name , flight_number, departure_date, departure_time, ' \
-                'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-                'from flight ' \
-                'where airline_name = %s and flight_number = %s and departure_date = %s'
-        cursor.execute(query, (airline_name, flight_number, date))
-        data1 = cursor.fetchall()
-        # print(data1)
-        cursor.close()
-        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date)
-
-    elif datetype == "arrival-date":
+    if datetype == "departure_date":
         cursor = conn.cursor()
         query = 'select airline_name, flight_number, departure_date, departure_time, ' \
                 'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-                'from flight ' \
-                'where airline_name = %s and flight_number = %s and arrival_date = %s'
+                'from flight where airline_name = %s and flight_number = %s and departure_date = %s'
+        cursor.execute(query, (airline_name, flight_number, date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date)
+
+    elif datetype == "arrival_date":
+        cursor = conn.cursor()
+        query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+                'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+                'from flight where airline_name = %s and flight_number = %s and arrival_date = %s'
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
         cursor.close()

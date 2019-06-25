@@ -38,12 +38,14 @@
 
   	<input type="submit" value = Search />
   </form>
+
+
   <h2>Check flight status</h2>
   <form action="/checkIndex" method="POST">
     airline<br>
-    <input type="text" name = "airline_name" placeholder="airline name" required/> <br>
+    <input type="text" name="airline_name" placeholder="airline name" required/> <br>
     flight number<br>
-    <input type="text" name = "flight_number" placeholder="flight number" required/> <br>
+    <input type="text" name="flight_number" placeholder="flight number" required/> <br>
     <input type="radio" id="radio-one" name="datetype" value="departure_date" checked/>
     <label for="radio-one">departure date</label>
     <input type="radio" id="radio-two" name="datetype" value="arrival_date" />
