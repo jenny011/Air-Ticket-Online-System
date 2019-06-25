@@ -208,11 +208,11 @@ def loginCustomerAuth():
         # creates a session for the the user
         # session is a built in
         session['username'] = username
-<<<<<<< HEAD
-        return redirect(url_for('customer_home'),from_date=from_date, flights=data1)
-=======
+# <<<<<<< HEAD
+#         return redirect(url_for('customer_home'),from_date=from_date, flights=data1)
+# =======
         return redirect(url_for('customer_home'))
->>>>>>> cb6acd8cb2b700e1ecb823b40baf91efa03e1c90
+# >>>>>>> cb6acd8cb2b700e1ecb823b40baf91efa03e1c90
 
     else:
         # returns an error message to the html page
@@ -605,9 +605,16 @@ def view():
 #------------!customer! rate my flights-----------
 @app.route("/rate", methods=['GET', 'POST'])
 def rate():
+    # todo: get line in unrated
     print(line)
-    return render_template('rate-customer.html', line=line)
-    # get line in unrated
+    return render_template('rate-customer.html', flight=line)
+
+
+@app.route("/rateCustomer", methods=['GET', 'POST'])
+def rateCustomer():
+    username = session['username']
+    rate = request.form['rate']
+    comment = request.form['comment']
 
 
 
