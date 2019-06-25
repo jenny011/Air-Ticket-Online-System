@@ -8,9 +8,8 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
+                       password='',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -208,11 +207,7 @@ def loginCustomerAuth():
         # creates a session for the the user
         # session is a built in
         session['username'] = username
-<<<<<<< HEAD
-        return redirect(url_for('customer_home'),from_date=from_date, flights=data1)
-=======
         return redirect(url_for('customer_home'))
->>>>>>> cb6acd8cb2b700e1ecb823b40baf91efa03e1c90
 
     else:
         # returns an error message to the html page
@@ -383,6 +378,7 @@ def customer_home():
     username = session['username']
     from_date = date.today()
 
+    print("customer home query")
     # view
     cursor = conn.cursor()
     query = 'select airline_name, flight_number, departure_date, departure_time, ' \
@@ -395,7 +391,6 @@ def customer_home():
     cursor.close()
     #rate
     cursor = conn.cursor()
-    print("customer home query")
     query = 'select airline_name, flight_number, departure_date, departure_time, departure_airport, arrival_airport ' \
             'from (flight natural join ticket) join purchase using (ticket_id) ' \
             'where timestamp(cast(arrival_date as datetime)+cast(arrival_time as time)) < now() ' \
@@ -602,10 +597,15 @@ def view():
 #------------!customer! rate my flights-----------
 @app.route("/rate", methods=['GET', 'POST'])
 def rate():
-    print(line)
-    return render_template('rate-customer.html', line=line)
-    # get line in unrated
+    airline_name = request.form['airline-name']
+    flight_number = request.form['flight-number']
+    departure_date = request.form['departure-date']
+    departure_time = request.form['departure-time']
+    source =request.form['source']
+    destination = request.form['destination']
 
+    return render_template('rate-customer.html', airline_name=airline_name,flight_number=flight_number,departure_date=departure_date,
+    departure_time=departure_time,source=source,destination=destination)
 
 
 #logout is the same for customer and staff

@@ -12,12 +12,12 @@
 <h1>Rate my flight</h1>
 
 <form action="/rateCustomer" method="POST">
-  airline <input type="text" name="airline-name" value={{flight['airline_name']}} disabled/><br>
-  flight number <input type="text" name="flight-number" value={{flight['flight_number']}} disabled/><br>
-  departure date <input type="text" name="departure-date" value={{flight['departure_date']}} disabled/><br>
-  departure time <input type="text" name="departure-time" value={{flight['departure_time']}} disabled/><br>
-  source <input type="text" name="source" value={{flight['source']}} disabled/><br>
-  destination <input type="text" name="destination" value={{flight['destination']}} disabled/><br>
+  airline <input type="text" name="airline-name" value="{{airline_name}}" disabled/><br>
+  flight number <input type="text" name="flight-number" value="{{flight_number}}" disabled/><br>
+  departure date <input type="text" name="departure-date" value="{{departure_date}}" disabled/><br>
+  departure time <input type="text" name="departure-time" value="{{departure_time}}" disabled/><br>
+  source <input type="text" name="source" value="{{source}}" disabled/><br>
+  destination <input type="text" name="destination" value="{{destination}}" disabled/><br>
   rate (1-5)<br>
   <input style="width:30px;" type="number" name = "rate" min="1" max="5" step="1" value="1" required/> <br>
   comments <br>
