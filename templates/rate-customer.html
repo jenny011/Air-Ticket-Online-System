@@ -6,42 +6,18 @@
   <title>Air Ticket Online</title>
 </head>
 
-<style type="text/css">
-	table, th, td{
-		border: 1px solid black;
-	}
-</style>
-
 <body>
 <a href="/logout">Logout</a>
 / <a href="/customer-home">Back</a>
 <h1>Rate my flight</h1>
-<table>
-	<th>Airline</th>
-	<th>Flight Number</th>
-  <th>Departure Date</th>
-  <th>Departure Time</th>
-  <th>Arrival Date</th>
-  <th>Arrival Time</th>
-  <th>Source</th>
-  <th>Destination</th>
-  <th>Price</th>
-{% for line in flights %}
-<tr>
-	<td>{{line['airline-name']}}</td>
-	<td>{{line['flight-number']}}</td>
-  <td>{{line['departure-date']}}</td>
-  <td>{{line['departure-time']}}</td>
-  <td>{{line['arrival-date']}}</td>
-  <td>{{line['arrival-time']}}</td>
-  <td>{{line['source']}}</td>
-  <td>{{line['destination']}}</td>
-  <td>{{line['price']}}</td>
-</tr>
-{% endfor %}
-</table>
-<br>
+
 <form action="/rateCustomer" method="POST">
+  airline <input type="text" name="airline-name" value={{flight['airline_name']}} /><br>
+  flight number <input type="text" name="flight-number" value={{flight['flight_number']}} /><br>
+  departure date <input type="text" name="departure-date" value={{flight['departure_date']}} /><br>
+  departure time <input type="text" name="departure-time" value={{flight['departure_time']}} /><br>
+  source <input type="text" name="source" value={{flight['source']}} /><br>
+  destination <input type="text" name="destination" value={{flight['destination']}} /><br>
   rate (1-5)<br>
   <input style="width:30px;" type="number" name = "rate" min="1" max="5" step="1" value="1" required/> <br>
   comments <br>

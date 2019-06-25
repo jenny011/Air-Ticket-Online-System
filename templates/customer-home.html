@@ -38,12 +38,6 @@
 
 <h2>View my flights</h2>
 <form action="/view" method="POST">
-  <input type="radio" id="radio-one" name="viewtype" value="future" checked/>
-  <label for="radio-one">future flights</label>
-  <input type="radio" id="radio-two" name="viewtype" value="historical" />
-  <label for="radio-two">historical flights</label>
-  <input type="radio" id="radio-three" name="viewtype" value="all" />
-  <label for="radio-three">all flights</label><br>
   date range <br>
   from <input type="date" name = "from-date" placeholder="YYYY/MM/DD" /> <br>
   to <input type="date" name = "to-date" placeholder="YYYY/MM/DD" /> <br>
@@ -60,25 +54,19 @@
 	<th>Flight Number</th>
   <th>Departure Date</th>
   <th>Departure Time</th>
-  <th>Arrival Date</th>
-  <th>Arrival Time</th>
   <th>Source</th>
   <th>Destination</th>
-  <th>Price</th>
   <th></th>
 
 {% for line in unrated %}
 <form action="/rate" methods="POST">
 	<tr>
-		<td>{{line['airline-name']}}</td>
-		<td>{{line['flight-number']}}</td>
-    <td>{{line['departure-date']}}</td>
-    <td>{{line['departure-time']}}</td>
-    <td>{{line['arrival-date']}}</td>
-    <td>{{line['arrival-time']}}</td>
-    <td>{{line['source']}}</td>
-    <td>{{line['destination']}}</td>
-    <td>{{line['price']}}</td>
+		<td><input type="text" name="airline-name" value={{line['airline_name']}} /></td>
+		<td><input type="text" name="flight-number" value={{line['flight_number']}} /></td>
+    <!-- <td><input type="date" name="departure-date" value={{line['departure_date']}} /></td>
+    <td><input type="time" name="departure-time" value={{line['departure_time']}} /></td> -->
+    <td><input type="text" name="sourse" value={{line['source']}} /></td>
+    <td><input type="text" name="destination" value={{line['destination']}} /></td>
     <td><input type="submit" name="rate" value=Rate /></td>
 	</tr>
 </form>
@@ -88,24 +76,60 @@
 <h2>Track my spending</h2>
 <form action="/track" method="POST">
   date range <br>
-  from <input type="date" name = "date1" placeholder="YYYY/MM/DD" /> <br>
-  to <input type="date" name = "date2" placeholder="YYYY/MM/DD" /> <br>
+  from <input id="from" type="date" name = "from-date" placeholder="YYYY/MM/DD" /> <br>
+  to <input id="to" type="date" name = "to-date" placeholder="YYYY/MM/DD" /> <br>
   <input type="submit" value = Track />
 </form>
-<div></div>
-
+<div>Total Spending: {{total}}</div>
+<div id="barchart" style="height: 300px; width: 70%;"></div>
 </body>
 
 <script>
-document.getElementById("radio-one-div").addEventListener("click",function(){
-  if(document.getElementById('radio-one').checked) {
-    document.getElementById('return-date-div').style.visibility = "hidden";
-    document.getElementById('return-date').removeAttribute("required");
-  }else if(document.getElementById('radio-round').checked) {
-    document.getElementById('return-date-div').style.visibility = "visible";
-    document.getElementById('return-date').setAttribute("required","");
+  document.getElementById("radio-one-div").addEventListener("click",function(){
+    if(document.getElementById('radio-one').checked) {
+      document.getElementById('return-date-div').style.visibility = "hidden";
+      document.getElementById('return-date').removeAttribute("required");
+    }else if(document.getElementById('radio-round').checked) {
+      document.getElementById('return-date-div').style.visibility = "visible";
+      document.getElementById('return-date').setAttribute("required","");
+    }
+  });
+  if('{{submitted}}' == false){
+    let d = new Date();
+    document.getElementById('to').valueAsDate = d;
+    document.getElementById('from').valueAsDate = new Date(d.getFullYear()-1,d.getMonth(),d.getDate()+1);
   }
-});
+  //draw bar chart
+  window.onload = function () {
+    var chart = new CanvasJS.Chart("barchart", {
+    	animationEnabled: true,
+    	theme: "light2",
+    	title:{
+    		text: "Monthly Spending"
+    	},
+      axisX: {
+        title: "Month"
+      },
+    	axisY: {
+    		title: "Spending (RMB)"
+    	},
+    	data: [{
+    		type: "bar",
+    		showInLegend: false,
+    		// legendMarkerColor: "grey",
+    		// legendText: "RMB",
+    		dataPoints: [
+    			{ y: 300878, label: "2018-02" },
+    			{ y: 266455,  label: "2018-03" },
+    			{ y: 169709,  label: "2018-04" },
+    			{ y: 158400,  label: "2018-05" },
+    			{ y: 142503,  label: "2018-06" },
+    			{ y: 101500, label: "2018-07" },
+    		]
+    	}]
+    });
+    chart.render();
+  }
 </script>
-
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </html>
