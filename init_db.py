@@ -393,7 +393,7 @@ def customer_home():
     cursor.close()
     #rate
     cursor = conn.cursor()
-    query = 'select airline_name, flight_number, departure_airport, arrival_airport ' \
+    query = 'select airline_name, flight_number, departure_date, departure_time, departure_airport, arrival_airport ' \
             'from (flight natural join ticket) join purchase using (ticket_id) ' \
             'where timestamp(cast(arrival_date as datetime)+cast(arrival_time as time)) < now() ' \
             'and email = %s'
@@ -596,9 +596,13 @@ def view():
 #                            source=source, destination=destination, flights=data1)
 
 
-#Rate TODO
+#------------!customer! rate my flights-----------
+@app.route("/rate", methods=['GET', 'POST'])
+def rate():
+    print(line)
+    return render_template('rate-customer.html', line=line)
+    # get line in unrated
 
-#track TODO
 
 
 #logout is the same for customer and staff
