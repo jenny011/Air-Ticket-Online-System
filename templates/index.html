@@ -19,21 +19,17 @@
   <h1>Air Ticket System</h1>
   <h2>Search for flights</h2>
   <form action="/searchPublic" method="POST">
-    source <br>
-    <input type="text" name = "source" placeholder="source" required/> <br>
-    destination <br>
-    <input type="text" name = "destination" placeholder="destination" required/> <br>
+    source <input type="text" name = "source" placeholder="source" required/> <br>
+    destination <input type="text" name = "destination" placeholder="destination" required/> <br>
     <div id="radio-one-div">
       <input type="radio" id="radio-one" name="triptype" value="one-way" />
       <label for="radio-one">one-way trip</label>
       <input type="radio" id="radio-round" name="triptype" value="round" checked/>
       <label for="radio-round">round trip</label><br>
     </div>
-    departure date <br>
-    <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
+    departure date <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
     <div id='return-date-div' style="visibility:visible;">
-      return date <br>
-      <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
+      return date <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
     </div>
 
   	<input type="submit" value = Search />
@@ -42,10 +38,8 @@
 
   <h2>Check flight status</h2>
   <form action="/checkIndex" method="POST">
-    airline<br>
-    <input type="text" name="airline_name" placeholder="airline name" required/> <br>
-    flight number<br>
-    <input type="text" name="flight_number" placeholder="flight number" required/> <br>
+    airline <input type="text" name="airline_name" placeholder="airline name" required/> <br>
+    flight number <input type="text" name="flight_number" placeholder="flight number" required/> <br>
     <input type="radio" id="radio-one" name="datetype" value="departure_date" checked/>
     <label for="radio-one">departure date</label>
     <input type="radio" id="radio-two" name="datetype" value="arrival_date" />

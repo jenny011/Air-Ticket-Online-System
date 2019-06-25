@@ -18,10 +18,8 @@
 / <a href="/register">Register</a>
 <h1>Check flight status</h1>
 <form action="/checkPublic" method="POST">
-  airline<br>
-  <input type="text" name="airline_name" placeholder="airline name" value="{{airline_name}}" required/> <br>
-  flight number<br>
-  <input type="text" name="flight_number" placeholder="flight number" value="{{flight_number}}" required/> <br>
+  airline <input type="text" name="airline_name" placeholder="airline name" value="{{airline_name}}" required/> <br>
+  flight number <input type="text" name="flight_number" placeholder="flight number" value="{{flight_number}}" required/> <br>
   <input type="radio" id="radio-one" name="datetype" value="departure_date" checked/>
   <label for="radio-one">departure date</label>
   <input type="radio" id="radio-two" name="datetype" value="arrival_date" />

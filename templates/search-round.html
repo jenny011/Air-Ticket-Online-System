@@ -19,21 +19,17 @@
 <h1>Search for flights</h1>
 <form id="search-form" action="/searchPublicRound" method="POST">
   <!-- get value from init -->
-  source <br>
-  <input type="text" name = "source" placeholder="source" value={{source}} required/> <br>
-  destination <br>
-  <input type="text" name = "destination" placeholder="destination" value={{destination}} required/> <br>
+  source <input type="text" name = "source" placeholder="source" value={{source}} required/> <br>
+  destination <input type="text" name = "destination" placeholder="destination" value={{destination}} required/> <br>
   <div id="radio-one-div">
     <input type="radio" id="radio-one" name="triptype" value="one-way" />
     <label for="radio-one">one-way trip</label>
     <input type="radio" id="radio-round" name="triptype" value="round" checked/>
     <label for="radio-round">round trip</label><br>
   </div>
-  departure date <br>
-  <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" value={{departure_date}} required/> <br>
+  departure date <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" value={{departure_date}} required/> <br>
   <div id='return-date-div' style="visibility:visible;">
-    return date <br>
-    <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM"  value={{return_date}} required/> <br>
+    return date <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM"  value={{return_date}} required/> <br>
   </div>
   <input type="submit" value = Search />
 </form>
@@ -55,7 +51,6 @@
   <th>Source</th>
   <th>Destination</th>
   <th>Price</th>
-
 {% for line in flights %}
 <tr>
 	<td>{{line['airline_name']}}</td>

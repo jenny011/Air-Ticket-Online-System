@@ -404,7 +404,9 @@ def customer_home():
     cursor.close()
     #Track-total
     cursor = conn.cursor()
-    query = '''select sum(sold_price) from purchase where email = %s and purchase_date between %s and %s'''
+    query = '''select sum(sold_price) from purchase where email = %s
+    and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
+    and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
     cursor.execute(query, (username, from_date, to_date))
     total_spending = cursor.fetchall()
     if total_spending[0]['sum(sold_price)']==None:
@@ -769,7 +771,9 @@ def track():
     from_date_track = request.form['from-date']
     to_date_track = request.form['to-date']
     cursor = conn.cursor()
-    query = '''select sum(sold_price) from purchase where email = %s and purchase_date between %s and %s'''
+    query = '''select sum(sold_price) from purchase where email = %s
+    and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
+    and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
     cursor.execute(query, (username, from_date_track, to_date_track))
     total_spending = cursor.fetchall()
     if total_spending[0]['sum(sold_price)']==None:

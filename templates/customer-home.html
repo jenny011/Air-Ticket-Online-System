@@ -17,36 +17,32 @@
 <h1>Welcome</h1>
 <h2>Search for flights</h2>
 <form action="/search" method="POST">
-  source <br>
-  <input type="text" name = "source" placeholder="source" required/> <br>
-  destination <br>
-  <input type="text" name = "destination" placeholder="destination" required/> <br>
+  source <input type="text" name = "source" placeholder="source" required/> <br>
+  destination <input type="text" name = "destination" placeholder="destination" required/> <br>
   <div id="radio-one-div">
     <input type="radio" id="radio-one" name="triptype" value="one-way" />
     <label for="radio-one">one-way trip</label>
     <input type="radio" id="radio-round" name="triptype" value="round" checked/>
     <label for="radio-round">round trip</label><br>
   </div>
-  departure date <br>
-  <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
+  departure date <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
   <div id='return-date-div' style="visibility:visible;">
-    return date <br>
-    <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
+    return date <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
   </div>
   <input type="submit" value = Search />
 </form>
+<br>
 
 <h2>View my flights</h2>
 <form action="/view" method="POST">
   date range <br>
   from <input type="date" name = "from-date" placeholder="YYYY/MM/DD" value={{from_date}}> <br>
   to <input type="date" name = "to-date" placeholder="YYYY/MM/DD" value={{to_date}}> <br>
-  source <br>
-  <input type="text" name = "source" placeholder="source" value={{source}}> <br>
-  destination <br>
-  <input type="text" name = "destination" placeholder="destination" value={{destination}}> <br>
+  source <input type="text" name = "source" placeholder="source" value={{source}}> <br>
+  destination <input type="text" name = "destination" placeholder="destination" value={{destination}}> <br>
   <input type="submit" value = View />
 </form>
+<h3>Future flights</h3>
 <table id="viewtable">
 	<th>Airline</th>
 	<th>Flight Number</th>
@@ -57,7 +53,6 @@
   <th>Source</th>
   <th>Destination</th>
   <th>Status</th>
-
 {% for line in flights %}
 <tr>
 	<td>{{line['airline_name']}}</td>
@@ -72,6 +67,7 @@
 </tr>
 {% endfor %}
 </table>
+<br>
 
 <h2>Rate my flights</h2>
 <table id="ratetable">
@@ -97,6 +93,7 @@
 </form>
 {% endfor %}
 </table>
+<br>
 
 <h2>Track my spending</h2>
 <form action="/track" method="POST">
@@ -107,7 +104,10 @@
 </form>
 <div>Total Spending: {{total}}</div>
 <div id="barchart" style="height: 300px; width: 70%;"></div>
+<br>
+
 </body>
+
 
 <script>
   document.getElementById("radio-one-div").addEventListener("click",function(){
