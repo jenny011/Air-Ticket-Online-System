@@ -52,8 +52,10 @@
 <table>
 	<th>Airline</th>
 	<th>Flight Number</th>
+  <!--
   <th>Departure Date</th>
   <th>Departure Time</th>
+  -->
   <th>Source</th>
   <th>Destination</th>
   <th></th>
@@ -61,12 +63,12 @@
 {% for line in unrated %}
 <form action="/rate" methods="POST">
 	<tr>
-		<td><input type="text" name="airline-name" value={{line['airline_name']}} /></td>
-		<td><input type="text" name="flight-number" value={{line['flight_number']}} /></td>
+      <td><input type="text" name="airline_name" value={{line['airline_name']}} /></td>
+      <td><input type="text" name="flight_number" value={{line['flight_number']}} /></td>
     <!-- <td><input type="date" name="departure-date" value={{line['departure_date']}} /></td>
     <td><input type="time" name="departure-time" value={{line['departure_time']}} /></td> -->
-    <td><input type="text" name="sourse" value={{line['source']}} /></td>
-    <td><input type="text" name="destination" value={{line['destination']}} /></td>
+    <td><input type="text" name="arrival_airport" value={{line['arrival_airport']}} /></td>
+    <td><input type="text" name="departure_airport" value={{line['departure_airport']}} /></td>
     <td><input type="submit" name="rate" value=Rate /></td>
 	</tr>
 </form>

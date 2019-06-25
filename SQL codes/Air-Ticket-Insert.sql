@@ -30,3 +30,13 @@ INSERT INTO purchase VALUES ('a11000100', 'jz2915@nyu.edu', '2019-07-11', '07:06
 /* below are added inserted data */
 INSERT INTO `rates` (`email`, `airline_name`, `flight_number`, `departure_date`, `departure_time`, `rating`, `comments`) 
 VALUES ('js123@outlook.com', 'China Eastern', '987', '2019-06-01', '22:50:00', '1', 'I enjoyed the flight.');
+
+INSERT INTO purchase VALUES ('a11000100', 'hello@world.com', '2019-07-11', '07:06:05', '8000', 'credit card', '111177334444555', 'HELLO WORLD', '2021-04-01');
+
+
+INSERT INTO flight VALUES ('China Eastern', '333', '2019-03-01', '22:50:00', '2019-03-02', '04:10:00', 'PVG', 'JFK', '4000', 'on-time', 'B-0000');
+INSERT INTO flight VALUES ('China Eastern', '222', '2019-03-15', '09:50:00', '2019-03-15', '16:30:00', 'JFK', 'PVG', '6000', 'delayed', 'B-9999');
+iNSERT INTO ticket VALUES ('a00000003', 'China Eastern', '333', '2019-03-01', '22:50:00');
+INSERT INTO ticket VALUES ('a00000002', 'China Eastern', '222', '2019-03-15', '09:50:00');
+INSERT INTO purchase VALUES ('a00000003', 'hello@world.com', '2019-04-11', '07:06:05', '8000', 'credit card', '111177334444555', 'HELLO WORLD', '2021-04-01');
+INSERT INTO purchase VALUES ('a00000002', 'hello@world.com', '2019-04-11', '07:06:05', '8000', 'credit card', '111177334444555', 'HELLO WORLD', '2021-04-01');
