@@ -192,7 +192,7 @@ def loginCustomerAuth():
     # grabs information from the forms
     username = request.form['username']
     password = request.form['password']
-    from_date = date.today()
+
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
@@ -202,21 +202,12 @@ def loginCustomerAuth():
     data = cursor.fetchone()
     # use fetchall() if you are expecting more than 1 data row
     cursor.close()
-    cursor = conn.cursor()
-    query = 'select airline_name, flight_number, departure_date, departure_time, ' \
-            'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-            'from (flight natural join ticket) join purchase using (ticket_id)' \
-            'where email = %s'
-         # and departure_date between %s and %s
-    cursor.execute(query, (username))
-    data1 = cursor.fetchall()
-    cursor.close()
     error = None
     if (data):
         # creates a session for the the user
         # session is a built in
         session['username'] = username
-        return render_template('customer-home.html',from_date=from_date,flights=data1)
+        return redirect(url_for('customer_home'))
 
     else:
         # returns an error message to the html page
@@ -388,17 +379,29 @@ def checkPublic():
 @app.route('/customer_home')
 def customer_home():
     username = session['username']
+    from_date = date.today()
 
+    # view
+    cursor = conn.cursor()
+    query = 'select airline_name, flight_number, departure_date, departure_time, ' \
+            'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
+            'from (flight natural join ticket) join purchase using (ticket_id)' \
+            'where email = %s'
+         # and departure_date between %s and %s
+    cursor.execute(query, (username))
+    data1 = cursor.fetchall()
+    cursor.close()
+    #rate
     cursor = conn.cursor()
     query = 'select airline_name, flight_number, departure_airport, arrival_airport ' \
             'from (flight natural join ticket) join purchase using (ticket_id) ' \
             'where timestamp(cast(arrival_date as datetime)+cast(arrival_time as time)) < now() ' \
             'and email = %s'
     cursor.execute(query, (username))
-    data1 = cursor.fetchall()
-    print(data1)
+    data2 = cursor.fetchall()
     cursor.close()
-    return render_template('customer-home.html', unrated=data1)
+
+    return render_template('customer-home.html', from_date=from_date,flights=data1,unrated=data2)
 
 #---------!customer! search flights-------------
 @app.route('/search', methods=['GET', 'POST'])
@@ -483,7 +486,8 @@ def view():
     destination = request.form['destination']
     from_date = request.form['from-date']
     to_date = request.form['to-date']
-    if from_date == "/":
+
+    if from_date == "":
         from_date = date.today()
     if to_date == "":
         if source == "/" and destination == "/":
