@@ -63,12 +63,6 @@ def login_staff():
 def login_customer():
     return render_template('login-customer.html')
 
-#--------customer home
-@app.route("/customer_home")
-def customer_home():
-    #rate data
-    #track data
-    return render_template('customer_home.html')
 
 #==========================================================#
 
@@ -257,7 +251,7 @@ def searchPublic():
 def searchPublicOneWay():
     source = request.form['source']
     destination = request.form['destination']
-    triptype = request.form['triptype']
+    triptype = request.form['switch-one']
     departure_date = request.form['departure-date']
 
     if triptype == "one-way":
