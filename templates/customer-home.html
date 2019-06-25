@@ -39,34 +39,69 @@
 <h2>View my flights</h2>
 <form action="/view" method="POST">
   date range <br>
-  from <input type="date" name = "from-date" placeholder="YYYY/MM/DD" /> <br>
-  to <input type="date" name = "to-date" placeholder="YYYY/MM/DD" /> <br>
+  from <input type="date" name = "from-date" placeholder="YYYY/MM/DD" value={{from_date}}> <br>
+  to <input type="date" name = "to-date" placeholder="YYYY/MM/DD" value={{to_date}}> <br>
   source <br>
-  <input type="text" name = "source" placeholder="source" /> <br>
+  <input type="text" name = "source" placeholder="source" value={{source}} /> <br>
   destination <br>
-  <input type="text" name = "destination" placeholder="destination" /> <br>
+  <input type="text" name = "destination" placeholder="destination" value={{destination}} /> <br>
   <input type="submit" value = View />
 </form>
-
-<h2>Rate my flights</h2>
-<table>
+<table id="viewtable">
 	<th>Airline</th>
 	<th>Flight Number</th>
+  <th>Departure Date</th>
+  <th>Departure Time</th>
+  <th>Arrival Date</th>
+  <th>Arrival Time</th>
+  <th>Source</th>
+  <th>Destination</th>
+  <th>Status</th>
+
+{% for line in flights %}
+<tr>
+	<td>{{line['airline_name']}}</td>
+	<td>{{line['flight_number']}}</td>
+  <td>{{line['departure_date']}}</td>
+  <td>{{line['departure_time']}}</td>
+  <td>{{line['arrival_date']}}</td>
+  <td>{{line['arrival_time']}}</td>
+  <td>{{line['departure_airport']}}</td>
+  <td>{{line['arrival_airport']}}</td>
+  <td>{{line['status']}}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h2>Rate my flights</h2>
+<table id="ratetable">
+	<th>Airline</th>
+	<th>Flight Number</th>
+<<<<<<< HEAD
 
   <th>Departure Date</th>
   <th>Departure Time</th>
 
+=======
+  <th>Departure Date</th>
+  <th>Departure Time</th>
+>>>>>>> 6e97a45240581d25cd9a0b5943dae090d416e1c7
   <th>Source</th>
   <th>Destination</th>
-  <th></th>
+  <th>Rate</th>
 
 {% for line in unrated %}
 <form action= '/rate' methods="POST">
 	<tr>
       <td><input type="text" name="airline_name" value={{line['airline_name']}} /></td>
       <td><input type="text" name="flight_number" value={{line['flight_number']}} /></td>
+<<<<<<< HEAD
     <td><input type="date" name="departure_date" value={{line['departure_date']}} /></td>
     <td><input type="time" name="departure_time" value={{line['departure_time']}} /></td>
+=======
+    <td><input type="date" name="departure-date" value={{line['departure_date']}} /></td>
+    <td><input type="time" name="departure-time" value={{line['departure_time']}} /></td>
+>>>>>>> 6e97a45240581d25cd9a0b5943dae090d416e1c7
     <td><input type="text" name="arrival_airport" value={{line['arrival_airport']}} /></td>
     <td><input type="text" name="departure_airport" value={{line['departure_airport']}} /></td>
     <td><input type="submit" name="rate" value=Rate /></td>
