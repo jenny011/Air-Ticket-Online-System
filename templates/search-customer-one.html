@@ -15,24 +15,24 @@
 <body>
 <a href="/logout">Logout</a>
 / <a href="/customer-home">Back</a>
-h1>Search for flights</h1>
-<form action=""/searchCustomerOneWay"" method="POST">
+<h1>Search for flights</h1>
+<form action="/searchCustomerOneWay" method="POST">
   <!-- get value from init -->
   source <br>
   <input type="text" name = "source" placeholder="source" value={{source}} required/> <br>
   destination <br>
-  <input type="text" name = "destination" placeholder="destination" required/> <br>
+  <input type="text" name = "destination" placeholder="destination" value={{destination}} required/> <br>
   <div id="radio-one-div">
-    <input type="radio" id="radio-one" name="triptype" value="one-way" />
+    <input type="radio" id="radio-one" name="triptype" value="one-way" checked/>
     <label for="radio-one">one-way trip</label>
-    <input type="radio" id="radio-round" name="triptype" value="round" checked/>
+    <input type="radio" id="radio-round" name="triptype" value="round"/>
     <label for="radio-round">round trip</label><br>
   </div>
   departure date <br>
-  <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
-  <div id='return-date-div' style="visibility:visible;">
+  <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" value={{departure_date}} required/> <br>
+  <div id='return-date-div' style="visibility:hidden;">
     return date <br>
-    <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
+    <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" /> <br>
   </div>
   <input type="submit" value = Search />
 </form>
@@ -65,69 +65,16 @@ h1>Search for flights</h1>
 
 </body>
 
-<!--
-<h1>Search for flights</h1>
-<form action="/searchCustomerOneWay" method="POST">
-  source <br>
-  <input type="text" name = "source" placeholder="source" required/> <br>
-  destination <br>
-  <input type="text" name = "destination" placeholder="destination" required/> <br>
-  <div id="radio-one-div">
-    <input type="radio" id="radio-one" name="switch-one" value="one-way" />
-    <label for="radio-one">one-way trip</label>
-    <input type="radio" id="radio-round" name="switch-one" value="round" checked/>
-    <label for="radio-round">round trip</label><br>
-  </div>
-  departure date <br>
-  <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
-  <div id='return-date-div' style="visibility:visible;">
-    return date <br>
-    <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
-  </div>
-  <input type="submit" value = Search />
-</form>
-
-<table>
-	<th>Airline</th>
-	<th>Flight Number</th>
-  <th>Departure Date</th>
-  <th>Departure Time</th>
-  <th>Arrival Date</th>
-  <th>Arrival Time</th>
-  <th>Source</th>
-  <th>Destination</th>
-  <th>Price</th>
-  <th></th>
-
-{% for line in flights %}
-<form action="/purchaseCustomerOneWay" methods="POST">
-	<tr>
-		<td>{{line['airline-name']}}</td>
-		<td>{{line['flight-number']}}</td>
-    <td>{{line['departure-date']}}</td>
-    <td>{{line['departure-time']}}</td>
-    <td>{{line['arrival-date']}}</td>
-    <td>{{line['arrival-time']}}</td>
-    <td>{{line['source']}}</td>
-    <td>{{line['destination']}}</td>
-    <td>{{line['price']}}</td>
-    <td><input type="submit" name="purchase" value=Purchase /></td>
-	</tr>
-</form>
-{% endfor %}
-</table>
-
-
 <script>
   document.getElementById("radio-one-div").addEventListener("click",function(){
     if(document.getElementById('radio-one').checked) {
       document.getElementById('return-date-div').style.visibility = "hidden";
+      document.getElementById('return-date').removeAttribute("required");
     }else if(document.getElementById('radio-round').checked) {
       document.getElementById('return-date-div').style.visibility = "visible";
+      document.getElementById('return-date').setAttribute("required","");
     }
   });
-
 </script>
--->
 
 </html>

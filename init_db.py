@@ -7,9 +7,8 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
+                       password='',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -226,7 +225,6 @@ def searchPublic():
     destination = request.form['destination']
     triptype = request.form['triptype']
     departure_date = request.form['departure-date']
-    return_date = request.form['return-date']
 
     if triptype == "one-way":
         cursor = conn.cursor()
@@ -236,11 +234,18 @@ def searchPublic():
         cursor.execute(query, (source, destination,departure_date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('search-one.html', source=source, flights=data1)
+        return render_template('search-one.html', source=source, destination=destination, departure_date = departure_date, flights=data1)
 
-    elif triptype == "round":
-        pass
-        return render_template('search-round.html')
+    elif triptype == "round":#####!!!!!!-----todo-------!!!!!!
+        return_date = request.form['return-date']
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (source, destination,departure_date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        return render_template('search-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
 
 @app.route("/searchPublicOneWay", methods=['GET', 'POST'])
 def searchPublicOneWay():
@@ -248,7 +253,6 @@ def searchPublicOneWay():
     destination = request.form['destination']
     triptype = request.form['switch-one']
     departure_date = request.form['departure-date']
-    return_date = request.form['return-date']
 
     if triptype == "one-way":
         cursor = conn.cursor()
@@ -258,14 +262,25 @@ def searchPublicOneWay():
         cursor.execute(query, (source, destination,departure_date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('search-one.html', source=source, flights=data1)
+        return render_template('search-one.html', source=source, destination=destination, departure_date = departure_date, flights=data1)
 
-    elif triptype == "round":
-        pass
-        return render_template('search-round.html')
+    elif triptype == "round":#------!!!!!!!todo
+        return_date = request.form['return-date']
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (source, destination,departure_date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        return render_template('search-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
 
 @app.route("/searchPublicRound", methods=['GET', 'POST'])
 def searchPublicRound():
+    pass
+
+@app.route("/switchPublicView", methods=['GET', 'POST'])
+def switchPublicView():
     pass
 
 
@@ -330,12 +345,13 @@ def checkPublic():
         return render_template('check.html', statuses=data1)
 
 
-# ================ customer_home ===================
+# ================ !customer!-home ===================
 
-@app.route('/customer_home')
-def customer_home():
-    return render_template('customer-home.html')
+# @app.route('/customer_home')
+# def customer_home():
+#     return render_template('customer-home.html')
 
+#---------!customer! search flights-------------
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     #display the search result
@@ -343,7 +359,6 @@ def search():
     destination = request.form['destination']
     triptype = request.form['triptype']
     departure_date = request.form['departure-date']
-    return_date = request.form['return-date']
 
     if triptype == "one-way":
         print('execuated')
@@ -355,11 +370,12 @@ def search():
         data1 = cursor.fetchall()
         cursor.close()
         # return render_template('search-customer-one.html', source=source, flights=data1)
-        return render_template('search-customer-one.html', flights=data1)
+        return render_template('search-customer-one.html', source=source, destination=destination, departure_date=departure_date, flights=data1)
 
     elif triptype == "round":
+        return_date = request.form['return-date']
         pass
-        return render_template('search-customer-round.html')
+        return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
 
 
 @app.route('/searchCustomerOneWay', methods=['GET', 'POST'])
@@ -368,7 +384,6 @@ def searchCustomerOneWay():
     destination = request.form['destination']
     triptype = request.form['triptype']
     departure_date = request.form['departure-date']
-    return_date = request.form['return-date']
 
     if triptype == "one-way":
         cursor = conn.cursor()
@@ -378,13 +393,23 @@ def searchCustomerOneWay():
         cursor.execute(query, (source, destination, departure_date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('search-customer-one.html', source=source, flights=data1)
+        return render_template('search-customer-one.html', source=source, destination=destination, departure_date=departure_date, flights=data1)
 
     elif triptype == "round":
+        return_date = request.form['return-date']
         pass
-        return render_template('search-customer-round.html')
+        return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
+
+@app.route("/searchCustomerRound", methods=['GET', 'POST'])
+def searchCustomerRound():
+    pass
+
+@app.route("/switchCustomerView", methods=['GET', 'POST'])
+def switchCustomerView():
+    pass
 
 
+#------------!customer! view my flights-----------
 @app.route('/view', methods=['GET', 'POST'])
 def view():
     viewtype = request.form['viewtype']
