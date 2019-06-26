@@ -55,7 +55,7 @@ seat_data = cursor.fetchall()
 cursor.close()
 
 # insert tickets for the flight
-# todo: make ticket number distinct
+# todo: make ticket number distinct(create a distinct number for each airline?)
 to_add1 = ''
 for i in airline_name:
     if i.isupper():

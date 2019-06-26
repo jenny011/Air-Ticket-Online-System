@@ -540,6 +540,16 @@ def searchCustomerRound():
 def switchCustomerView():
     pass
 
+
+#---------!customer! purchase flights-------------
+@app.route("/searchCustomerOneWay", methods=['GET', 'POST'])
+def searchCustomerOneWay():
+
+
+
+@app.route("/searchCustomerRound", methods=['GET', 'POST'])
+def searchCustomerRound():
+
 #------------------------------------------------------------------------------
 #------------!customer! view my flights-----------
 @app.route('/view', methods=['GET', 'POST'])
