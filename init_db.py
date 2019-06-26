@@ -254,7 +254,7 @@ def searchPublic():
         cursor.close()
 
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (destination, source, return_date))
@@ -283,14 +283,14 @@ def searchPublicOneWay():
     elif triptype == "round":
         return_date = request.form['return-date']
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (source, destination, departure_date))
         data1 = cursor.fetchall()
         cursor.close()
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (destination, source, return_date))
@@ -307,7 +307,7 @@ def searchPublicRound():
 
         if triptype == "one-way":
             cursor = conn.cursor()
-            query = 'select * from flight ' \
+            query = 'select * from flight_price ' \
                     'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                     'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
             cursor.execute(query, (source, destination,departure_date))
@@ -318,7 +318,7 @@ def searchPublicRound():
         elif triptype == "round":
             return_date = request.form['return-date']
             cursor = conn.cursor()
-            query = 'select * from flight ' \
+            query = 'select * from flight_price ' \
                     'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                     'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
             cursor.execute(query, (source, destination, departure_date))
@@ -326,7 +326,7 @@ def searchPublicRound():
             cursor.close()
 
             cursor = conn.cursor()
-            query = 'select * from flight ' \
+            query = 'select * from flight_price ' \
                     'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                     'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
             cursor.execute(query, (destination, source, return_date))
@@ -509,14 +509,14 @@ def search():
     elif triptype == "round":
         return_date = request.form['return-date']
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (source, destination, departure_date))
         data1 = cursor.fetchall()
         cursor.close()
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (destination, source, return_date))
@@ -533,7 +533,7 @@ def searchCustomerOneWay():
 
     if triptype == "one-way":
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (source, destination, departure_date))
@@ -544,14 +544,14 @@ def searchCustomerOneWay():
     elif triptype == "round":
         return_date = request.form['return-date']
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (source, destination, departure_date))
         data1 = cursor.fetchall()
         cursor.close()
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (destination, source, return_date))
@@ -568,7 +568,7 @@ def searchCustomerRound():
 
     if triptype == "one-way":
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (source, destination,departure_date))
@@ -579,7 +579,7 @@ def searchCustomerRound():
     elif triptype == "round":
         return_date = request.form['return-date']
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (source, destination, departure_date))
@@ -587,7 +587,7 @@ def searchCustomerRound():
         cursor.close()
 
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (destination, source, return_date))

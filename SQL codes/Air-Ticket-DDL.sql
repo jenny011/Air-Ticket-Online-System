@@ -122,16 +122,16 @@ create table staff_phone
 
 /*below is the newly created view*/
 create view flight_seats_sold as
-select airline_name, flight_number, departure_date, departure_time, 
+select airline_name, flight_number, departure_date, departure_time,
 amount_of_seats, count(ticket_id) as tickets_sold
 from flight natural join airplane natural join ticket natural join purchase
 group by airline_name, flight_number, departure_date, departure_time
 
 
 create view flight_price as
-select airline_name, flight_number, departure_date, departure_time, 
+select airline_name, flight_number, departure_date, departure_time,
 arrival_date, arrival_time, departure_airport, arrival_airport,
 CASE WHEN tickets_sold >= 0.7 * amount_of_seats THEN base_price * 1.2
 ELSE base_price
 END AS price
-from flight natural join flight_seats_sold
+from flight natural left outer join flight_seats_sold
