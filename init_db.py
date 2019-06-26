@@ -4,14 +4,16 @@ import pymysql.cursors
 from datetime import date
 from datetime import datetime
 from dateutil import relativedelta
+import random
 
 # Initialize the app from Flask
 app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -543,7 +545,6 @@ def switchCustomerView():
 @app.route("/purchaseCustomerOneWay", methods=['GET', 'POST'])
 def purchaseCustomerOneWay():
     pass
-
     airline_name = request.form['airline-name']
     flight_number = request.form['flight-number']
     departure_date = request.form['departure-date']
@@ -553,9 +554,23 @@ def purchaseCustomerOneWay():
     departure_airport = request.form['departure_airport']
     arrival_airport = request.form['arrival_airport']
     price = request.form['price']
+    # get ticket info
+    cursor = conn.cursor()
+    query = 'select ticket_id ' \
+            'from ticket ' \
+            'where airline_name = %s and flight_number = %s and departure_date = %s, departure_time = %s ' \
+            'and ticket_id not in (select ticket_id from purchase)'
+    cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
+    ticket_id = cursor.fetchone()
+    # possible concurrency?
+    cursor.close()
 
-    print("airline_name in purchase", airline_name)
-
+    # store flight info in session
+    flight_info1 = {"airline_name":airline_name, "flight_number": flight_number, "departure_date": departure_date,
+                   "arrival_date": arrival_date, "arrival_time": arrival_time, "departure_airport": departure_airport,
+                   "arrival_airport": arrival_airport, "price": price, "ticket_id": ticket_id}
+    session['flight_info1'] = flight_info1
+    # todo: the value to pass into "purchase-customer.html"
     return render_template("purchase-customer.html")
 
 
@@ -566,33 +581,31 @@ def purchaseCustomerRound():
 
 @app.route("/purchase_customer", methods=['GET', 'POST'])
 def purchase_Customer():
-    pass
+    render_template("purchase-customer.html")
 
 
 @app.route("/payCustomer", methods=['GET', 'POST'])
 def payCustomer():
-    # todo: session needed for this: get the flight info and ticket info
-    # card type needed
-
     username = session['username']
+    flight_info1 = session['flight_info1']
     purchase_date = date.today()
-    purchase_time =
+    purchase_time = datetime.datetime.now().time()
+    # print(purchase_time)
+    # not sure if purchase_time is in correct format
+
     card_type = request.form["cardtype"]
     card_number = request.form['card-number']
-    name_on_cart = request.form['name-on-card']
+    name_on_card = request.form['name-on-card']
     card_expiration = request.form['card-expiration']
     cursor = conn.cursor()
     query = '''insert into purchase
     (ticket_id, email, purchase_date, purchase_time, sold_price, card_type, card_number, name_on_card, expiraton_date)
-    values (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    values (%s, %s, cast(now() as date), cast(now() as time), %s, %s, %s, %s, %s)
     '''
-    # get date now
-    # the logic for purchase
-
-    cursor.execute(query, (ticket_id, username, ))
-    data1 = cursor.fetchall()
+    cursor.execute(query, (flight_info1["ticket_id"], username, flight_info1["price"],
+                           card_type, card_number, name_on_card, card_expiration))
     cursor.close()
-    return render_template('search-customer-one.html', source=source, destination=destination)
+    return redirect(url_for('customer_home'))
 
 #------------------------------------------------------------------------------
 #------------!customer! view my flights-----------

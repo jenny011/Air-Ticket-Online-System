@@ -4,6 +4,7 @@ import pymysql.cursors
 from datetime import date
 from datetime import datetime
 from dateutil import relativedelta
+import random
 
 # Initialize the app from Flask
 app = Flask(__name__)
@@ -55,18 +56,20 @@ seat_data = cursor.fetchall()
 cursor.close()
 
 # insert tickets for the flight
-# todo: make ticket number distinct(create a distinct number for each airline?)
+# generate ticket_id: airline_name abbr. + flight_number + fixed random number + serial order (last 3 digits)
+
 to_add1 = ''
 for i in airline_name:
     if i.isupper():
         to_add1 += i
-
+random_num = random.randint(0,999)
+to_add3 = str(random_num).zfill(3)
 print(to_add1)
 amount_of_seats = seat_data[0]['amount_of_seats']
 cursor = conn.cursor()
 for i in range(amount_of_seats):
     to_add2 = str(i).zfill(4)
-    ticket_id = to_add1+ flight_number + to_add2
+    ticket_id = to_add1 + flight_number + to_add3 + to_add2
     print(ticket_id)
 #     query = '''
 #     insert into ticket (ticket_id, airline_name, flight_number, departure_date, departure_time)
