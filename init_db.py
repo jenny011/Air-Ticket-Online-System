@@ -10,9 +10,8 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
+                       password='',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -543,10 +542,8 @@ def switchCustomerView():
 #---------!customer! purchase flights-------------
 @app.route("/purchaseCustomerOneWay", methods=['GET', 'POST'])
 def purchaseCustomerOneWay():
-<<<<<<< HEAD
     pass
 
-=======
     airline_name = request.form['airline-name']
     flight_number = request.form['flight-number']
     departure_date = request.form['departure-date']
@@ -589,11 +586,7 @@ def payCustomer():
     data1 = cursor.fetchall()
     cursor.close()
     return render_template('search-customer-one.html', source=source, destination=destination)
->>>>>>> 231569d37082e628f45bc5c5f9c6d42b2a51534d
 
-@app.route("/purchaseCustomerRound", methods=['GET', 'POST'])
-def purchaseCustomerRound():
-    pass
 #------------------------------------------------------------------------------
 #------------!customer! view my flights-----------
 @app.route('/view', methods=['GET', 'POST'])
@@ -908,20 +901,20 @@ def trackCustomer():
     date2 = datetime.strptime(to_date_track, '%Y-%m-%d')
     # r = relativedelta.relativedelta(date2, date1)
     # month_number = r.months + r.years*12
-    # month_number = (date2.year-date1.year)*12 + date2.month - date1.month
-    # if date2.day != 1:
-    #     month_number += 1
     year_number = date2.year-date1.year+1
     for i in range(year_number):
-        if i == 0:
+        if i == 0 and year_number > 1:
             month_number = 13 - date1.month
             init_month = date1.month
-        elif i == year_number - 1:
+        elif i == year_number - 1 and year_number > 1:
             month_number = date2.month
             init_month = 1
-        else:
+        elif year_number > 1:
             month_number = 12
             init_month = 1
+        else:
+            month_number = date2.month - date1.month + 1
+            init_month = date1.month
         for j in range(month_number):
             query = '''select sum(sold_price) from purchase where email = %s
             and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
@@ -938,23 +931,27 @@ def trackCustomer():
             else:
                 to_d_year = date1.year+1+i
                 to_d_month = init_month+j-11
-            if i == 0:
+            if j == 0 and i == 0:
                 from_d_day = date1.day
             else:
                 from_d_day = 1
-            if i == month_number-1:
+            if j == month_number -1 and i == year_number-1:
                 to_d_month = date2.month
                 to_d_day = date2.day
             else:
                 to_d_day = 1
             from_d = date(from_d_year,from_d_month,from_d_day)
             to_d = date(to_d_year,to_d_month,to_d_day)
+            print(from_d,to_d)
             cursor.execute(query, (username, from_d, to_d))
             monthly=cursor.fetchall()
             if monthly[0]['sum(sold_price)']==None:
                 monthly[0]['sum(sold_price)']=0
             months.append(str(from_d_year)+"-"+str(from_d_month))
             monthly_spending.append(monthly)
+    month_number = (date2.year-date1.year)*12 + date2.month - date1.month
+    if date2.day != 1:
+        month_number += 1
     cursor.close()
     print(monthly_spending)
     return render_template('track-customer.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date_track=from_date_track, to_date_track=to_date_track, month_numnber=month_number, display_number = month_number, months = months)
