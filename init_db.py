@@ -10,11 +10,13 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
+
 
 
 '''
@@ -384,7 +386,7 @@ def customer_home():
     to_date = today
     from_date = date(today.year-1, today.month, today.day)
 
-    print("customer home query")
+
     # view
     cursor = conn.cursor()
     query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
@@ -398,7 +400,10 @@ def customer_home():
     query = 'select airline_name, flight_number, departure_date, departure_time, departure_airport, arrival_airport ' \
             'from (flight natural join ticket) join purchase using (ticket_id)' \
             'where timestamp(cast(arrival_date as datetime)+cast(arrival_time as time)) < now() ' \
-            'and email = %s and not exists (select * from (flight natural join ticket) natural join purchase natural join rates)'
+            'and email = %s and ' \
+            'ticket_id not in ' \
+            '(select ticket_id ' \
+            'from (flight natural join ticket) join purchase using (ticket_id) join rates using (email, airline_name, flight_number, departure_date, departure_time))'
     cursor.execute(query, (username))
     data2 = cursor.fetchall()
     cursor.close()
@@ -770,6 +775,7 @@ def track():
     username = session['username']
     from_date_track = request.form['from-date']
     to_date_track = request.form['to-date']
+
     cursor = conn.cursor()
     query = '''select sum(sold_price) from purchase where email = %s
     and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
@@ -816,14 +822,14 @@ def track():
             to_d_day = 1
         from_d = date(from_d_year,from_d_month,from_d_day)
         to_d = date(to_d_year,to_d_month,to_d_day)
-        print(from_d,to_d)
+        # print(from_d,to_d)
         cursor.execute(query, (username, from_d, to_d))
         monthly=cursor.fetchall()
         if monthly[0]['sum(sold_price)']==None:
             monthly[0]['sum(sold_price)']=0
         monthly_spending.append(monthly)
     cursor.close()
-    print(monthly_spending)
+    # print(monthly_spending)
     return render_template('customer-home.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date_track=from_date_track, to_date_track=to_date_track)
 
     '''
