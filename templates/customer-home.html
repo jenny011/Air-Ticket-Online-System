@@ -43,7 +43,7 @@
   <input type="submit" value = View />
 </form>
 <h3>Future flights</h3>
-<table id="viewtable">
+<table>
 	<th>Airline</th>
 	<th>Flight Number</th>
   <th>Departure Date</th>
@@ -70,33 +70,37 @@
 <br>
 
 <h2>Rate my flights</h2>
-<h3>type in flight info to rate a flight:</h3>
-<form action="/rate" methods="POST">
-  airline<input type="text" name="airline" required/><br>
-  flight number<input type="text" name="number" required/><br>
-  departure date<input type="date" name="date" required/><br>
-  departure time<input type="time" name="time" required/><br>
-  <input type="submit" value=Rate />
-</form>
+<!-- <h3>type in flight info to rate a flight:</h3> -->
+<!-- <form action="/rate" methods='POST'>
+  airline<input type="text" name="airline" placeholder="airline name" required/><br>
+  flight number<input type="text" name="number" placeholder="flight number" required/><br>
+  departure date<input type="date" name="date" placeholder="departure date" required/><br>
+  departure time<input type="time" name="time" placeholder="departure time" required/><br>
+  <input type="submit" value=Submit />
+</form> -->
 <h3>unrated flights</h3>
-<table id="ratetable">
-	<th>Airline</th>
-	<th>Flight Number</th>
-  <th>Departure Date</th>
-  <th>Departure Time</th>
-  <th>Source</th>
-  <th>Destination</th>
-{% for line in unrated %}
-<tr>
-  <td>{{line['airline_name']}}</td>
-  <td>{{line['flight_number']}}</td>
-  <td>{{line['departure_date']}}</td>
-  <td>{{line['departure_time']}}</td>
-  <td>{{line['arrival_airport']}}</td>
-  <td>{{line['departure_airport']}}</td>
-</tr>
-{% endfor %}
-</table>
+  <table>
+  	<th>Airline</th>
+  	<th>Flight Number</th>
+    <th>Departure Date</th>
+    <th>Departure Time</th>
+    <th>Source</th>
+    <th>Destination</th>
+    <th></th>
+  {% for line in unrated %}
+  <tr>
+    <form action="/rate" methods='POST'>
+      <td><input type="text" name="airline" value="{{line['airline_name']}}" readonly/></td>
+      <td><input type="text" name="number" value="{{line['flight_number']}}" readonly/></td>
+      <td><input type="date" name="date" value="{{line['departure_date']}}" readonly/></td>
+      <td><input tyoe="datetime" name="time" value="{{line['departure_time']}}" readonly/></td>
+      <td><input type="text" name="source" value="{{line['departure_airport']}}" readonly/></td>
+      <td><input type="text" name="destination" value="{{line['arrival_airport']}}" readonly/></td>
+      <td><input type="submit" value=Submit /></td>
+    </form>
+  </tr>
+  {% endfor %}
+  </table>
 <br>
 
 <h2>Track my spending</h2>
