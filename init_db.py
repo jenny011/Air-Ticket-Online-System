@@ -11,9 +11,8 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
+                       password='',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -235,11 +234,12 @@ def searchPublic():
     if triptype == "one-way":
 
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (source, destination, departure_date))
         data1 = cursor.fetchall()
+        print("data in search public", data1)
         cursor.close()
         return render_template('search-one.html',
                                source=source, destination=destination, departure_date=departure_date, flights=data1)
@@ -247,11 +247,12 @@ def searchPublic():
     elif triptype == "round":#####!!!!!!-----todo-------!!!!!!
         return_date = request.form['return-date']
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (source, destination,departure_date))
         data1 = cursor.fetchall()
+
         cursor.close()
         return render_template('search-round.html', source=source, destination=destination,
                                departure_date=departure_date, return_date=return_date, flights=data1)
@@ -265,13 +266,14 @@ def searchPublicOneWay():
 
     if triptype == "one-way":
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
-        cursor.execute(query, (source, destination,departure_date))
+        cursor.execute(query, (source, destination, departure_date))
         data1 = cursor.fetchall()
+
         cursor.close()
-        return render_template('search-one.html', source=source, destination=destination, departure_date = departure_date, flights=data1)
+        return render_template('search-one.html', source=source, destination=destination, departure_date=departure_date, flights=data1)
 
     elif triptype == "round":#------!!!!!!!todo
         return_date = request.form['return-date']
@@ -479,7 +481,7 @@ def search():
 
     if triptype == "one-way":
         cursor = conn.cursor()
-        query = 'select * from flight ' \
+        query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (source, destination, departure_date))
@@ -545,33 +547,33 @@ def switchCustomerView():
 @app.route("/purchaseCustomerOneWay", methods=['GET', 'POST'])
 def purchaseCustomerOneWay():
     pass
-    airline_name = request.form['airline-name']
-    flight_number = request.form['flight-number']
-    departure_date = request.form['departure-date']
-    departure_time = request.form['departure-time']
-    arrival_date = request.form['arrival_date']
-    arrival_time = request.form['arrival_time']
-    departure_airport = request.form['departure_airport']
-    arrival_airport = request.form['arrival_airport']
-    price = request.form['price']
-    # get ticket info
-    cursor = conn.cursor()
-    query = 'select ticket_id ' \
-            'from ticket ' \
-            'where airline_name = %s and flight_number = %s and departure_date = %s, departure_time = %s ' \
-            'and ticket_id not in (select ticket_id from purchase)'
-    cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
-    ticket_id = cursor.fetchone()
-    # possible concurrency?
-    cursor.close()
-
-    # store flight info in session
-    flight_info1 = {"airline_name":airline_name, "flight_number": flight_number, "departure_date": departure_date,
-                   "arrival_date": arrival_date, "arrival_time": arrival_time, "departure_airport": departure_airport,
-                   "arrival_airport": arrival_airport, "price": price, "ticket_id": ticket_id}
-    session['flight_info1'] = flight_info1
-    # todo: the value to pass into "purchase-customer.html"
-    return render_template("purchase-customer.html")
+    # airline_name = request.form['airline-name']
+    # flight_number = request.form['flight-number']
+    # departure_date = request.form['departure-date']
+    # departure_time = request.form['departure-time']
+    # arrival_date = request.form['arrival_date']
+    # arrival_time = request.form['arrival_time']
+    # departure_airport = request.form['departure_airport']
+    # arrival_airport = request.form['arrival_airport']
+    # price = request.form['price']
+    # # get ticket info
+    # cursor = conn.cursor()
+    # query = 'select ticket_id ' \
+    #         'from ticket ' \
+    #         'where airline_name = %s and flight_number = %s and departure_date = %s, departure_time = %s ' \
+    #         'and ticket_id not in (select ticket_id from purchase)'
+    # cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
+    # ticket_id = cursor.fetchone()
+    # # possible concurrency?
+    # cursor.close()
+    #
+    # # store flight info in session
+    # flight_info1 = {"airline_name":airline_name, "flight_number": flight_number, "departure_date": departure_date,
+    #                "arrival_date": arrival_date, "arrival_time": arrival_time, "departure_airport": departure_airport,
+    #                "arrival_airport": arrival_airport, "price": price, "ticket_id": ticket_id}
+    # session['flight_info1'] = flight_info1
+    # # todo: the value to pass into "purchase-customer.html"
+    # return render_template("purchase-customer.html")
 
 
 @app.route("/purchaseCustomerRound", methods=['GET', 'POST'])
@@ -1036,56 +1038,21 @@ app.secret_key = 'some key that you will never guess'
 
 
 #===============Airline Staff use case============
-@app.route('/staff_home')
-def staff_home():
-    username = session['username']
-    cursor = conn.cursor();
-    query = 'SELECT * FROM flight WHERE airline_name = %s ORDER BY ts DESC'
+# @app.route('/staff_home')
+# def staff_home():
+#     username = session['username']
+#     cursor = conn.cursor();
+#     query = 'SELECT * FROM flight WHERE airline_name = %s ORDER BY ts DESC'
+#
+#     cursor.execute(query, (username))
+#     data1 = cursor.fetchall()
+#     for each in data1:
+#         print(each['blog_post'])
+#     cursor.close()
+#     return render_template('home.html', username=username, posts=data1)
 
-    cursor.execute(query, (username))
-    data1 = cursor.fetchall()
-    for each in data1:
-        print(each['blog_post'])
-    cursor.close()
-    return render_template('home.html', username=username, posts=data1)
 
 
-# # ------create new flights--------------
-#
-# # when staff creates a flight
-#
-# # get flight into, store it in session?
-#
-# # authorize user
-#
-# # insert flight info into flight table
-#
-# # create ticket for the flight
-# airline_name =
-# flight_number =
-# departure_date =
-# departure_time =
-# base_price =
-# id =
-#
-# query = '''select amount_of_seats
-# from flight natural join airplane
-# where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s
-# and base_price = %s and id = %s'''
-# amount_of_seats = "***result of the query***"
-#
-# # automatically generate ticket id?
-# cursor = conn.cursor()
-# for i in range(amount_of_seats):
-#     to_add = str(i).zfill(4)
-#     ticket_id = flight_number + to_add
-#     c
-#     query = '''
-#     insert into ticket (ticket_id, airline_name, flight_number, departure_date, departure_time)
-#     values (%s, %s, %s, %S, %s)
-#     '''
-#     cursor.execute(query, (ticket_id, airline_name, flight_number, departure_date, departure_time))
-# cursor.close()
 
 
 

@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="617de85c-6896-41c7-ac3e-4fe0ef00661c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SQL codes/Air-Ticket-DDL.sql" beforeDir="false" afterPath="$PROJECT_DIR$/SQL codes/Air-Ticket-DDL.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SQL codes/public: customer query.sql" beforeDir="false" afterPath="$PROJECT_DIR$/SQL codes/public: customer query.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/init_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/purchase-customer.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/purchase-customer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_insert tickets for existing flights.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_insert tickets for existing flights.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/search-one.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/search-one.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,14 +32,14 @@
     <select />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5381944">
+    <splitter split-orientation="horizontal" split-proportion="0.59444445">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/init_db.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="336">
-                  <caret line="596" column="45" lean-forward="true" selection-start-line="596" selection-start-column="45" selection-end-line="596" selection-end-column="45" />
+                <state relative-caret-position="390">
+                  <caret line="26" column="39" lean-forward="true" selection-start-line="26" selection-start-column="39" selection-end-line="26" selection-end-column="39" />
                   <folding>
                     <element signature="e#23#100#0" expanded="true" />
                   </folding>
@@ -58,7 +59,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/test_insert tickets for existing flights.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="424">
+                <state relative-caret-position="524">
                   <caret line="58" column="109" selection-start-line="58" selection-start-column="109" selection-end-line="58" selection-end-column="109" />
                   <folding>
                     <element signature="e#23#100#0" expanded="true" />
@@ -94,6 +95,15 @@
               </provider>
             </entry>
           </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/templates/search-one.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="414">
+                  <caret line="56" column="14" lean-forward="true" selection-start-line="56" selection-start-column="14" selection-end-line="56" selection-end-column="14" />
+                </state>
+              </provider>
+            </entry>
+          </file>
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/templates/search-round.html">
               <provider selected="true" editor-type-id="text-editor" />
@@ -108,7 +118,7 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/templates/purchase-customer.html">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="241">
@@ -130,8 +140,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>login-cust</find>
-      <find>switch-</find>
       <find>triptype</find>
       <find>CUSTOMER_HOME</find>
       <find>BACK</find>
@@ -158,8 +166,10 @@
       <find>/purchase</find>
       <find>total</find>
       <find>/purc</find>
-      <find>purchase</find>
       <find>redirect</find>
+      <find>price</find>
+      <find>base_price</find>
+      <find>purchase</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -176,6 +186,7 @@
         <option value="$PROJECT_DIR$/test_insert tickets for existing flights.py" />
         <option value="$PROJECT_DIR$/../Databases/Flask_for_class/init1.py" />
         <option value="$PROJECT_DIR$/templates/purchase-customer.html" />
+        <option value="$PROJECT_DIR$/templates/search-one.html" />
         <option value="$PROJECT_DIR$/init_db.py" />
       </list>
     </option>
@@ -272,12 +283,12 @@
       <workItem from="1561457435675" duration="3380000" />
       <workItem from="1561472314585" duration="89000" />
       <workItem from="1561514810144" duration="6174000" />
-      <workItem from="1561524229669" duration="7798000" />
+      <workItem from="1561524229669" duration="9580000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="31886000" />
+    <option name="totallyTimeSpent" value="33668000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -314,12 +325,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/init_db.py</url>
-          <line>17</line>
+          <line>16</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/init_db.py</url>
-          <line>16</line>
+          <line>15</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
@@ -345,16 +356,6 @@
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/Flask_for_class/templates/home.html" />
-    <entry file="file://$PROJECT_DIR$/templates/search-one.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="27" column="39" selection-start-line="27" selection-start-column="39" selection-end-line="27" selection-end-column="39" />
-          <folding>
-            <element signature="n#style#0;n#div#1;n#form#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Flask_for_class/init1.py" />
     <entry file="file://$PROJECT_DIR$/../Databases/Flask_for_class/templates/home.html">
       <provider selected="true" editor-type-id="text-editor" />
@@ -396,27 +397,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_insert tickets for existing flights.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="424">
-          <caret line="58" column="109" selection-start-line="58" selection-start-column="109" selection-end-line="58" selection-end-column="109" />
-          <folding>
-            <element signature="e#23#100#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../Databases/Flask_for_class/init1.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="88">
           <caret line="95" column="45" selection-start-line="95" selection-start-column="45" selection-end-line="95" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/search-customer-one.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="46" column="37" selection-start-line="46" selection-start-column="37" selection-end-line="46" selection-end-column="37" />
         </state>
       </provider>
     </entry>
@@ -427,10 +411,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/test_insert tickets for existing flights.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="524">
+          <caret line="58" column="109" selection-start-line="58" selection-start-column="109" selection-end-line="58" selection-end-column="109" />
+          <folding>
+            <element signature="e#23#100#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/search-customer-one.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="372">
+          <caret line="46" column="37" selection-start-line="46" selection-start-column="37" selection-end-line="46" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/search-one.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="56" column="14" lean-forward="true" selection-start-line="56" selection-start-column="14" selection-end-line="56" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/init_db.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="596" column="45" lean-forward="true" selection-start-line="596" selection-start-column="45" selection-end-line="596" selection-end-column="45" />
+        <state relative-caret-position="390">
+          <caret line="26" column="39" lean-forward="true" selection-start-line="26" selection-start-column="39" selection-end-line="26" selection-end-column="39" />
           <folding>
             <element signature="e#23#100#0" expanded="true" />
           </folding>
