@@ -10,8 +10,9 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -534,7 +535,6 @@ def searchCustomerRound():
 
     elif triptype == "round":
         return_date = request.form['return-date']
-        pass
         return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
 
 @app.route("/switchCustomerView", methods=['GET', 'POST'])
@@ -543,13 +543,50 @@ def switchCustomerView():
 
 
 #---------!customer! purchase flights-------------
-@app.route("/searchCustomerOneWay", methods=['GET', 'POST'])
-def searchCustomerOneWay():
+@app.route("/purchaseCustomerOneWay", methods=['GET', 'POST'])
+def purchaseCustomerOneWay():
+    airline_name = request.form['airline-name']
+    flight_number = request.form['flight-number']
+    departure_date = request.form['departure-date']
+    departure_time = request.form['departure-time']
+    arrival_date = request.form['arrival_date']
+    arrival_time = request.form['arrival_time']
+    departure_airport = request.form['departure_airport']
+    arrival_airport = request.form['arrival_airport']
+    price = request.form['price']
+
+    print("airline_name in purchase", airline_name)
+
+    return render_template("purchase-customer.html")
 
 
+@app.route("/purchaseCustomerRound", methods=['GET', 'POST'])
+def purchaseCustomerRound():
+    pass
 
-@app.route("/searchCustomerRound", methods=['GET', 'POST'])
-def searchCustomerRound():
+
+@app.route("/purchase_customer", methods=['GET', 'POST'])
+def purchase_Customer():
+    pass
+
+
+@app.route("/payCustomer", methods=['GET', 'POST'])
+def payCustomer():
+    # session needed for this: get the flight info and ticket info
+    # card type needed
+    username = session['username']
+    card_number = request.form['card-number']
+    name_on_cart = request.form['name-on-card']
+    card_expiration = request.form['card-expiration']
+    cursor = conn.cursor()
+    query = '''insert into purchase 
+    (ticket_id, email, purchase_date, purchase_time, sold_price, card_type, card_number, name_on_card, expiraton_date)
+    values (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    '''
+    cursor.execute(query, (source, destination, departure_date))
+    data1 = cursor.fetchall()
+    cursor.close()
+    return render_template('search-customer-one.html', source=source, destination=destination)
 
 #------------------------------------------------------------------------------
 #------------!customer! view my flights-----------
@@ -754,7 +791,9 @@ def rate():
     departure_time = request.form['departure-time']
     source = request.form['source']
     destination = request.form['destination']
+    print("airline_name")
 
+    # print(airline_name, flight_number, departure_date, departure_time, source, destination)
     return render_template('rate-customer.html', airline_name=airline_name,flight_number=flight_number,departure_date=departure_date,
     departure_time=departure_time,source=source,destination=destination)
 

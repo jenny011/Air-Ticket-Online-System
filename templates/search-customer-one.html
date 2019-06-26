@@ -44,7 +44,7 @@
   <th>Destination</th>
   <th>Price</th>
 {% for line in flights %}
-<form action="/purchaseCustomerRound" methods="POST">
+<form action="/purchaseCustomerOneWay" methods="POST">
 	<tr>
 		<td>{{line['airline_name']}}</td>
 		<td>{{line['flight_number']}}</td>
