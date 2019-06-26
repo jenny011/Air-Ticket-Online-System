@@ -454,7 +454,6 @@ def customer_home():
             to_d_day = 1
         from_d = date(from_d_year,from_d_month,from_d_day)
         to_d = date(to_d_year,to_d_month,to_d_day)
-        print(from_d,to_d)
         cursor.execute(query, (username, from_d, to_d))
         monthly=cursor.fetchall()
         if monthly[0]['sum(sold_price)']==None:
@@ -462,7 +461,6 @@ def customer_home():
         months.append(str(from_d_year)+"-"+str(from_d_month))
         monthly_spending.append(monthly)
     cursor.close()
-    print(monthly_spending)
 
     return render_template('customer-home.html', flights=data1, unrated=data2, total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date=to_date, from_date_track=from_date,to_date_track=to_date, display_number = 6, months = months)
 
@@ -543,14 +541,14 @@ def switchCustomerView():
 
 
 #---------!customer! purchase flights-------------
-@app.route("/searchCustomerOneWay", methods=['GET', 'POST'])
-def searchCustomerOneWay():
+@app.route("/purchaseCustomerOneWay", methods=['GET', 'POST'])
+def purchaseCustomerOneWay():
+    pass
 
 
-
-@app.route("/searchCustomerRound", methods=['GET', 'POST'])
-def searchCustomerRound():
-
+@app.route("/purchaseCustomerRound", methods=['GET', 'POST'])
+def purchaseCustomerRound():
+    pass
 #------------------------------------------------------------------------------
 #------------!customer! view my flights-----------
 @app.route('/view', methods=['GET', 'POST'])
@@ -746,23 +744,19 @@ def viewCustomer():
 #------------------------------------------------------------------------------
 #------------!customer! rate my flights-----------
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!PROBLEM
-@app.route("/rate", methods=['GET', 'POST'])
+@app.route("/rate", methods=['GET','POST'])
 def rate():
-    airline_name = request.form['airline-name']
-    flight_number = request.form['flight-number']
-    departure_date = request.form['departure-date']
-    departure_time = request.form['departure-time']
-    source = request.form['source']
-    destination = request.form['destination']
-
-    return render_template('rate-customer.html', airline_name=airline_name,flight_number=flight_number,departure_date=departure_date,
-    departure_time=departure_time,source=source,destination=destination)
+    airline = request.form['airline']
+    number = request.form['number']
+    date = request.form['date']
+    time = request.form['time']
+    return(render_template('rate-customer.html',airline_name=airline, flight_number=number, departure_date=date, departure_time=time))
 
 @app.route("/rateCustomer", methods=['GET', 'POST'])
 def rateCustomer():
     username = session['username']
-    airline_name = request.form['airline_name']
-    flight_number = request.form['flight_number']
+    airline_name = request.form['airline-name']
+    flight_number = request.form['flight-number']
     departure_date = "2019-06-01"
     departure_time = "22:50:00"
     rate = request.form['rate']
@@ -869,43 +863,53 @@ def trackCustomer():
     date2 = datetime.strptime(to_date_track, '%Y-%m-%d')
     # r = relativedelta.relativedelta(date2, date1)
     # month_number = r.months + r.years*12
-    month_number = (date2.year-date1.year)*12 + date2.month - date1.month
-    if date2.day != 1:
-        month_number += 1
-    for i in range(month_number):
-        query = '''select sum(sold_price) from purchase where email = %s
-        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
-        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
-        if date1.month+i <= 12:
-            from_d_year = date1.year
-            from_d_month = date1.month+i
-        else:
-            from_d_year = date1.year+1
-            from_d_month = date1.month+i-12
-        if date1.month+i+1 <= 12:
-            to_d_year = date1.year
-            to_d_month = date1.month+i+1
-        else:
-            to_d_year = date1.year+1
-            to_d_month = date1.month+i-11
+    # month_number = (date2.year-date1.year)*12 + date2.month - date1.month
+    # if date2.day != 1:
+    #     month_number += 1
+    year_number = date2.year-date1.year+1
+    for i in range(year_number):
         if i == 0:
-            from_d_day = date1.day
+            month_number = 13 - date1.month
+            init_month = date1.month
+        elif i == year_number - 1:
+            month_number = date2.month
+            init_month = 1
         else:
-            from_d_day = 1
-        if i == month_number-1:
-            to_d_month = date2.month
-            to_d_day = date2.day
-        else:
-            to_d_day = 1
-        from_d = date(from_d_year,from_d_month,from_d_day)
-        to_d = date(to_d_year,to_d_month,to_d_day)
-        # print(from_d,to_d)
-        cursor.execute(query, (username, from_d, to_d))
-        monthly=cursor.fetchall()
-        if monthly[0]['sum(sold_price)']==None:
-            monthly[0]['sum(sold_price)']=0
-        months.append(str(from_d_year)+"-"+str(from_d_month))
-        monthly_spending.append(monthly)
+            month_number = 12
+            init_month = 1
+        for j in range(month_number):
+            query = '''select sum(sold_price) from purchase where email = %s
+            and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
+            and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
+            if init_month+j <= 12:
+                from_d_year = date1.year+i
+                from_d_month = init_month+j
+            else:
+                from_d_year = date1.year+1+i
+                from_d_month = init_month+j-12
+            if init_month+j+1 <= 12:
+                to_d_year = date1.year+i
+                to_d_month = init_month+j+1
+            else:
+                to_d_year = date1.year+1+i
+                to_d_month = init_month+j-11
+            if i == 0:
+                from_d_day = date1.day
+            else:
+                from_d_day = 1
+            if i == month_number-1:
+                to_d_month = date2.month
+                to_d_day = date2.day
+            else:
+                to_d_day = 1
+            from_d = date(from_d_year,from_d_month,from_d_day)
+            to_d = date(to_d_year,to_d_month,to_d_day)
+            cursor.execute(query, (username, from_d, to_d))
+            monthly=cursor.fetchall()
+            if monthly[0]['sum(sold_price)']==None:
+                monthly[0]['sum(sold_price)']=0
+            months.append(str(from_d_year)+"-"+str(from_d_month))
+            monthly_spending.append(monthly)
     cursor.close()
     print(monthly_spending)
     return render_template('track-customer.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date_track=from_date_track, to_date_track=to_date_track, month_numnber=month_number, display_number = month_number, months = months)

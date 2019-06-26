@@ -70,6 +70,15 @@
 <br>
 
 <h2>Rate my flights</h2>
+<h3>type in flight info to rate a flight:</h3>
+<form action="/rate" methods="POST">
+  airline<input type="text" name="airline" required/><br>
+  flight number<input type="text" name="number" required/><br>
+  departure date<input type="date" name="date" required/><br>
+  departure time<input type="time" name="time" required/><br>
+  <input type="submit" value=Rate />
+</form>
+<h3>unrated flights</h3>
 <table id="ratetable">
 	<th>Airline</th>
 	<th>Flight Number</th>
@@ -77,20 +86,15 @@
   <th>Departure Time</th>
   <th>Source</th>
   <th>Destination</th>
-  <th>Rate</th>
-
 {% for line in unrated %}
-<form action='/rate' methods="POST">
-	<tr>
-    <td><input name="airline-name" value="{{line['airline_name']}}" disabled/></td>
-    <td><input name="flight-number" value="{{line['flight_number']}}" disabled/></td>
-    <td><input name="departure-date" value="{{line['departure_date']}}" disabled/></td>
-    <td><input name="departure-time" value="{{line['departure_time']}}" disabled/></td>
-    <td><input name="source" value="{{line['arrival_airport']}}" disabled/></td>
-    <td><input name="destination" value="{{line['departure_airport']}}" disabled/></td>
-    <td><input type="submit" value=Rate /></td>
-	</tr>
-</form>
+<tr>
+  <td>{{line['airline_name']}}</td>
+  <td>{{line['flight_number']}}</td>
+  <td>{{line['departure_date']}}</td>
+  <td>{{line['departure_time']}}</td>
+  <td>{{line['arrival_airport']}}</td>
+  <td>{{line['departure_airport']}}</td>
+</tr>
 {% endfor %}
 </table>
 <br>
