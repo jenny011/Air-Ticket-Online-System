@@ -670,16 +670,6 @@ def view():
     from_date = request.form['from-date']
     to_date = request.form['to-date']
 
-    # cursor = conn.cursor()
-    # query = 'select airline_name, flight_number, departure_date, departure_time, departure_airport, arrival_airport ' \
-    #         'from (flight natural join ticket) join purchase using (ticket_id)' \
-    #         'where timestamp(cast(arrival_date as datetime)+cast(arrival_time as time)) < now() ' \
-    #         'and email = %s and not exists (select * from (flight natural join ticket) natural join purchase natural join rates)'
-    # cursor.execute(query, (username))
-    # data2 = cursor.fetchall()
-    # print(data2)
-    # cursor.close()
-
     if from_date == "":
         from_date = date.today()
     if to_date == "":
@@ -758,8 +748,6 @@ def view():
             cursor.execute(query, (username, source, destination, from_date, to_date))
             data1 = cursor.fetchall()
             cursor.close()
-    # return render_template('customer-home.html', from_date=from_date, to_date=to_date,
-    #                        source=source, destination=destination, flights=data1, unrated=data2)
     return render_template('view-customer.html', from_date=from_date, to_date=to_date,
                            source=source, destination=destination, flights=data1)
 
