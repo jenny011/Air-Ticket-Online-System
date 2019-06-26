@@ -111,39 +111,10 @@ and ticket_id not in (select ticket_id from purchase)
 */
 
 
-/*6. purchase tickets*/
---ticket_id, get the first_ticket id that is not taken---how?
 
-create table temporal_ticket(
-    email varchar(50) not null,
-    ticket_id varchar(50) not null,
-    airline_name varchar(50),
-	flight_number varchar(20) not null,
-	departure_date date not null,
-	departure_time time not null,
-    click_date date,
-    click_time time,
-    price float(2) not null
-    primary key (email, airline_name, flight_number, departure_date, departure_time)
-    foreign key (email) references customer(email),
-    foreign key (airline_name, flight_number, departure_date, departure_time) references flight(airline_name, flight_number, departure_date, departure_time)
-		on update cascade
-	);
---the ticket is kept for 10 mins. 
-
---(1) choose the ticket to buy
---get the ticket
---in what form is the ticket id? how is ticket_id created? [assume ticket exists before it gets sold]
-insert into temporal_ticket (email, ticket_id, airline_name, flight_number, departure_date, departure_time, click_date, click_time)
-values(/*get email*/, /*get ticket id*/, /*four spaces for flight info*/, cast(now() as date), cast(now() as time));
-
---(2) input payment info (and the ticket purchasing is finished)
---you need to calculate price
-insert into purchase(ticket_id, email, purchase_date, purchase_time, sold_price, card_type, card_number, name_on_card, expiration_date)
-values 
-
-
-
+--query for ticket with price
+creat view flight_price as
+select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, 
 
 
 
