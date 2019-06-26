@@ -127,9 +127,6 @@
     let monthly_spending = {{ monthly_spending | tojson }};
   {% endif %}
   let display_number = {{display_number}};
-  if(display_number>10){
-    display_number = 10;
-  }
   for(let i=1; i<=display_number; i++){
     // reversed
     let index = monthly_spending.length-i;
@@ -150,7 +147,7 @@
     		title: "Spending (RMB)"
     	},
     	data: [{
-    		type: "bar",
+    		type: "column",
     		showInLegend: false,
     		dataPoints: []
     	}]

@@ -10,9 +10,8 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
+                       password='',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -833,7 +832,73 @@ def track():
         monthly_spending.append(monthly)
     cursor.close()
     print(monthly_spending)
-    return render_template('customer-home.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date_track=from_date_track, to_date_track=to_date_track, month_numnber=month_number, display_number = month_number, months = months)
+    return render_template('track-customer.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date_track=from_date_track, to_date_track=to_date_track, month_numnber=month_number, display_number = month_number, months = months)
+
+#--------------------------------------------------------------------------------
+#track-customer page
+@app.route("/trackCustomer", methods=['GET', 'POST'])
+def trackCustomer():
+    # when the user specify from-date and to-date
+    username = session['username']
+    from_date_track = request.form['from-date']
+    to_date_track = request.form['to-date']
+    cursor = conn.cursor()
+    query = '''select sum(sold_price) from purchase where email = %s
+    and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
+    and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
+    cursor.execute(query, (username, from_date_track, to_date_track))
+    total_spending = cursor.fetchall()
+    if total_spending[0]['sum(sold_price)']==None:
+        total_spending[0]['sum(sold_price)']=0
+    cursor.close()
+    #Track-monthly
+    cursor = conn.cursor()
+    monthly_spending = []
+    months=[]
+    date1 = datetime.strptime(from_date_track, '%Y-%m-%d')
+    date2 = datetime.strptime(to_date_track, '%Y-%m-%d')
+    # r = relativedelta.relativedelta(date2, date1)
+    # month_number = r.months + r.years*12
+    month_number = (date2.year-date1.year)*12 + date2.month - date1.month
+    if date2.day != 1:
+        month_number += 1
+    for i in range(month_number):
+        query = '''select sum(sold_price) from purchase where email = %s
+        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
+        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
+        if date1.month+i <= 12:
+            from_d_year = date1.year
+            from_d_month = date1.month+i
+        else:
+            from_d_year = date1.year+1
+            from_d_month = date1.month+i-12
+        if date1.month+i+1 <= 12:
+            to_d_year = date1.year
+            to_d_month = date1.month+i+1
+        else:
+            to_d_year = date1.year+1
+            to_d_month = date1.month+i-11
+        if i == 0:
+            from_d_day = date1.day
+        else:
+            from_d_day = 1
+        if i == month_number-1:
+            to_d_month = date2.month
+            to_d_day = date2.day
+        else:
+            to_d_day = 1
+        from_d = date(from_d_year,from_d_month,from_d_day)
+        to_d = date(to_d_year,to_d_month,to_d_day)
+        # print(from_d,to_d)
+        cursor.execute(query, (username, from_d, to_d))
+        monthly=cursor.fetchall()
+        if monthly[0]['sum(sold_price)']==None:
+            monthly[0]['sum(sold_price)']=0
+        months.append(str(from_d_year)+"-"+str(from_d_month))
+        monthly_spending.append(monthly)
+    cursor.close()
+    print(monthly_spending)
+    return render_template('track-customer.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date_track=from_date_track, to_date_track=to_date_track, month_numnber=month_number, display_number = month_number, months = months)
 
 
 
