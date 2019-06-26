@@ -420,6 +420,7 @@ def customer_home():
     #Track-monthly
     cursor = conn.cursor()
     monthly_spending = []
+    months=[]
     date1 = datetime.strptime(str(from_date), '%Y-%m-%d')
     date2 = datetime.strptime(str(to_date), '%Y-%m-%d')
     # r = relativedelta.relativedelta(date2, date1)
@@ -459,11 +460,12 @@ def customer_home():
         monthly=cursor.fetchall()
         if monthly[0]['sum(sold_price)']==None:
             monthly[0]['sum(sold_price)']=0
+        months.append(str(from_d_year)+"-"+str(from_d_month))
         monthly_spending.append(monthly)
     cursor.close()
     print(monthly_spending)
 
-    return render_template('customer-home.html', flights=data1, unrated=data2, total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date=to_date, from_date_track=from_date,to_date_track=to_date)
+    return render_template('customer-home.html', flights=data1, unrated=data2, total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date=to_date, from_date_track=from_date,to_date_track=to_date, display_number = 6, months = months)
 
 #------------------------------------------------------------------------------
 #---------!customer! search flights-------------
@@ -797,6 +799,7 @@ def track():
     #Track-monthly
     cursor = conn.cursor()
     monthly_spending = []
+    months=[]
     date1 = datetime.strptime(from_date_track, '%Y-%m-%d')
     date2 = datetime.strptime(to_date_track, '%Y-%m-%d')
     # r = relativedelta.relativedelta(date2, date1)
@@ -836,34 +839,12 @@ def track():
         monthly=cursor.fetchall()
         if monthly[0]['sum(sold_price)']==None:
             monthly[0]['sum(sold_price)']=0
+        months.append(str(from_d_year)+"-"+str(from_d_month))
         monthly_spending.append(monthly)
     cursor.close()
-    # print(monthly_spending)
-    return render_template('customer-home.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date_track=from_date_track, to_date_track=to_date_track)
+    print(monthly_spending)
+    return render_template('customer-home.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date_track=from_date_track, to_date_track=to_date_track, month_numnber=month_number, display_number = month_number, months = months)
 
-    '''
-    # default:
-    # total money last year
-    q_last_year = 'select sum(sold_price) from purchase where email = %s and purchase_date between date(today.x) and date.today()'
-
-    # monthwise spending
-    q_month_wise = 'select sum(sold_price) ' \
-            'from purchase ' \
-            'where email = %s ' \
-            'and purchase_date between %s and %s'
-    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 1 month', 'now()'))
-    month1 = cursor.fetchall()
-    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 2 month', 'NOW() - INTERVAL 1 month'))
-    month2 = cursor.fetchall()
-    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 3 month', 'NOW() - INTERVAL 2 month'))
-    month3 = cursor.fetchall()
-    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 4 month', 'NOW() - INTERVAL 3 month'))
-    month4 = cursor.fetchall()
-    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 5 month', 'NOW() - INTERVAL 4 month'))
-    month5 = cursor.fetchall()
-    cursor.execute(month_wise, (username, 'NOW() - INTERVAL 6 month', 'NOW() - INTERVAL 5 month'))
-    month6 = cursor.fetchall()
-    '''
 
 
 #logout is the same for customer and staff

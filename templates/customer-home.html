@@ -119,11 +119,25 @@
       document.getElementById('return-date').setAttribute("required","");
     }
   });
-  //draw bar chart
-  // let monthwise_spending = {{monthwise_spending}}
-  // console.log(monthwise_spending);
+
+  // draw bar chart
+  let monthly = [], Xaxis=[];
+  let months = {{months | tojson}};
+  {% if monthly_spending is defined and monthly_spending %}
+    let monthly_spending = {{ monthly_spending | tojson }};
+  {% endif %}
+  let display_number = {{display_number}};
+  if(display_number>10){
+    display_number = 10;
+  }
+  for(let i=1; i<=display_number; i++){
+    // reversed
+    let index = monthly_spending.length-i;
+    monthly.push(monthly_spending[index][0]['sum(sold_price)']);
+    Xaxis.push(months[index]);
+  }
   window.onload = function () {
-    var chart = new CanvasJS.Chart("barchart", {
+    let chart = new CanvasJS.Chart("barchart", {
     	animationEnabled: true,
     	theme: "light2",
     	title:{
@@ -138,19 +152,15 @@
     	data: [{
     		type: "bar",
     		showInLegend: false,
-    		// legendMarkerColor: "grey",
-    		// legendText: "RMB",
-    		dataPoints: [
-    			{ y: 300878, label: "2018-02" },
-    			{ y: 266455,  label: "2018-03" },
-    			{ y: 169709,  label: "2018-04" },
-    			{ y: 158400,  label: "2018-05" },
-    			{ y: 142503,  label: "2018-06" },
-    			{ y: 101500, label: "2018-07" },
-    		]
+    		dataPoints: []
     	}]
     });
+    let bars = [];
+    for(let i=monthly.length-1; i>=0; i--){
+      bars.push({y:monthly[i], label:Xaxis[i]});
+    }
     chart.render();
+    chart.data[0].set("dataPoints",bars);
   }
 </script>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
