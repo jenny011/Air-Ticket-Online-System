@@ -10,11 +10,13 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
+
 
 
 '''
@@ -34,7 +36,6 @@ conn = pymysql.connect(host='localhost',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
-
 '''
 
 @app.route('/')
@@ -384,7 +385,7 @@ def customer_home():
     to_date = today
     from_date = date(today.year-1, today.month, today.day)
 
-    print("customer home query")
+
     # view
     cursor = conn.cursor()
     query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
@@ -398,10 +399,14 @@ def customer_home():
     query = 'select airline_name, flight_number, departure_date, departure_time, departure_airport, arrival_airport ' \
             'from (flight natural join ticket) join purchase using (ticket_id)' \
             'where timestamp(cast(arrival_date as datetime)+cast(arrival_time as time)) < now() ' \
-            'and email = %s and not exists (select * from (flight natural join ticket) natural join purchase natural join rates)'
+            'and email = %s and ' \
+            'ticket_id not in ' \
+            '(select ticket_id ' \
+            'from (flight natural join ticket) join purchase using (ticket_id) join rates using (email, airline_name, flight_number, departure_date, departure_time))'
     cursor.execute(query, (username))
     data2 = cursor.fetchall()
     cursor.close()
+
     #Track-total
     cursor = conn.cursor()
     query = '''select sum(sold_price) from purchase where email = %s
@@ -819,7 +824,7 @@ def track():
             to_d_day = 1
         from_d = date(from_d_year,from_d_month,from_d_day)
         to_d = date(to_d_year,to_d_month,to_d_day)
-        print(from_d,to_d)
+        # print(from_d,to_d)
         cursor.execute(query, (username, from_d, to_d))
         monthly=cursor.fetchall()
         if monthly[0]['sum(sold_price)']==None:
@@ -887,6 +892,46 @@ def staff_home():
         print(each['blog_post'])
     cursor.close()
     return render_template('home.html', username=username, posts=data1)
+
+
+# # ------create new flights--------------
+#
+# # when staff creates a flight
+#
+# # get flight into, store it in session?
+#
+# # authorize user
+#
+# # insert flight info into flight table
+#
+# # create ticket for the flight
+# airline_name =
+# flight_number =
+# departure_date =
+# departure_time =
+# base_price =
+# id =
+#
+# query = '''select amount_of_seats
+# from flight natural join airplane
+# where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s
+# and base_price = %s and id = %s'''
+# amount_of_seats = "***result of the query***"
+#
+# # automatically generate ticket id?
+# cursor = conn.cursor()
+# for i in range(amount_of_seats):
+#     to_add = str(i).zfill(4)
+#     ticket_id = flight_number + to_add
+#     c
+#     query = '''
+#     insert into ticket (ticket_id, airline_name, flight_number, departure_date, departure_time)
+#     values (%s, %s, %s, %S, %s)
+#     '''
+#     cursor.execute(query, (ticket_id, airline_name, flight_number, departure_date, departure_time))
+# cursor.close()
+
+
 
 
 if __name__ == "__main__":
