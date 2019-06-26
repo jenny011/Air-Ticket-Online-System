@@ -544,7 +544,6 @@ def switchCustomerView():
 def purchaseCustomerOneWay():
     pass
 
->>>>>>> 99515e865b592ed0719d5693cadc1f8c46f98cbc
     airline_name = request.form['airline-name']
     flight_number = request.form['flight-number']
     departure_date = request.form['departure-date']
