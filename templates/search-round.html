@@ -31,16 +31,10 @@
   <div id='return-date-div' style="visibility:visible;">
     return date <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM"  value={{return_date}} required/> <br>
   </div>
-  <input type="submit" value = Search />
+  <input type="submit" value=Search />
 </form>
 
-<form id="submit-form" action="/switchPublicView" method="POST">
-  <input type="radio" id="radio-departure" name="switch-two" value="departure" checked/>
-  <label for="radio-departure">departure</label>
-  <input type="radio" id="radio-return" name="switch-two" value="return" />
-  <label for="radio-return">return</label><br>
-</form>
-
+<h3>Departure: {{source}} to {{destination}}</h3>
 <table>
 	<th>Airline</th>
 	<th>Flight Number</th>
@@ -51,7 +45,33 @@
   <th>Source</th>
   <th>Destination</th>
   <th>Price</th>
-{% for line in flights %}
+{% for line in departure_flights %}
+<tr>
+	<td>{{line['airline_name']}}</td>
+	<td>{{line['flight_number']}}</td>
+  <td>{{line['departure_date']}}</td>
+  <td>{{line['departure_time']}}</td>
+  <td>{{line['arrival_date']}}</td>
+  <td>{{line['arrival_time']}}</td>
+  <td>{{line['arrival_airport']}}</td>
+  <td>{{line['departure_airport']}}</td>
+  <td>{{line['price']}}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h3>Return: {{destination}} to {{source}}</h3>
+<table>
+	<th>Airline</th>
+	<th>Flight Number</th>
+  <th>Departure Date</th>
+  <th>Departure Time</th>
+  <th>Arrival Date</th>
+  <th>Arrival Time</th>
+  <th>Source</th>
+  <th>Destination</th>
+  <th>Price</th>
+{% for line in return_flights %}
 <tr>
 	<td>{{line['airline_name']}}</td>
 	<td>{{line['flight_number']}}</td>
@@ -69,12 +89,6 @@
 </body>
 
 <script>
-  document.getElementById("radio-departure").onclick = function() {
-   document.getElementById("submit-form").submit();
-  };
-  document.getElementById("radio-return").onclick = function() {
-   document.getElementById("submit-form").submit();
-  };
   document.getElementById("radio-one-div").addEventListener("click",function(){
     if(document.getElementById('radio-one').checked) {
       document.getElementById('return-date-div').style.visibility = "hidden";

@@ -14,7 +14,7 @@
 
 <body>
 <a href="/logout">Logout</a>
-/ <a href="/customer-home">Back</a>
+/ <a href="/customer_home">Back</a>
 <h1>Search for flights</h1>
 <form action="/searchCustomerRound" method="POST">
   source <input type="text" name = "source" placeholder="source" value={{source}} required/> <br>
@@ -32,13 +32,7 @@
   <input type="submit" value = Search />
 </form>
 
-{%if not message%}
-<div>departure</div>
-{%endif%}
-{%if message%}
-<div>return</div>
-{%endif%}
-
+<h3>Departure: {{source}} to {{destination}}</h3>
 <table>
 	<th>Airline</th>
 	<th>Flight Number</th>
@@ -50,7 +44,37 @@
   <th>Destination</th>
   <th>Price</th>
   <th></th>
-{% for line in flights %}
+{% for line in departure_flights %}
+<form action="/purchaseCustomerRound" methods="POST">
+	<tr>
+    <td>{{line['airline_name']}}</td>
+		<td>{{line['flight_number']}}</td>
+    <td>{{line['departure_date']}}</td>
+    <td>{{line['departure_time']}}</td>
+    <td>{{line['arrival_date']}}</td>
+    <td>{{line['arrival_time']}}</td>
+    <td>{{line['departure_airport']}}</td>
+    <td>{{line['arrival_airport']}}</td>
+    <td>{{line['price']}}</td>
+    <td><input type="submit" name="purchase" value=Purchase /></td>
+	</tr>
+</form>
+{% endfor %}
+</table>
+
+<h3>Return: {{destination}} to {{source}}</h3>
+<table>
+	<th>Airline</th>
+	<th>Flight Number</th>
+  <th>Departure Date</th>
+  <th>Departure Time</th>
+  <th>Arrival Date</th>
+  <th>Arrival Time</th>
+  <th>Source</th>
+  <th>Destination</th>
+  <th>Price</th>
+  <th></th>
+{% for line in return_flights %}
 <form action="/purchaseCustomerRound" methods="POST">
 	<tr>
     <td>{{line['airline_name']}}</td>
@@ -69,12 +93,6 @@
 </table>
 
 <script>
-  document.getElementById("radio-departure").onclick = function() {
-   document.getElementById("submit-form").submit();
-  };
-  document.getElementById("radio-return").onclick = function() {
-   document.getElementById("submit-form").submit();
-  };
   document.getElementById("radio-one-div").addEventListener("click",function(){
     if(document.getElementById('radio-one').checked) {
       document.getElementById('return-date-div').style.visibility = "hidden";

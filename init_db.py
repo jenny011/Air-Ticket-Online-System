@@ -232,7 +232,6 @@ def searchPublic():
     departure_date = request.form['departure-date']
 
     if triptype == "one-way":
-
         cursor = conn.cursor()
         query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
@@ -241,21 +240,27 @@ def searchPublic():
         data1 = cursor.fetchall()
         print("data in search public", data1)
         cursor.close()
-        return render_template('search-one.html',
-                               source=source, destination=destination, departure_date=departure_date, flights=data1)
+        return render_template('search-one.html', source=source, destination=destination, departure_date=departure_date, flights=data1)
 
-    elif triptype == "round":#####!!!!!!-----todo-------!!!!!!
+    elif triptype == "round":
         return_date = request.form['return-date']
         cursor = conn.cursor()
         query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
-        cursor.execute(query, (source, destination,departure_date))
+        cursor.execute(query, (source, destination, departure_date))
         data1 = cursor.fetchall()
 
         cursor.close()
-        return render_template('search-round.html', source=source, destination=destination,
-                               departure_date=departure_date, return_date=return_date, flights=data1)
+
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (destination, source, return_date))
+        data2 = cursor.fetchall()
+        cursor.close()
+        return render_template('search-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, departure_flights=data1, return_flights=data2)
 
 @app.route("/searchPublicOneWay", methods=['GET', 'POST'])
 def searchPublicOneWay():
@@ -275,16 +280,23 @@ def searchPublicOneWay():
         cursor.close()
         return render_template('search-one.html', source=source, destination=destination, departure_date=departure_date, flights=data1)
 
-    elif triptype == "round":#------!!!!!!!todo
+    elif triptype == "round":
         return_date = request.form['return-date']
         cursor = conn.cursor()
         query = 'select * from flight ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
-        cursor.execute(query, (source, destination,departure_date))
+        cursor.execute(query, (source, destination, departure_date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('search-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (destination, source, return_date))
+        data2 = cursor.fetchall()
+        cursor.close()
+        return render_template('search-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, departure_flights=data1, return_flights=data2)
 
 @app.route("/searchPublicRound", methods=['GET', 'POST'])
 def searchPublicRound():
@@ -303,21 +315,25 @@ def searchPublicRound():
             cursor.close()
             return render_template('search-one.html', source=source, destination=destination, departure_date = departure_date, flights=data1)
 
-        elif triptype == "round":#------!!!!!!!todo
+        elif triptype == "round":
             return_date = request.form['return-date']
             cursor = conn.cursor()
             query = 'select * from flight ' \
                     'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                     'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
-            cursor.execute(query, (source, destination,departure_date))
+            cursor.execute(query, (source, destination, departure_date))
             data1 = cursor.fetchall()
             cursor.close()
-            return render_template('search-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
 
+            cursor = conn.cursor()
+            query = 'select * from flight ' \
+                    'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                    'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+            cursor.execute(query, (destination, source, return_date))
+            data2 = cursor.fetchall()
+            cursor.close()
+            return render_template('search-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, departure_flights=data1, return_flights=data2)
 
-@app.route("/switchPublicView", methods=['GET', 'POST'])
-def switchPublicView():
-    pass
 
 
 # ------------- public check ------------------
@@ -492,8 +508,21 @@ def search():
 
     elif triptype == "round":
         return_date = request.form['return-date']
-        pass
-        return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (source, destination, departure_date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (destination, source, return_date))
+        data2 = cursor.fetchall()
+        cursor.close()
+        return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, departure_flights=data1, return_flights=data2)
 
 @app.route('/searchCustomerOneWay', methods=['GET', 'POST'])
 def searchCustomerOneWay():
@@ -514,8 +543,21 @@ def searchCustomerOneWay():
 
     elif triptype == "round":
         return_date = request.form['return-date']
-        pass
-        return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (source, destination, departure_date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (destination, source, return_date))
+        data2 = cursor.fetchall()
+        cursor.close()
+        return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, departure_flights=data1, return_flights=data2)
 
 @app.route("/searchCustomerRound", methods=['GET', 'POST'])
 def searchCustomerRound():
@@ -529,18 +571,29 @@ def searchCustomerRound():
         query = 'select * from flight ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
-        cursor.execute(query, (source, destination, departure_date))
+        cursor.execute(query, (source, destination,departure_date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('search-customer-one.html', source=source, destination=destination, departure_date=departure_date, flights=data1)
+        return render_template('search-customer-one.html', source=source, destination=destination, departure_date = departure_date, flights=data1)
 
     elif triptype == "round":
         return_date = request.form['return-date']
-        return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, flights=data1)
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (source, destination, departure_date))
+        data1 = cursor.fetchall()
+        cursor.close()
 
-@app.route("/switchCustomerView", methods=['GET', 'POST'])
-def switchCustomerView():
-    pass
+        cursor = conn.cursor()
+        query = 'select * from flight ' \
+                'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
+                'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
+        cursor.execute(query, (destination, source, return_date))
+        data2 = cursor.fetchall()
+        cursor.close()
+        return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, departure_flights=data1, return_flights=data2)
 
 
 #---------!customer! purchase flights-------------
@@ -618,16 +671,6 @@ def view():
     destination = request.form['destination']
     from_date = request.form['from-date']
     to_date = request.form['to-date']
-
-    # cursor = conn.cursor()
-    # query = 'select airline_name, flight_number, departure_date, departure_time, departure_airport, arrival_airport ' \
-    #         'from (flight natural join ticket) join purchase using (ticket_id)' \
-    #         'where timestamp(cast(arrival_date as datetime)+cast(arrival_time as time)) < now() ' \
-    #         'and email = %s and not exists (select * from (flight natural join ticket) natural join purchase natural join rates)'
-    # cursor.execute(query, (username))
-    # data2 = cursor.fetchall()
-    # print(data2)
-    # cursor.close()
 
     if from_date == "":
         from_date = date.today()
@@ -707,8 +750,6 @@ def view():
             cursor.execute(query, (username, source, destination, from_date, to_date))
             data1 = cursor.fetchall()
             cursor.close()
-    # return render_template('customer-home.html', from_date=from_date, to_date=to_date,
-    #                        source=source, destination=destination, flights=data1, unrated=data2)
     return render_template('view-customer.html', from_date=from_date, to_date=to_date,
                            source=source, destination=destination, flights=data1)
 
