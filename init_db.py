@@ -545,6 +545,7 @@ def switchCustomerView():
 #---------!customer! purchase flights-------------
 @app.route("/purchaseCustomerOneWay", methods=['GET', 'POST'])
 def purchaseCustomerOneWay():
+
     airline_name = request.form['airline-name']
     flight_number = request.form['flight-number']
     departure_date = request.form['departure-date']
@@ -572,9 +573,11 @@ def purchase_Customer():
 
 @app.route("/payCustomer", methods=['GET', 'POST'])
 def payCustomer():
-    # session needed for this: get the flight info and ticket info
+    # todo: session needed for this: get the flight info and ticket info
     # card type needed
+
     username = session['username']
+    purchase_date = date.today()
     card_number = request.form['card-number']
     name_on_cart = request.form['name-on-card']
     card_expiration = request.form['card-expiration']
@@ -583,7 +586,10 @@ def payCustomer():
     (ticket_id, email, purchase_date, purchase_time, sold_price, card_type, card_number, name_on_card, expiraton_date)
     values (%s, %s, %s, %s, %s, %s, %s, %s, %s)
     '''
-    cursor.execute(query, (source, destination, departure_date))
+    # get date now
+    # the logic for purchase
+
+    cursor.execute(query, (ticket_id, username, ))
     data1 = cursor.fetchall()
     cursor.close()
     return render_template('search-customer-one.html', source=source, destination=destination)
