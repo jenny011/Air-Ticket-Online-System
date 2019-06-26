@@ -1,9 +1,4 @@
-/*1.a search future flights*/
--- if single trip
-select *
-from flight
-where departure_time > now() and departure_airport = %s and arrival_airport = %s
-and departure_date = %s
+
 
 --if round trip, display the result of two queries
 select *
@@ -17,13 +12,6 @@ where departure_time > now() and departure_airport = %s and arrival_airport = %s
 and departure_date = %s
 --this %s is the return date. the departure_airport and arrival_airport are the opposite
 
-/*1.b see flight status*/
-select status
-from flight
-where airline_name = %s and flight_number = %s and departure_date = %s
---give the user only one option: input the departure_date?
---or the user could choose to view according to the daparture_date/arrival_date?
---no need to input time?
 
 
 /*7. give ratings and comment on previous flights*/
@@ -39,12 +27,55 @@ INSERT INTO `rates` (`email`, `airline_name`, `flight_number`, `departure_date`,
 VALUES (%s, %s, %s, %s, %s, %s, %s);
 
 
-/*8. track my spending*/
-select sum(sold_price) from purchase where email = %same
 
 
 -----------------------------------------------------
 --todo: create view from price
+
+--when the staff insert a flight, all the ticket should be inserted
+
+/*
+1. the staff insert a flight
+you get the info:
+airline_name = 
+flight_number = 
+departure_date = 
+departure_time = 
+base_price = 
+id = 
+*/
+
+amount of seats = 
+select amount_of_seats
+from flight natural join airplane
+where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s
+and base_price = %s and id = %s
+
+--automatically generate ticket id?
+
+for i in range(amount_of_seats):
+    ticket_id = flight_number + str(i)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*4. view my flights*/
 --after login: how can i get the customer_id?

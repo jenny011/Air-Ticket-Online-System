@@ -36,7 +36,6 @@ conn = pymysql.connect(host='localhost',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
-
 '''
 
 @app.route('/')
@@ -407,6 +406,7 @@ def customer_home():
     cursor.execute(query, (username))
     data2 = cursor.fetchall()
     cursor.close()
+
     #Track-total
     cursor = conn.cursor()
     query = '''select sum(sold_price) from purchase where email = %s
@@ -775,7 +775,6 @@ def track():
     username = session['username']
     from_date_track = request.form['from-date']
     to_date_track = request.form['to-date']
-
     cursor = conn.cursor()
     query = '''select sum(sold_price) from purchase where email = %s
     and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
@@ -912,6 +911,46 @@ def staff_home():
         print(each['blog_post'])
     cursor.close()
     return render_template('home.html', username=username, posts=data1)
+
+
+# # ------create new flights--------------
+#
+# # when staff creates a flight
+#
+# # get flight into, store it in session?
+#
+# # authorize user
+#
+# # insert flight info into flight table
+#
+# # create ticket for the flight
+# airline_name =
+# flight_number =
+# departure_date =
+# departure_time =
+# base_price =
+# id =
+#
+# query = '''select amount_of_seats
+# from flight natural join airplane
+# where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s
+# and base_price = %s and id = %s'''
+# amount_of_seats = "***result of the query***"
+#
+# # automatically generate ticket id?
+# cursor = conn.cursor()
+# for i in range(amount_of_seats):
+#     to_add = str(i).zfill(4)
+#     ticket_id = flight_number + to_add
+#     c
+#     query = '''
+#     insert into ticket (ticket_id, airline_name, flight_number, departure_date, departure_time)
+#     values (%s, %s, %s, %S, %s)
+#     '''
+#     cursor.execute(query, (ticket_id, airline_name, flight_number, departure_date, departure_time))
+# cursor.close()
+
+
 
 
 if __name__ == "__main__":
