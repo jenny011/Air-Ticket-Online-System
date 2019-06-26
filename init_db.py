@@ -583,6 +583,8 @@ def payCustomer():
 
     username = session['username']
     purchase_date = date.today()
+    purchase_time =
+    card_type = request.form["cardtype"]
     card_number = request.form['card-number']
     name_on_cart = request.form['name-on-card']
     card_expiration = request.form['card-expiration']
