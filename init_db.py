@@ -11,13 +11,12 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
-
-
 
 '''
 on Eileen's server:
@@ -497,7 +496,9 @@ def customer_home():
         monthly_spending.append(monthly)
     cursor.close()
 
-    return render_template('customer-home.html', flights=data1, unrated=data2, total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date=to_date, from_date_track=from_date,to_date_track=to_date, display_number = 6, months = months)
+    return render_template('customer-home.html', flights=data1, unrated=data2, total=total_spending[0]['sum(sold_price)'],
+                           monthly_spending=monthly_spending, from_date=to_date, from_date_track=from_date,to_date_track=to_date,
+                           display_number=6, months=months)
 
 #------------------------------------------------------------------------------
 #---------!customer! search flights-------------
@@ -670,9 +671,6 @@ def payCustomer():
     username = session['username']
     flight_info1 = session['flight_info1']
     purchase_date = date.today()
-    purchase_time = datetime.now().time()
-    # print(purchase_time)
-    # not sure if purchase_time is in correct format
     card_type = request.form["cardtype"]
     card_number = request.form['card-number']
     name_on_card = request.form['name-on-card']
@@ -1207,7 +1205,7 @@ def createFlight():
     username = session['username']
     usertype = session['usertype']
     if usertype == "staff":
-        airline = session['airline']
+        airline_name = session['airline']
         flight_number = request.form['flight-number']
         departure_date = request.form['departure-date']
         departure_time = request.form['departure-time']
@@ -1221,21 +1219,53 @@ def createFlight():
 
         cursor = conn.cursor();
         query = '''select * from flight
-          where airline_name=%s and flight_number=%s and departure_date=%s and departure_time=%s'''
-        cursor.execute(query, (airline, flight_number, departure_date, departure_time))
+        where airline_name=%s and flight_number=%s and departure_date=%s and departure_time=%s'''
+        cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
         data = cursor.fetchall()
         cursor.close()
 
         exist_flight = None
-        if(data):
-            return redirect(url_for('staff_home',exist_flight="This flight already exists."))
+        if (data):
+            return redirect(url_for('staff_home', exist_flight="This flight already exists."))
         else:
             cursor = conn.cursor();
             ins = 'INSERT INTO flight VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-            cursor.execute(ins, (airline, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, base_price, status, airplane_id))
+            cursor.execute(ins, (
+            airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport,
+            arrival_airport, base_price, status, airplane_id))
             conn.commit()
             cursor.close()
 
+        # -----create tickets for that flight------
+        cursor = conn.cursor()
+        query = '''select amount_of_seats
+        from flight natural join airplane
+        where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s'''
+        cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
+        seat_data = cursor.fetchone()
+        print(seat_data)
+        cursor.close()
+
+        # -----insert tickets for the flight----
+        # generate ticket_id: airline_name abbr. + flight_number + fixed random number + serial order (last 3 digits)
+        to_add1 = ''
+        for i in airline_name:
+            if i.isupper():
+                to_add1 += i
+        random_num = random.randint(0, 9999999)
+        to_add3 = str(random_num).zfill(7)
+        amount_of_seats = seat_data['amount_of_seats']
+        cursor = conn.cursor()
+        for i in range(amount_of_seats):
+            to_add2 = str(i).zfill(4)
+            ticket_id = to_add1 + flight_number + to_add3 + to_add2
+            query = '''
+            insert into ticket (ticket_id, airline_name, flight_number, departure_date, departure_time)
+            values (%s, %s, %s, %s, %s)
+            '''
+            cursor.execute(query, (ticket_id, airline_name, flight_number, departure_date, departure_time))
+            conn.commit()
+        cursor.close()
             # #add ticket
             # cursor = conn.cursor();
             # query = '''select amount_of_seats from flight natural join airplane
@@ -1266,8 +1296,7 @@ def createFlight():
             #     cursor.execute(ins, (ticket_id, airline, flight_number, departure_date, departure_time))
             #     conn.commit()
             #     cursor.close()
-
-            return redirect(url_for('create_flight_confirm'))
+        return redirect(url_for('create_flight_confirm'))
     else:
         return redirect(url_for('login'))
 
@@ -1375,20 +1404,71 @@ def create_airport_confirm():
 
 #--------------view flight ratings TODO???--------------
 
+# aveage ratings
+'''select airline_name, flight_number, departure_date, departure_time, avg(rating) as average_rating
+from rates
+group by (airline_name, flight_number, departure_date, departure_time)'''
 
+# view comments (extra page?)
+'''select comments
+from rates
+where (airline_name = %s and flight_number= %s and departure_date = %s, departure_time = %s)'''
 #--------------view frequent customer TODO--------------
 
+# create view (already in Air-Ticket-DDL)
+# '''create view frequent_customer as
+# select airline_name, email, name, count(ticket_id) as num_ticket
+# from (ticket natural join purchase) join customer using (email)
+# group by airline_name, email'''
 
+# this view is to be deleted after execution
+
+'''create view temp_frequent_customer as
+select create view frequent_customer as
+select airline_name, email, name, num_ticket
+from frequent_customer
+where airline_name = %s'''
+'''
+select distinct email, name
+from temp_frequent_customer
+where num_ticket = (select max(num_ticket) from frequent_customer)'''
+
+# drop the view after you get the result
+'''drop view emp_frequent_customer'''
 #--------------view ticket sales report TODO--------------
+'''select count(ticket_id)
+from ticket natural join purchase
+where airline_name = %s and purchase date between %s and %s'''
 
-
+# last month
+'''select select count(ticket_id)
+from ticket natural join purchase
+where airline_name = %s and 
+purchase_date between NOW() - INTERVAL 1 MONTH and NOW()'''
 #--------------into staff_home: quarterly revenue TODO--------------
 
 
 #--------------into staff_home: top destinations*2 TODO--------------
 
+# create view (already in Air-Ticket-DDL)
+# '''create view top_destinations as
+# select airline_name, arrival_airport, count(ticket_id) as num_ticket
+# from purchase natural join ticket natural join flight
+# group by (airline_name, arrival_airport)'''
 
+# last 3 month
+'''select arrival_airport, num_ticket
+from top_destinations
+where airline_name = %s and purchase_date between NOW() - INTERVAL 3 MONTH and NOW()
+order by num_ticket desc
+limit 3'''
 
+# last year
+'''select arrival_airport, num_ticket
+from top_destinations
+where airline_name = %s and purchase_date between NOW() - INTERVAL 1 year and NOW()
+order by num_ticket desc
+limit 3'''
 
 
 #========================END============================
