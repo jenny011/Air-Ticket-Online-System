@@ -43,3 +43,4 @@ INSERT INTO purchase VALUES ('a00000002', 'hello@world.com', '2019-04-11', '07:0
 
 
 INSERT INTO flight VALUES ('China Southern', '101', '2019-08-02', '19:40:00', '2019-08-03', '7:00:00', 'JFK', 'PVG', '7000', 'on-time', 'B-1111');
+INSERT INTO flight VALUES ('China Southern', '777', '2019-08-02', '20:40:00', '2019-08-03', '7:00:00', 'JFK', 'PVG', '7000', 'on-time', 'B-1111');

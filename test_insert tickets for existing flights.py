@@ -42,9 +42,9 @@ conn = pymysql.connect(host='localhost',
 # get the amount of seats
 
 airline_name = 'China Southern'
-flight_number = '101'
+flight_number = '777'
 departure_date = '2019-08-02'
-departure_time = '19:40:00'
+departure_time = '20:40:00'
 
 cursor = conn.cursor()
 query = '''select amount_of_seats
@@ -64,13 +64,12 @@ for i in airline_name:
         to_add1 += i
 random_num = random.randint(0,999)
 to_add3 = str(random_num).zfill(3)
-print(to_add1)
+
 amount_of_seats = seat_data[0]['amount_of_seats']
 cursor = conn.cursor()
 for i in range(amount_of_seats):
     to_add2 = str(i).zfill(4)
     ticket_id = to_add1 + flight_number + to_add3 + to_add2
-    print(ticket_id)
     query = '''
     insert into ticket (ticket_id, airline_name, flight_number, departure_date, departure_time)
     values (%s, %s, %s, %s, %s)
