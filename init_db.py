@@ -11,9 +11,8 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
+                       password='',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -1089,7 +1088,7 @@ def staff_home():
     username = session['username']
     airline = session['airline']
     cursor = conn.cursor();
-    query = 'SELECT * FROM flight WHERE airline_name = %s ORDER BY ts DESC'
+    query = 'SELECT * FROM flight WHERE airline_name = %s'
     cursor.execute(query, (airline))
     data1 = cursor.fetchall()
     cursor.close()
@@ -1201,7 +1200,8 @@ def viewFlights():
 #--------------change flight status TODO--------------
 
 
-#--------------create flights TOTEST------------------
+#--------------create flights SENDERROR------------------
+####!!!!!next 30 days???????????????
 @app.route('/createFlight',methods=['GET','POST'])
 def createFlight():
     username = session['username']
@@ -1214,20 +1214,21 @@ def createFlight():
         arrival_date = request.form['arrival-date']
         arrival_time = request.form['arrival-time']
         departure_airport = request.form['departure-airport']
-        arrival_airport = request.form['departure-airport']
+        arrival_airport = request.form['arrival-airport']
         base_price = request.form['base-price']
+        status = request.form['status']
         airplane_id = request.form['airplane-id']
 
         cursor = conn.cursor();
         query = '''select * from flight
-          where airline_name=%s and flight_number=%s and departure_date=%s and deparutre_time=%s'''
+          where airline_name=%s and flight_number=%s and departure_date=%s and departure_time=%s'''
         cursor.execute(query, (airline, flight_number, departure_date, departure_time))
         data = cursor.fetchall()
         cursor.close()
 
         exist_flight = None
         if(data):
-            return redirect(url_for('/staff_home'),exist_flight="This flight already exists.")
+            return redirect(url_for('staff_home',exist_flight="This flight already exists."))
         else:
             cursor = conn.cursor();
             ins = 'INSERT INTO flight VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
@@ -1235,36 +1236,40 @@ def createFlight():
             conn.commit()
             cursor.close()
 
-            #add ticket
-            cursor = conn.cursor();
-            query = '''select amount_of_seats from flight natural join airplane
-                where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s'''
-            cursor.execute(query, (airline, flight_number, departure_date, departure_time))
-            seats = cursor.fetchall()
-            cursor.close()
-            seats = seats['amount_of_seats']
+            # #add ticket
+            # cursor = conn.cursor();
+            # query = '''select amount_of_seats from flight natural join airplane
+            #     where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s'''
+            # cursor.execute(query, (airline, flight_number, departure_date, departure_time))
+            # seats = cursor.fetchall()
+            # cursor.close()
+            # seats = seats[0]['amount_of_seats']
+            #
+            # cursor = conn.cursor();
+            # query = '''select max(ticket_id) from ticket
+            #   where ticket_id like %s'''
+            # cursor.execute(query, ("1"+flight_number+"%"))
+            # last_ticket = cursor.fetchall()
+            # cursor.close()
+            # last_ticket = last_ticket[0]['max(ticket_id)']
+            # if last_ticket is None:
+            #     last_ticket = int("1"+flight_number)
+            # else:
+            #     last_ticket = int(last_ticket)
+            #
+            # for i in range(seats):
+            #     index = i+1+last_ticket
+            #     ticket_id = "1"+flight_number + str(index)
+            #
+            #     cursor = conn.cursor();
+            #     ins = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s)'
+            #     cursor.execute(ins, (ticket_id, airline, flight_number, departure_date, departure_time))
+            #     conn.commit()
+            #     cursor.close()
 
-            cursor = conn.cursor();
-            query = '''select max(ticket_id) from ticket
-              where ticket_id like %s'''
-            cursor.execute(query, (flight_number+"%"))
-            last_ticket = cursor.fetchall()
-            cursor.close()
-            last_ticket = last_ticket['max(ticket_id)']
-
-            for i in range(seats):
-                index = i+1+int(last_ticket)
-                ticket_id = flight_number + str(index)
-
-                cursor = conn.cursor();
-                ins = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s)'
-                cursor.execute(ins, (ticket_id, airline, flight_number, departure_date, departure_time))
-                conn.commit()
-                cursor.close()
-
-            return redirect(url_for('/create_flight_confirm'))
+            return redirect(url_for('create_flight_confirm'))
     else:
-        return redirect(url_for('/login'))
+        return redirect(url_for('login'))
 
 ####!!!!!next 30 days???????????????
 @app.route('/create_flight_confirm',methods=['GET','POST'])
@@ -1282,7 +1287,10 @@ def create_flight_confirm():
     cursor.close()
     return render_template('create-flight-confirm.html',flights=data1)
 
-#--------------add airplane TOTEST------------------
+#--------------add ticket TODO------------------
+
+
+#--------------add airplane SENDERROR------------------
 @app.route('/createAirplane',methods=['GET','POST'])
 def createAirplane():
     username = session['username']
@@ -1294,23 +1302,23 @@ def createAirplane():
 
         cursor = conn.cursor();
         query = '''select * from airplane
-          where airline_name=%s and id=%s and amount_of_seats=%s'''
-        cursor.execute(query, (airline, airplane_id, seating_capacity))
+          where airline_name=%s and id=%s'''
+        cursor.execute(query, (airline, airplane_id))
         data = cursor.fetchall()
         cursor.close()
 
         exist_airplane = None
         if(data):
-            return redirect(url_for('/staff_home'),exist_airplane="This airplane already exists.")
+            return redirect(url_for('staff_home',exist_airplane="This airplane already exists."))
         else:
             cursor = conn.cursor();
             ins = 'INSERT INTO airplane VALUES (%s, %s, %s)'
             cursor.execute(ins, (airline, airplane_id, seating_capacity))
             conn.commit()
             cursor.close()
-            return redirect(url_for('/create_airplane_confirm'))
+            return redirect(url_for('create_airplane_confirm'))
     else:
-        return redirect(url_for('/login'))
+        return redirect(url_for('login'))
 
 @app.route('/create_airplane_confirm',methods=['GET','POST'])
 def create_airplane_confirm():
@@ -1320,12 +1328,12 @@ def create_airplane_confirm():
     cursor = conn.cursor()
     query = '''select id, amount_of_seats from airplane
     where airline_name = %s'''
-    cursor.execute(query, (from_date, airline))
+    cursor.execute(query, (airline))
     data1 = cursor.fetchall()
     cursor.close()
     return render_template('create-airplane-confirm.html',airplanes=data1,airline=airline)
 
-#--------------add airport TOTEST------------------
+#--------------add airport SENDERROR------------------
 @app.route('/createAirport',methods=['GET','POST'])
 def createAirport():
     username = session['username']
@@ -1343,25 +1351,24 @@ def createAirport():
 
         exist_airport = None
         if(data):
-            return redirect(url_for('/staff_home'),exist_airport="This airport already exists.")
+            return redirect(url_for('staff_home',exist_airport="This airport already exists."))
         else:
             cursor = conn.cursor();
             ins = 'INSERT INTO airport VALUES (%s, %s)'
             cursor.execute(ins, (airport_name, city))
             conn.commit()
             cursor.close()
-            return redirect(url_for('/create_airport_confirm'))
+            return redirect(url_for('create_airport_confirm'))
     else:
-        return redirect(url_for('/login'))
+        return redirect(url_for('login'))
 
 @app.route('/create_airport_confirm',methods=['GET','POST'])
 def create_airport_confirm():
     username = session['username']
 
     cursor = conn.cursor()
-    query = '''select * from airport
-      where airport_name=%s and city=%s'''
-    cursor.execute(query, (airport_name, city))
+    query = '''select * from airport'''
+    cursor.execute(query)
     data1 = cursor.fetchall()
     cursor.close()
     return render_template('create-airport-confirm.html',airports=data1)
