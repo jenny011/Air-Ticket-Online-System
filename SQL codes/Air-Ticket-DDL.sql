@@ -121,10 +121,15 @@ create table staff_phone
 	);
 
 /*below is the newly created view*/
+
+--you need to count the ticket_id in purchase
+
 create view flight_seats_sold as
-select airline_name, flight_number, departure_date, departure_time,
-amount_of_seats, count(ticket_id) as tickets_sold
-from flight natural join airplane natural join ticket natural join purchase
+select airline_name, flight_number, departure_date, departure_time, amount_of_seats, 
+case when ticket_id = null then 0
+else count(ticket_id)
+end as tickets_sold
+from (flight natural join airplane natural join ticket) natural left outer join purchase
 group by airline_name, flight_number, departure_date, departure_time
 
 
