@@ -184,6 +184,7 @@ def loginStaffAuth():
         # session is a built in
         session['username'] = username
         session['usertype'] = "staff"
+        session['airline'] = data['airline_name']
         return redirect(url_for('staff_home'))
     else:
         # returns an error message to the html page
@@ -401,16 +402,17 @@ def checkPublic():
         return render_template('check.html', statuses=data1,airline_name=airline_name,flight_number=flight_number,date=date,datetype=datetype)
 
 
-# ================ !customer!-home ===================
+#==============================================================================
+#==============================================================================
+# ================ Customer Use Cases ===================
 
-#------------------------------------------------------------------------------
+#-------------------------------customer home----------------------------------
 @app.route('/customer_home')
 def customer_home():
     username = session['username']
     today = date.today()
     to_date = today
     from_date = date(today.year-1, today.month, today.day)
-
 
     # view
     cursor = conn.cursor()
@@ -1058,67 +1060,327 @@ def trackCustomer():
 
 
 #logout is the same for customer and staff
-@app.route('/logout')
+@app.route('/logout',methods=['GET','POST'])
 def logout():
-    session.pop('username')
+    usertype = session['usertype']
+    if usertype == "customer" and session['flight_info1'] is not None:
+        session.pop('flight_info1')
+    if usertype == "staff":
+        session.pop('airline')
     session.pop('usertype')
-    session.pop('flight_info1')
+    session.pop('username')
     return render_template("logout.html")
 
 
-#=========below I did not edit==========================
 
-@app.route('/home')
-def home():
+#==============================================================================
+#==============================================================================
+#===============Airline Staff use case============
+@app.route('/staff_home',methods=['GET','POST'])
+def staff_home():
     username = session['username']
+    airline = session['airline']
     cursor = conn.cursor();
-    query = 'SELECT ts, blog_post FROM blog WHERE user_name = %s ORDER BY ts DESC'
-    cursor.execute(query, (username))
+    query = 'SELECT * FROM flight WHERE airline_name = %s ORDER BY ts DESC'
+    cursor.execute(query, (airline))
     data1 = cursor.fetchall()
-    for each in data1:
-        print(each['blog_post'])
     cursor.close()
-    return render_template('home.html', username=username, posts=data1)
+    return render_template('staff-home.html', username=username, flights=data1)
+
+####!!!!!next 30 days???????????????
+#--------------view flights TODO????????all customers-------------
+@app.route('/viewFlights',methods=['GET','POST'])
+def viewFlights():
+    airline = session['airline']
+    source = request.form['source']
+    destination = request.form['destination']
+    from_date = request.form['from-date']
+    to_date = request.form['to-date']
+
+    if from_date == "":
+        from_date = date.today()
+    if to_date == "":
+        if source == "" and destination == "":
+            cursor = conn.cursor()
+            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
+            from flight
+            where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s
+            and airline_name = %s'''
+            cursor.execute(query, (from_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source == "" and destination != "":
+            cursor = conn.cursor()
+            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time,
+                departure_airport, arrival_airport, status
+                from flight
+                where arrival_airport = %s
+                and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s
+                and airline_name = %s'''
+            cursor.execute(query, (destination, from_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "" and destination == "":
+            cursor = conn.cursor()
+            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time,
+                departure_airport, arrival_airport, status
+                from flight
+                where departure_airport = %s
+                and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s
+                and airline_name = %s'''
+            cursor.execute(query, (source, from_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "" and destination != "":
+            cursor = conn.cursor()
+            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time,
+                departure_airport, arrival_airport, status
+                from flight
+                where departure_airport = %s and arrival_airport = %s
+                and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s
+                and airline_name = %s'''
+            cursor.execute(query, (source, destination, from_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+    else:
+        if source == "" and destination == "":
+            cursor = conn.cursor()
+            query = '''select airline_name, flight_number, departure_date, departure_time,
+                    arrival_date, arrival_time, departure_airport, arrival_airport, status
+                    from flight
+                    where departure_date between %s and %s
+                    and airline_name = %s'''
+            cursor.execute(query, (from_date, to_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source == "" and destination != "":
+            cursor = conn.cursor()
+            query = '''select airline_name, flight_number, departure_date, departure_time,
+                    arrival_date, arrival_time, departure_airport, arrival_airport, status
+                    from flight
+                    where arrival_airport = %s
+                    and departure_date between %s and %s
+                    and airline_name = %s'''
+            cursor.execute(query, (destination, from_date, to_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "" and destination == "":
+            cursor = conn.cursor()
+            query = '''select airline_name, flight_number, departure_date, departure_time,
+                    arrival_date, arrival_time, departure_airport, arrival_airport, status
+                    from flight
+                    where departure_airport = %s
+                    and departure_date between %s and %s
+                    and airline_name = %s'''
+            cursor.execute(query, (source, from_date, to_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "" and destination != "":
+            cursor = conn.cursor()
+            query = '''select airline_name, flight_number, departure_date, departure_time,
+                    arrival_date, arrival_time, departure_airport, arrival_airport, status
+                    from flight
+                    where departure_airport = %s and arrival_airport = %s
+                    and departure_date between %s and %s
+                    and airline_name = %s'''
+            cursor.execute(query, (source, destination, from_date, to_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+    return render_template('view-flights-staff.html', from_date=from_date, to_date=to_date,
+                           source=source, destination=destination, flights=data1)
 
 
-@app.route('/post', methods=['GET', 'POST'])
-def post():
+#--------------change flight status TODO--------------
+
+
+#--------------create flights TOTEST------------------
+@app.route('/createFlight',methods=['GET','POST'])
+def createFlight():
     username = session['username']
-    cursor = conn.cursor();
-    blog = request.form['blog']
-    query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-    cursor.execute(query, (blog, username))
-    conn.commit()
+    usertype = session['usertype']
+    if usertype == "staff":
+        airline = session['airline']
+        flight_number = request.form['flight-number']
+        departure_date = request.form['departure-date']
+        departure_time = request.form['departure-time']
+        arrival_date = request.form['arrival-date']
+        arrival_time = request.form['arrival-time']
+        departure_airport = request.form['departure-airport']
+        arrival_airport = request.form['departure-airport']
+        base_price = request.form['base-price']
+        airplane_id = request.form['airplane-id']
+
+        cursor = conn.cursor();
+        query = '''select * from flight
+          where airline_name=%s and flight_number=%s and departure_date=%s and deparutre_time=%s'''
+        cursor.execute(query, (airline, flight_number, departure_date, departure_time))
+        data = cursor.fetchall()
+        cursor.close()
+
+        exist_flight = None
+        if(data):
+            return redirect(url_for('/staff_home'),exist_flight="This flight already exists.")
+        else:
+            cursor = conn.cursor();
+            ins = 'INSERT INTO flight VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            cursor.execute(ins, (airline, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, base_price, status, airplane_id))
+            conn.commit()
+            cursor.close()
+
+            #add ticket
+            cursor = conn.cursor();
+            query = '''select amount_of_seats from flight natural join airplane
+                where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s'''
+            cursor.execute(query, (airline, flight_number, departure_date, departure_time))
+            seats = cursor.fetchall()
+            cursor.close()
+            seats = seats['amount_of_seats']
+
+            cursor = conn.cursor();
+            query = '''select max(ticket_id) from ticket
+              where ticket_id like %s'''
+            cursor.execute(query, (flight_number+"%"))
+            last_ticket = cursor.fetchall()
+            cursor.close()
+            last_ticket = last_ticket['max(ticket_id)']
+
+            for i in range(seats):
+                index = i+1+int(last_ticket)
+                ticket_id = flight_number + str(index)
+
+                cursor = conn.cursor();
+                ins = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s)'
+                cursor.execute(ins, (ticket_id, airline, flight_number, departure_date, departure_time))
+                conn.commit()
+                cursor.close()
+
+            return redirect(url_for('/create_flight_confirm'))
+    else:
+        return redirect(url_for('/login'))
+
+####!!!!!next 30 days???????????????
+@app.route('/create_flight_confirm',methods=['GET','POST'])
+def create_flight_confirm():
+    username = session['username']
+    airline = session['airline']
+    from_date = date.today()
+
+    cursor = conn.cursor()
+    query = '''select * from flight
+    where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s
+    and airline_name = %s'''
+    cursor.execute(query, (from_date, airline))
+    data1 = cursor.fetchall()
     cursor.close()
-    return redirect(url_for('home'))
+    return render_template('create-flight-confirm.html',flights=data1)
+
+#--------------add airplane TOTEST------------------
+@app.route('/createAirplane',methods=['GET','POST'])
+def createAirplane():
+    username = session['username']
+    usertype = session['usertype']
+    if usertype == "staff":
+        airline = session['airline']
+        airplane_id = request.form['airplane-id']
+        seating_capacity = request.form['seating-capacity']
+
+        cursor = conn.cursor();
+        query = '''select * from airplane
+          where airline_name=%s and id=%s and amount_of_seats=%s'''
+        cursor.execute(query, (airline, airplane_id, seating_capacity))
+        data = cursor.fetchall()
+        cursor.close()
+
+        exist_airplane = None
+        if(data):
+            return redirect(url_for('/staff_home'),exist_airplane="This airplane already exists.")
+        else:
+            cursor = conn.cursor();
+            ins = 'INSERT INTO airplane VALUES (%s, %s, %s)'
+            cursor.execute(ins, (airline, airplane_id, seating_capacity))
+            conn.commit()
+            cursor.close()
+            return redirect(url_for('/create_airplane_confirm'))
+    else:
+        return redirect(url_for('/login'))
+
+@app.route('/create_airplane_confirm',methods=['GET','POST'])
+def create_airplane_confirm():
+    username = session['username']
+    airline = session['airline']
+
+    cursor = conn.cursor()
+    query = '''select id, amount_of_seats from airplane
+    where airline_name = %s'''
+    cursor.execute(query, (from_date, airline))
+    data1 = cursor.fetchall()
+    cursor.close()
+    return render_template('create-airplane-confirm.html',airplanes=data1,airline=airline)
+
+#--------------add airport TOTEST------------------
+@app.route('/createAirport',methods=['GET','POST'])
+def createAirport():
+    username = session['username']
+    usertype = session['usertype']
+    if usertype == "staff":
+        airport_name = request.form['airport-name']
+        city = request.form['city']
+
+        cursor = conn.cursor();
+        query = '''select * from airport
+          where airport_name=%s and city=%s'''
+        cursor.execute(query, (airport_name, city))
+        data = cursor.fetchall()
+        cursor.close()
+
+        exist_airport = None
+        if(data):
+            return redirect(url_for('/staff_home'),exist_airport="This airport already exists.")
+        else:
+            cursor = conn.cursor();
+            ins = 'INSERT INTO airport VALUES (%s, %s)'
+            cursor.execute(ins, (airport_name, city))
+            conn.commit()
+            cursor.close()
+            return redirect(url_for('/create_airport_confirm'))
+    else:
+        return redirect(url_for('/login'))
+
+@app.route('/create_airport_confirm',methods=['GET','POST'])
+def create_airport_confirm():
+    username = session['username']
+
+    cursor = conn.cursor()
+    query = '''select * from airport
+      where airport_name=%s and city=%s'''
+    cursor.execute(query, (airport_name, city))
+    data1 = cursor.fetchall()
+    cursor.close()
+    return render_template('create-airport-confirm.html',airports=data1)
+
+#--------------view flight ratings TODO???--------------
+
+
+#--------------view frequent customer TODO--------------
+
+
+#--------------view ticket sales report TODO--------------
+
+
+#--------------into staff_home: quarterly revenue TODO--------------
+
+
+#--------------into staff_home: top destinations*2 TODO--------------
 
 
 
+
+
+#========================END============================
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
 # debug = True -> you don't have to restart flask
 # for changes to go through, TURN OFF FOR PRODUCTION
-
-
-#===============Airline Staff use case============
-# @app.route('/staff_home')
-# def staff_home():
-#     username = session['username']
-#     cursor = conn.cursor();
-#     query = 'SELECT * FROM flight WHERE airline_name = %s ORDER BY ts DESC'
-#
-#     cursor.execute(query, (username))
-#     data1 = cursor.fetchall()
-#     for each in data1:
-#         print(each['blog_post'])
-#     cursor.close()
-#     return render_template('home.html', username=username, posts=data1)
-
-
-
-
-
-
 
 if __name__ == "__main__":
     app.run('127.0.0.1', 5000, debug=True)

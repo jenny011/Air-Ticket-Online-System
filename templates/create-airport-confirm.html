@@ -1,0 +1,33 @@
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <!-- <link rel="stylesheet" href="css/style.css"> -->
+  <title>Air Ticket Online</title>
+</head>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<body>
+<a href="/logout">Logout</a>
+/ <a href="/staff_home">Back</a>
+<h1>Airport added successfully</h1>
+
+<h2>Airports in the system</h2>
+<table>
+	<th>Airport</th>
+	<th>City</th>
+{% for line in airports %}
+<tr>
+	<td>{{line['airport_name']}}</td>
+	<td>{{line['city']}}</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+
+</html>

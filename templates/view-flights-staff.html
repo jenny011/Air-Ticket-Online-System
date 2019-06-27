@@ -1,0 +1,53 @@
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <!-- <link rel="stylesheet" href="css/style.css"> -->
+  <title>Air Ticket Online</title>
+</head>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<body>
+  <a href="/logout">Logout</a>
+  / <a href="/staff_home">Back</a>
+  <h1>View flights</h1>
+  <form action="/viewFlightsStaff" method="POST">
+    date range <br>
+    from <input type="date" name = "from-date" placeholder="YYYY/MM/DD" /> <br>
+    to <input type="date" name = "to-date" placeholder="YYYY/MM/DD" /> <br>
+    source <input type="text" name = "source" placeholder="source" /> <br>
+    destination <input type="text" name = "destination" placeholder="destination" /> <br>
+    <input type="submit" value = View />
+  </form>
+  <table>
+  	<th>Airline</th>
+  	<th>Flight Number</th>
+    <th>Departure Date</th>
+    <th>Departure Time</th>
+    <th>Arrival Date</th>
+    <th>Arrival Time</th>
+    <th>Source</th>
+    <th>Destination</th>
+    <th>Status</th>
+  {% for line in flights %}
+  <tr>
+  	<td>{{line['airline_name']}}</td>
+  	<td>{{line['flight_number']}}</td>
+    <td>{{line['departure_date']}}</td>
+    <td>{{line['departure_time']}}</td>
+    <td>{{line['arrival_date']}}</td>
+    <td>{{line['arrival_time']}}</td>
+    <td>{{line['departure_airport']}}</td>
+    <td>{{line['arrival_airport']}}</td>
+    <td>{{line['status']}}</td>
+  </tr>
+  {% endfor %}
+  </table>
+</body>
+
+</html>
