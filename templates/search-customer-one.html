@@ -45,7 +45,7 @@
   <th>Price</th>
 {% for line in flights %}
 <tr>
-  <form action="/purchaseCustomerOneWay" methods="POST">
+  <form action="/purchaseCustomerOneWay" method="POST">
     <td><input type="text" name="airline-name" value="{{line['airline_name']}}" readonly/></td>
     <td><input type="text" name="flight-number" value="{{line['flight_number']}}" readonly/></td>
     <td><input type="date" name="departure-date" value="{{line['departure_date']}}" readonly/></td>

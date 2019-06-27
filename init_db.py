@@ -627,17 +627,17 @@ def searchCustomerRound():
 
 
 #---------!customer! purchase flights-------------
-@app.route("/purchaseCustomerOneWay", methods=['GET', 'POST'])
+@app.route("/purchaseCustomerOneWay", methods=['POST'])
 def purchaseCustomerOneWay():
-    airline_name = request.args.get('airline-name')
-    flight_number = request.args.get('flight-number')
-    departure_date = request.args.get('departure-date')
-    departure_time = request.args.get('departure-time')
-    arrival_date = request.args.get('arrival-date')
-    arrival_time = request.args.get('arrival-time')
-    source = request.args.get('source')
-    destination = request.args.get('destination')
-    price = request.args.get('price')
+    airline_name = request.form['airline-name']
+    flight_number = request.form['flight-number']
+    departure_date = request.form['departure-date']
+    departure_time = request.form['departure-time']
+    arrival_date = request.form['arrival-date']
+    arrival_time = request.form['arrival-time']
+    source = request.form['source']
+    destination = request.form['destination']
+    price = request.form['price']
     # get ticket info
     cursor = conn.cursor()
     query = '''select ticket_id
@@ -646,13 +646,14 @@ def purchaseCustomerOneWay():
             and ticket_id not in (select ticket_id from purchase)'''
     cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
     ticket_id = cursor.fetchone()
-    # possible concurrency?
+    print(ticket_id)
     cursor.close()
     # store flight info in session
-    flight_info1 = {"airline_name":airline_name, "flight_number":flight_number, "departure_date":departure_date, "departure_time":departure_time, "arrival_date":arrival_date, "arrival_time":arrival_time, "source":source, "destination":destination, "price":price, "ticket_id":ticket_id["ticket_id"]}
+    flight_info1 = {"airline_name":airline_name, "flight_number":flight_number, "departure_date":departure_date, "departure_time": departure_time,
+                    "arrival_date": arrival_date, "arrival_time": arrival_time, "source": source, "destination": destination,
+                    "price": price, "ticket_id": ticket_id["ticket_id"]}
     session['flight_info1'] = flight_info1
-    # todo: the value to pass into "purchase-customer.html"
-    return render_template("purchase-customer.html",flights=[flight_info1],total=flight_info1["price"])
+    return render_template("purchase-customer.html", flights=[flight_info1], total=flight_info1["price"])
 
 
 @app.route("/purchaseCustomerRound", methods=['GET', 'POST'])
