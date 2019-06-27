@@ -42,8 +42,8 @@ conn = pymysql.connect(host='localhost',
 # get the amount of seats
 
 airline_name = 'China Southern'
-flight_number = '100'
-departure_date = '2019-08-11'
+flight_number = '101'
+departure_date = '2019-08-02'
 departure_time = '19:40:00'
 
 cursor = conn.cursor()
