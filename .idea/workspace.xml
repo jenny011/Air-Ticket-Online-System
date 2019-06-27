@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="617de85c-6896-41c7-ac3e-4fe0ef00661c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SQL codes/Air-Ticket-DDL.sql" beforeDir="false" afterPath="$PROJECT_DIR$/SQL codes/Air-Ticket-DDL.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SQL codes/Air-Ticket-Insert.sql" beforeDir="false" afterPath="$PROJECT_DIR$/SQL codes/Air-Ticket-Insert.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/init_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_insert tickets for existing flights.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_insert tickets for existing flights.py" afterDir="false" />
-    </list>
+    <list default="true" id="617de85c-6896-41c7-ac3e-4fe0ef00661c" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,8 +32,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/init_db.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="258">
-                  <caret line="691" column="26" selection-start-line="691" selection-start-column="26" selection-end-line="691" selection-end-column="26" />
+                <state relative-caret-position="288">
+                  <caret line="699" column="45" selection-start-line="699" selection-start-column="45" selection-end-line="699" selection-end-column="45" />
                   <folding>
                     <element signature="e#23#100#0" expanded="true" />
                   </folding>
@@ -116,8 +110,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/templates/customer-home.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="157">
-                  <caret line="73" column="24" selection-start-line="73" selection-start-column="19" selection-end-line="73" selection-end-column="24" />
+                <state relative-caret-position="475">
+                  <caret line="91" column="31" selection-start-line="91" selection-start-column="31" selection-end-line="91" selection-end-column="31" />
                 </state>
               </provider>
             </entry>
@@ -184,13 +178,13 @@
       <list>
         <option value="$PROJECT_DIR$/SQL codes/Staff query.sql" />
         <option value="$USER_HOME$/Flask_for_class/init1.py" />
-        <option value="$PROJECT_DIR$/templates/customer-home.html" />
         <option value="$PROJECT_DIR$/templates/search-customer-one.html" />
         <option value="$PROJECT_DIR$/../test1.py" />
         <option value="$PROJECT_DIR$/../Databases/Flask_for_class/init1.py" />
         <option value="$PROJECT_DIR$/templates/purchase-customer.html" />
         <option value="$PROJECT_DIR$/templates/search-one.html" />
         <option value="$PROJECT_DIR$/test_insert tickets for existing flights.py" />
+        <option value="$PROJECT_DIR$/templates/customer-home.html" />
         <option value="$PROJECT_DIR$/init_db.py" />
       </list>
     </option>
@@ -288,12 +282,12 @@
       <workItem from="1561472314585" duration="89000" />
       <workItem from="1561514810144" duration="6174000" />
       <workItem from="1561524229669" duration="9849000" />
-      <workItem from="1561594455322" duration="7919000" />
+      <workItem from="1561594455322" duration="8233000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41856000" />
+    <option name="totallyTimeSpent" value="42170000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -441,15 +435,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/customer-home.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="157">
-          <caret line="73" column="24" selection-start-line="73" selection-start-column="19" selection-end-line="73" selection-end-column="24" />
+        <state relative-caret-position="475">
+          <caret line="91" column="31" selection-start-line="91" selection-start-column="31" selection-end-line="91" selection-end-column="31" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/init_db.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="691" column="26" selection-start-line="691" selection-start-column="26" selection-end-line="691" selection-end-column="26" />
+        <state relative-caret-position="288">
+          <caret line="699" column="45" selection-start-line="699" selection-start-column="45" selection-end-line="699" selection-end-column="45" />
           <folding>
             <element signature="e#23#100#0" expanded="true" />
           </folding>
