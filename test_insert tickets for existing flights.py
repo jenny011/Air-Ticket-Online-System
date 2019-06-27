@@ -71,12 +71,12 @@ for i in range(amount_of_seats):
     to_add2 = str(i).zfill(4)
     ticket_id = to_add1 + flight_number + to_add3 + to_add2
     print(ticket_id)
-#     query = '''
-#     insert into ticket (ticket_id, airline_name, flight_number, departure_date, departure_time)
-#     values (%s, %s, %s, %s, %s)
-#     '''
-#     cursor.execute(query, (ticket_id, airline_name, flight_number, departure_date, departure_time))
-#     conn.commit()
-# cursor.close()
-# print("insert finished")
+    query = '''
+    insert into ticket (ticket_id, airline_name, flight_number, departure_date, departure_time)
+    values (%s, %s, %s, %s, %s)
+    '''
+    cursor.execute(query, (ticket_id, airline_name, flight_number, departure_date, departure_time))
+    conn.commit()
+cursor.close()
+print("insert finished")
 

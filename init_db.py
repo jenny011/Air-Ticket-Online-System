@@ -11,8 +11,9 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -239,31 +240,34 @@ def searchPublic():
                 and amount_of_seats > tickets_sold'''
         cursor.execute(query, (source, destination, departure_date))
         data1 = cursor.fetchall()
-        print("data in search public", data1)
+        # print("data in search public", data1)
         cursor.close()
         return render_template('search-one.html', source=source, destination=destination, departure_date=departure_date, flights=data1)
 
     elif triptype == "round":
         return_date = request.form['return-date']
         cursor = conn.cursor()
-        query = '''select * from flight_price natural join flight_seats_sold
+        query1 = '''select * from flight_price natural join flight_seats_sold
                 where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
                 and departure_airport = %s and arrival_airport = %s and departure_date = %s
                 and amount_of_seats > tickets_sold'''
-        cursor.execute(query, (source, destination, departure_date))
+        cursor.execute(query1, (source, destination, departure_date))
         data1 = cursor.fetchall()
-
+        # conn.commit()
         cursor.close()
 
         cursor = conn.cursor()
-        query = '''select * from flight_price natural join flight_seats_sold
+        query2 = '''select * from flight_price natural join flight_seats_sold
                 where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
                 and departure_airport = %s and arrival_airport = %s and departure_date = %s
                 and amount_of_seats > tickets_sold'''
-        cursor.execute(query, (destination, source, return_date))
+        cursor.execute(query2, (destination, source, return_date))
+        # execution not successful
         data2 = cursor.fetchall()
+        print("return flight info", data2)
         cursor.close()
-        return render_template('search-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, departure_flights=data1, return_flights=data2)
+        return render_template('search-round.html', source=source, destination=destination, departure_date=departure_date,
+                               return_date=return_date, departure_flights=data1, return_flights=data2)
 
 @app.route("/searchPublicOneWay", methods=['GET', 'POST'])
 def searchPublicOneWay():
@@ -292,15 +296,18 @@ def searchPublicOneWay():
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (source, destination, departure_date))
         data1 = cursor.fetchall()
-        cursor.close()
-        cursor = conn.cursor()
+        #cursor.close()
+
+        #cursor = conn.cursor()
         query = 'select * from flight_price ' \
                 'where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now() ' \
                 'and departure_airport = %s and arrival_airport = %s and departure_date = %s'
         cursor.execute(query, (destination, source, return_date))
         data2 = cursor.fetchall()
         cursor.close()
-        return render_template('search-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, departure_flights=data1, return_flights=data2)
+
+        return render_template('search-round.html', source=source, destination=destination,
+                               departure_date=departure_date, return_date=return_date, departure_flights=data1, return_flights=data2)
 
 @app.route("/searchPublicRound", methods=['GET', 'POST'])
 def searchPublicRound():
@@ -682,15 +689,15 @@ def payCustomer():
 #------------------------------------------------------------------------------
 #------------!customer! rate my flights-------------
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!PROBLEM
-@app.route("/rate", methods=['GET','POST'])
+@app.route("/rate", methods=['POST'])
 def rate():
     print(request.method)
-    airline = request.args.get('airline')
-    number = request.args.get('number')
-    date = request.args.get('date')
-    time = request.args.get('time')
-    source = request.args.get('source')
-    destination = request.args.get('destination')
+    airline = request.form['airline']
+    number = request.form['number']
+    date = request.form['date']
+    time = request.form['time']
+    source = request.form['source']
+    destination = request.form['destination']
     return render_template('rate-customer.html',airline_name=airline, flight_number=number, departure_date=date, departure_time=time, source=source, destination=destination)
 
 @app.route("/rateCustomer", methods=['GET', 'POST'])

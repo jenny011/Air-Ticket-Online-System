@@ -40,3 +40,6 @@ iNSERT INTO ticket VALUES ('a00000003', 'China Eastern', '333', '2019-03-01', '2
 INSERT INTO ticket VALUES ('a00000002', 'China Eastern', '222', '2019-03-15', '09:50:00');
 INSERT INTO purchase VALUES ('a00000003', 'hello@world.com', '2019-04-11', '07:06:05', '8000', 'credit card', '111177334444555', 'HELLO WORLD', '2021-04-01');
 INSERT INTO purchase VALUES ('a00000002', 'hello@world.com', '2019-04-11', '07:06:05', '8000', 'credit card', '111177334444555', 'HELLO WORLD', '2021-04-01');
+
+
+INSERT INTO flight VALUES ('China Southern', '101', '2019-08-02', '19:40:00', '2019-08-03', '7:00:00', 'JFK', 'PVG', '7000', 'on-time', 'B-1111');

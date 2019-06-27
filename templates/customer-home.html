@@ -89,7 +89,7 @@
     <th></th>
   {% for line in unrated %}
   <tr>
-    <form action="/rate" methods='POST'>
+    <form action="/rate" method='POST'>
       <td><input type="text" name="airline" value="{{line['airline_name']}}" readonly/></td>
       <td><input type="text" name="number" value="{{line['flight_number']}}" readonly/></td>
       <td><input type="date" name="date" value="{{line['departure_date']}}" readonly/></td>
