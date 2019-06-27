@@ -512,7 +512,10 @@ def search():
     source = request.form['source']
     destination = request.form['destination']
     triptype = request.form['triptype']
-    departure_date = request.form['departure-date']
+    depart_date = request.form['depart-date']
+    session['searchCustomer'] = {'source':source, 'destination':destination, 'triptype':triptype, 'depart_date':depart_date, 'return_date':None}
+    session['flight_info1'] = {}
+    session['flight_info2'] = {}
 
     if triptype == "one-way":
         cursor = conn.cursor()
@@ -520,20 +523,21 @@ def search():
                 where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
                 and departure_airport = %s and arrival_airport = %s and departure_date = %s
                 and amount_of_seats > tickets_sold'''
-        cursor.execute(query, (source, destination, departure_date))
+        cursor.execute(query, (source, destination, depart_date))
         data1 = cursor.fetchall()
         cursor.close()
         # return render_template('search-customer-one.html', source=source, flights=data1)
-        return render_template('search-customer-one.html', source=source, destination=destination, departure_date=departure_date, flights=data1)
+        return render_template('search-customer-one.html', source=source, destination=destination, depart_date=depart_date, flights=data1)
 
     elif triptype == "round":
         return_date = request.form['return-date']
+        session['searchCustomer']['return_date'] = return_date
         cursor = conn.cursor()
         query = '''select * from flight_price natural join flight_seats_sold
                 where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
                 and departure_airport = %s and arrival_airport = %s and departure_date = %s
                 and amount_of_seats > tickets_sold'''
-        cursor.execute(query, (source, destination, departure_date))
+        cursor.execute(query, (source, destination, depart_date))
         data1 = cursor.fetchall()
         cursor.close()
         cursor = conn.cursor()
@@ -544,34 +548,40 @@ def search():
         cursor.execute(query, (destination, source, return_date))
         data2 = cursor.fetchall()
         cursor.close()
-        return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, departure_flights=data1, return_flights=data2)
+        return render_template('search-customer-round.html', source=source, destination=destination, depart_date=depart_date, return_date=return_date, departure_flights=data1, return_flights=data2)
 
 @app.route('/searchCustomerOneWay', methods=['GET', 'POST'])
 def searchCustomerOneWay():
     source = request.form['source']
     destination = request.form['destination']
     triptype = request.form['triptype']
-    departure_date = request.form['departure-date']
+    depart_date = request.form['depart-date']
+    session['searchCustomer']['source'] = source
+    session['searchCustomer']['destination'] = destination
+    session['searchCustomer']['triptype'] = triptype
+    session['searchCustomer']['depart_date'] = depart_date
 
     if triptype == "one-way":
+        session['searchCustomer']['return_date'] = None
         cursor = conn.cursor()
         query = '''select * from flight_price natural join flight_seats_sold
                 where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
                 and departure_airport = %s and arrival_airport = %s and departure_date = %s
                 and amount_of_seats > tickets_sold'''
-        cursor.execute(query, (source, destination, departure_date))
+        cursor.execute(query, (source, destination, depart_date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('search-customer-one.html', source=source, destination=destination, departure_date=departure_date, flights=data1)
+        return render_template('search-customer-one.html', source=source, destination=destination, depart_date=depart_date, flights=data1)
 
     elif triptype == "round":
         return_date = request.form['return-date']
+        session['searchCustomer']['return_date'] = return_date
         cursor = conn.cursor()
         query = '''select * from flight_price natural join flight_seats_sold
                 where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
                 and departure_airport = %s and arrival_airport = %s and departure_date = %s
                 and amount_of_seats > tickets_sold'''
-        cursor.execute(query, (source, destination, departure_date))
+        cursor.execute(query, (source, destination, depart_date))
         data1 = cursor.fetchall()
         cursor.close()
         cursor = conn.cursor()
@@ -582,34 +592,40 @@ def searchCustomerOneWay():
         cursor.execute(query, (destination, source, return_date))
         data2 = cursor.fetchall()
         cursor.close()
-        return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, departure_flights=data1, return_flights=data2)
+        return render_template('search-customer-round.html', source=source, destination=destination, depart_date=depart_date, return_date=return_date, departure_flights=data1, return_flights=data2)
 
 @app.route("/searchCustomerRound", methods=['GET', 'POST'])
 def searchCustomerRound():
     source = request.form['source']
     destination = request.form['destination']
     triptype = request.form['triptype']
-    departure_date = request.form['departure-date']
+    depart_date = request.form['depart-date']
+    session['searchCustomer']['source'] = source
+    session['searchCustomer']['destination'] = destination
+    session['searchCustomer']['triptype'] = triptype
+    session['searchCustomer']['depart_date'] = depart_date
 
     if triptype == "one-way":
+        session['searchCustomer']['return_date'] = None
         cursor = conn.cursor()
         query = '''select * from flight_price natural join flight_seats_sold
                 where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
                 and departure_airport = %s and arrival_airport = %s and departure_date = %s
                 and amount_of_seats > tickets_sold'''
-        cursor.execute(query, (source, destination,departure_date))
+        cursor.execute(query, (source, destination,depart_date))
         data1 = cursor.fetchall()
         cursor.close()
-        return render_template('search-customer-one.html', source=source, destination=destination, departure_date = departure_date, flights=data1)
+        return render_template('search-customer-one.html', source=source, destination=destination, depart_date = depart_date, flights=data1)
 
     elif triptype == "round":
         return_date = request.form['return-date']
+        session['searchCustomer']['return_date'] = return_date
         cursor = conn.cursor()
         query = '''select * from flight_price natural join flight_seats_sold
                 where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
                 and departure_airport = %s and arrival_airport = %s and departure_date = %s
                 and amount_of_seats > tickets_sold'''
-        cursor.execute(query, (source, destination, departure_date))
+        cursor.execute(query, (source, destination, depart_date))
         data1 = cursor.fetchall()
         cursor.close()
 
@@ -622,7 +638,7 @@ def searchCustomerRound():
         data2 = cursor.fetchall()
         cursor.close()
         print(data1,data2)
-        return render_template('search-customer-round.html', source=source, destination=destination, departure_date=departure_date, return_date=return_date, departure_flights=data1, return_flights=data2)
+        return render_template('search-customer-round.html', source=source, destination=destination, depart_date=depart_date, return_date=return_date, departure_flights=data1, return_flights=data2)
 
 
 #---------!customer! purchase flights-------------
@@ -645,30 +661,154 @@ def purchaseCustomerOneWay():
             and ticket_id not in (select ticket_id from purchase)'''
     cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
     ticket_id = cursor.fetchone()
-    print(ticket_id)
     cursor.close()
     # store flight info in session
-    flight_info1 = {"airline_name":airline_name, "flight_number":flight_number, "departure_date":departure_date, "departure_time": departure_time,
-                    "arrival_date": arrival_date, "arrival_time": arrival_time, "source": source, "destination": destination,
-                    "price": price, "ticket_id": ticket_id["ticket_id"]}
+    flight_info1 = {"airline_name":airline_name, "flight_number":flight_number, "departure_date":departure_date, "departure_time":departure_time, "arrival_date":arrival_date, "arrival_time":arrival_time, "departure_airport":source, "arrival_airport":destination, "price":price, "ticket_id":ticket_id["ticket_id"]}
     session['flight_info1'] = flight_info1
-    return render_template("purchase-customer.html", flights=[flight_info1], total=flight_info1["price"])
+    return redirect(url_for('purchase_customer'))
+    # return render_template("purchase-customer.html", flights=[flight_info1], total=flight_info1["price"])
 
+
+@app.route("/purchaseCustomerRoundDeparture", methods=['GET', 'POST'])
+def purchaseCustomerRoundDeparture():
+    source = session['searchCustomer']['source']
+    destination = session['searchCustomer']['destination']
+    triptype = session['searchCustomer']['triptype']
+    depart_date = session['searchCustomer']['depart_date']
+    return_date = session['searchCustomer']['return_date']
+    departure = True
+    airline_name = request.form['airline-name']
+    flight_number = request.form['flight-number']
+    departure_date = request.form['departure-date']
+    departure_time = request.form['departure-time']
+    arrival_date = request.form['arrival-date']
+    arrival_time = request.form['arrival-time']
+    departure_airport = request.form['departure-airport']
+    arrival_airport = request.form['arrival-airport']
+    price = request.form['price']
+    if session['flight_info2'] != {}:
+        prev_flight = session['flight_info2']
+        print("++++++++++++++++",prev_flight)
+        back = True
+        cursor = conn.cursor()
+        query = '''select ticket_id
+                from ticket
+                where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s
+                and ticket_id not in (select ticket_id from purchase)'''
+        cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
+        ticket_id = cursor.fetchone()
+        cursor.close()
+        # store flight info in session
+        flight_info1 = {"airline_name":airline_name, "flight_number":flight_number, "departure_date":departure_date, "departure_time":departure_time, "arrival_date":arrival_date, "arrival_time":arrival_time, "departure_airport":departure_airport, "arrival_airport":arrival_airport, "price":price, "ticket_id":ticket_id["ticket_id"]}
+        session['flight_info1'] = flight_info1
+        return render_template('search-customer-round.html', departure=departure, back=back, source=source, destination=destination, triptype=triptype, depart_date=depart_date, return_date=return_date, airline_name_d=airline_name, flight_number_d=flight_number, departure_date_d=departure_date, departure_time_d=departure_time, arrival_date_d=arrival_date, arrival_time_d=arrival_time, departure_airport_d=departure_airport, arrival_airport_d=arrival_airport, price_d=price, airline_name_r=prev_flight['airline_name'], flight_number_r=prev_flight['flight_number'], departure_date_r=prev_flight['departure_date'], departure_time_r=prev_flight['departure_time'], arrival_date_r=prev_flight['arrival_date'], arrival_time_r=prev_flight['arrival_time'], departure_airport_r=prev_flight['departure_airport'], arrival_airport_r=prev_flight['arrival_airport'], price_r=prev_flight['price'])
+    else:
+        back = None
+        cursor = conn.cursor()
+        query = '''select ticket_id
+                from ticket
+                where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s
+                and ticket_id not in (select ticket_id from purchase)'''
+        cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
+        ticket_id = cursor.fetchone()
+        cursor.close()
+        # store flight info in session
+        flight_info1 = {"airline_name":airline_name, "flight_number":flight_number, "departure_date":departure_date, "departure_time":departure_time, "arrival_date":arrival_date, "arrival_time":arrival_time, "departure_airport":departure_airport, "arrival_airport":arrival_airport, "price":price, "ticket_id":ticket_id["ticket_id"]}
+        session['flight_info1'] = flight_info1
+
+        #return flight query
+        cursor = conn.cursor()
+        query = '''select * from flight_price natural join flight_seats_sold
+                where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
+                and departure_airport = %s and arrival_airport = %s and departure_date = %s
+                and amount_of_seats > tickets_sold'''
+        cursor.execute(query, (destination, source, return_date))
+        data2 = cursor.fetchall()
+        cursor.close()
+        return render_template('search-customer-round.html', departure=departure, back=back, source=source, destination=destination, triptype=triptype, depart_date=depart_date, return_date=return_date, airline_name_d=airline_name, flight_number_d=flight_number, departure_date_d=departure_date, departure_time_d=departure_time, arrival_date_d=arrival_date, arrival_time_d=arrival_time, departure_airport_d=departure_airport, arrival_airport_d=arrival_airport, price_d=price, return_flights=data2)
+
+
+@app.route("/purchaseCustomerRoundReturn", methods=['GET', 'POST'])
+def purchaseCustomerRoundReturn():
+    source = session['searchCustomer']['source']
+    destination = session['searchCustomer']['destination']
+    triptype = session['searchCustomer']['triptype']
+    depart_date = session['searchCustomer']['depart_date']
+    return_date = session['searchCustomer']['return_date']
+    back = True
+    airline_name = request.form['airline-name']
+    flight_number = request.form['flight-number']
+    departure_date = request.form['departure-date']
+    departure_time = request.form['departure-time']
+    arrival_date = request.form['arrival-date']
+    arrival_time = request.form['arrival-time']
+    departure_airport = request.form['departure-airport']
+    arrival_airport = request.form['arrival-airport']
+    price = request.form['price']
+    if session['flight_info1'] != {}:
+        prev_flight = session['flight_info1']
+        print("++++++++++++++",prev_flight)
+        departure = True
+        cursor = conn.cursor()
+        query = '''select ticket_id
+                from ticket
+                where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s
+                and ticket_id not in (select ticket_id from purchase)'''
+        cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
+        ticket_id = cursor.fetchone()
+        cursor.close()
+        # store flight info in session
+        flight_info2 = {"airline_name":airline_name, "flight_number":flight_number, "departure_date":departure_date, "departure_time":departure_time, "arrival_date":arrival_date, "arrival_time":arrival_time, "departure_airport":departure_airport, "arrival_airport":arrival_airport, "price":price, "ticket_id":ticket_id["ticket_id"]}
+        session['flight_info2'] = flight_info2
+        return render_template('search-customer-round.html', departure=departure, back=back, source=source, destination=destination, triptype=triptype, depart_date=depart_date, return_date=return_date, airline_name_r=airline_name, flight_number_r=flight_number, departure_date_r=departure_date, departure_time_r=departure_time, arrival_date_r=arrival_date, arrival_time_r=arrival_time, departure_airport_r=departure_airport, arrival_airport_r=arrival_airport, price_r=price, airline_name_d=prev_flight['airline_name'], flight_number_d=prev_flight['flight_number'], departure_date_d=prev_flight['departure_date'], departure_time_d=prev_flight['departure_time'], arrival_date_d=prev_flight['arrival_date'], arrival_time_d=prev_flight['arrival_time'], departure_airport_d=prev_flight['departure_airport'], arrival_airport_d=prev_flight['arrival_airport'], price_d=prev_flight['price'])
+    else:
+        departure = None
+        cursor = conn.cursor()
+        query = '''select ticket_id
+                from ticket
+                where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s
+                and ticket_id not in (select ticket_id from purchase)'''
+        cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
+        ticket_id = cursor.fetchone()
+        cursor.close()
+        # store flight info in session
+        flight_info2 = {"airline_name":airline_name, "flight_number":flight_number, "departure_date":departure_date, "departure_time":departure_time, "arrival_date":arrival_date, "arrival_time":arrival_time, "departure_airport":departure_airport, "arrival_airport":arrival_airport, "price":price, "ticket_id":ticket_id["ticket_id"]}
+        session['flight_info2'] = flight_info2
+
+        #departure flight query
+        cursor = conn.cursor()
+        query = '''select * from flight_price natural join flight_seats_sold
+                where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
+                and departure_airport = %s and arrival_airport = %s and departure_date = %s
+                and amount_of_seats > tickets_sold'''
+        cursor.execute(query, (source, destination, depart_date))
+        data1 = cursor.fetchall()
+        cursor.close()
+        return render_template('search-customer-round.html', departure=departure, back=back, source=source, destination=destination, triptype=triptype, depart_date=depart_date, return_date=return_date, airline_name_r=airline_name, flight_number_r=flight_number, departure_date_r=departure_date, departure_time_r=departure_time, arrival_date_r=arrival_date, arrival_time_r=arrival_time, departure_airport_r=departure_airport, arrival_airport_r=arrival_airport, price_r=price, departure_flights=data1)
 
 @app.route("/purchaseCustomerRound", methods=['GET', 'POST'])
 def purchaseCustomerRound():
-    pass
+    return redirect(url_for('purchase_customer'))
 
 
 @app.route("/purchase_customer", methods=['GET', 'POST'])
-def purchase_Customer():
-    render_template("purchase-customer.html")
+def purchase_customer():
+    flight_info1 = session['flight_info1']
+    flight_info2 = session['flight_info2']
+    if flight_info2 == {}:
+        flights=[flight_info1]
+        total=float(flight_info1['price'])
+    else:
+        flights = [flight_info1,flight_info2]
+        total=float(flight_info1['price'])+float(flight_info2['price'])
+    return render_template("purchase-customer.html",flights=flights,total=total)
 
 
 @app.route("/payCustomer", methods=['GET', 'POST'])
 def payCustomer():
     username = session['username']
     flight_info1 = session['flight_info1']
+    flight_info2 = session['flight_info2']
     purchase_date = date.today()
     purchase_time = datetime.now().time()
     # print(purchase_time)
@@ -686,6 +826,19 @@ def payCustomer():
                            card_type, card_number, name_on_card, card_expiration))
     conn.commit()
     cursor.close()
+    if flight_info2 != {}:
+        cursor = conn.cursor()
+        ins = '''insert into purchase
+        (ticket_id, email, purchase_date, purchase_time, sold_price, card_type, card_number, name_on_card, expiraton_date)
+        values (%s, %s, cast(now() as date), cast(now() as time), %s, %s, %s, %s, %s)
+        '''
+        cursor.execute(ins, (flight_info2["ticket_id"], username, flight_info2["price"],
+                               card_type, card_number, name_on_card, card_expiration))
+        conn.commit()
+        cursor.close()
+    session.pop('flight_info1')
+    session.pop('flight_info2')
+    session.pop('searchCustomer')
     return redirect(url_for('customer_home'))
 
 #------------------------------------------------------------------------------
@@ -1072,6 +1225,8 @@ def logout():
     usertype = session['usertype']
     if usertype == "customer" and session['flight_info1'] is not None:
         session.pop('flight_info1')
+        session.pop('flight_info2')
+        session.pop('searchCustomer')
     if usertype == "staff":
         session.pop('airline')
     session.pop('usertype')

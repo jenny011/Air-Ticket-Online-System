@@ -25,13 +25,14 @@
     <input type="radio" id="radio-round" name="triptype" value="round" checked/>
     <label for="radio-round">round trip</label><br>
   </div>
-  departure date <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" value={{departure_date}} required/> <br>
+  departure date <input type="date" name = "depart-date" placeholder="YYYY/DD/MM" value={{depart_date}} required/> <br>
   <div id='return-date-div' style="visibility:visible;">
     return date <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" value={{return_date}} required/> <br>
   </div>
   <input type="submit" value = Search />
 </form>
 
+{% if not departure %}
 <h3>Departure: {{source}} to {{destination}}</h3>
 <table>
 	<th>Airline</th>
@@ -45,7 +46,7 @@
   <th>Price</th>
   <th>Select</th>
 {% for line in departure_flights %}
-  <form action="/purchaseCustomerRound" method="POST">
+  <form action="/purchaseCustomerRoundDeparture" method="POST">
     <tr>
       <td><input type="text" name="airline-name" value="{{line['airline_name']}}" readonly/></td>
       <td><input type="text" name="flight-number" value="{{line['flight_number']}}" readonly/></td>
@@ -53,15 +54,17 @@
       <td><input tyoe="datetime" name="departure-time" value="{{line['departure_time']}}" readonly/></td>
       <td><input type="date" name="arrival-date" value="{{line['arrival_date']}}" readonly/></td>
       <td><input tyoe="datetime" name="arrival-time" value="{{line['arrival_time']}}" readonly/></td>
-      <td><input type="text" name="source" value="{{line['departure_airport']}}" readonly/></td>
-      <td><input type="text" name="destination" value="{{line['arrival_airport']}}" readonly/></td>
+      <td><input type="text" name="departure-airport" value="{{line['departure_airport']}}" readonly/></td>
+      <td><input type="text" name="arrival-airport" value="{{line['arrival_airport']}}" readonly/></td>
       <td><input type="number" name="price" value="{{line['price']}}" readonly/></td>
-      <td><input type="radio" name="choose-departure" /></td>
+      <td><input type="submit" value=Choose /></td>
     </tr>
   </form>
 {% endfor %}
 </table>
+{% endif %}
 
+{% if not back %}
 <h3>Return: {{destination}} to {{source}}</h3>
 <table>
 	<th>Airline</th>
@@ -75,25 +78,92 @@
   <th>Price</th>
   <th>Select</th>
 {% for line in return_flights %}
-  <tr>
-    <form action="/purchaseCustomerRound" method="POST">
+  <form action="/purchaseCustomerRoundReturn" method="POST">
+    <tr>
       <td><input type="text" name="airline-name" value="{{line['airline_name']}}" readonly/></td>
       <td><input type="text" name="flight-number" value="{{line['flight_number']}}" readonly/></td>
       <td><input type="date" name="departure-date" value="{{line['departure_date']}}" readonly/></td>
       <td><input tyoe="datetime" name="departure-time" value="{{line['departure_time']}}" readonly/></td>
       <td><input type="date" name="arrival-date" value="{{line['arrival_date']}}" readonly/></td>
       <td><input tyoe="datetime" name="arrival-time" value="{{line['arrival_time']}}" readonly/></td>
-      <td><input type="text" name="source" value="{{line['departure_airport']}}" readonly/></td>
-      <td><input type="text" name="destination" value="{{line['arrival_airport']}}" readonly/></td>
+      <td><input type="text" name="departure-airport" value="{{line['departure_airport']}}" readonly/></td>
+      <td><input type="text" name="arrival-airport" value="{{line['arrival_airport']}}" readonly/></td>
       <td><input type="number" name="price" value="{{line['price']}}" readonly/></td>
-      <td><input type="radio" name="choose-return" /></td>
-    </form>
-  </tr>
+      <td><input type="submit" value=Choose /></td>
+    </tr>
+  </form>
 {% endfor %}
 </table>
+{% endif %}
+
+<h3>Your chosen flights</h3>
 <form action="/purchaseCustomerRound" method="POST">
-  <input type="submit">
+  <table>
+  	<th>Airline</th>
+  	<th>Flight Number</th>
+    <th>Departure Date</th>
+    <th>Departure Time</th>
+    <th>Arrival Date</th>
+    <th>Arrival Time</th>
+    <th>Source</th>
+    <th>Destination</th>
+    <th>Price</th>
+  {% if departure and not back %}
+  <tr>
+    <td><input type="text" name="airline-name-d" value="{{airline_name_d}}" readonly/></td>
+    <td><input type="text" name="flight-number-d" value="{{flight_number_d}}" readonly/></td>
+    <td><input type="date" name="departure-date-d" value="{{departure_date_d}}" readonly/></td>
+    <td><input tyoe="datetime" name="departure-time-d" value="{{departure_time_d}}" readonly/></td>
+    <td><input type="date" name="arrival-date-d" value="{{arrival_date_d}}" readonly/></td>
+    <td><input tyoe="datetime" name="arrival-time-d" value="{{arrival_time_d}}" readonly/></td>
+    <td><input type="text" name="departure-airport-d" value="{{departure_airport_d}}" readonly/></td>
+    <td><input type="text" name="arrival-airport-d" value="{{arrival_airport_d}}" readonly/></td>
+    <td><input type="number" name="price-d" value="{{price_d}}" readonly/></td>
+  </tr>
+  {% endif %}
+  {% if back and not departure %}
+  <tr>
+    <td><input type="text" name="airline-name-r" value="{{airline_name_r}}" readonly/></td>
+    <td><input type="text" name="flight-number-r" value="{{flight_number_r}}" readonly/></td>
+    <td><input type="date" name="departure-date-r" value="{{departure_date_r}}" readonly/></td>
+    <td><input tyoe="datetime" name="departure-time-r" value="{{departure_time_r}}" readonly/></td>
+    <td><input type="date" name="arrival-date-r" value="{{arrival_date_r}}" readonly/></td>
+    <td><input tyoe="datetime" name="arrival-time-r" value="{{arrival_time_r}}" readonly/></td>
+    <td><input type="text" name="departure-airport-r" value="{{departure_airport_r}}" readonly/></td>
+    <td><input type="text" name="arrival-airport-r" value="{{arrival_airport_r}}" readonly/></td>
+    <td><input type="number" name="price-r" value="{{price_r}}" readonly/></td>
+  </tr>
+  {% endif %}
+  {% if departure and back %}
+  <tr>
+    <td><input type="text" name="airline-name-d" value="{{airline_name_d}}" readonly/></td>
+    <td><input type="text" name="flight-number-d" value="{{flight_number_d}}" readonly/></td>
+    <td><input type="date" name="departure-date-d" value="{{departure_date_d}}" readonly/></td>
+    <td><input tyoe="datetime" name="departure-time-d" value="{{departure_time_d}}" readonly/></td>
+    <td><input type="date" name="arrival-date-d" value="{{arrival_date_d}}" readonly/></td>
+    <td><input tyoe="datetime" name="arrival-time-d" value="{{arrival_time_d}}" readonly/></td>
+    <td><input type="text" name="departure-airport-d" value="{{departure_airport_d}}" readonly/></td>
+    <td><input type="text" name="arrival-airport-d" value="{{arrival_airport_d}}" readonly/></td>
+    <td><input type="number" name="price-d" value="{{price_d}}" readonly/></td>
+  </tr>
+  <tr>
+    <td><input type="text" name="airline-name-r" value="{{airline_name_r}}" readonly/></td>
+    <td><input type="text" name="flight-number-r" value="{{flight_number_r}}" readonly/></td>
+    <td><input type="date" name="departure-date-r" value="{{departure_date_r}}" readonly/></td>
+    <td><input tyoe="datetime" name="departure-time-r" value="{{departure_time_r}}" readonly/></td>
+    <td><input type="date" name="arrival-date-r" value="{{arrival_date_r}}" readonly/></td>
+    <td><input tyoe="datetime" name="arrival-time-r" value="{{arrival_time_r}}" readonly/></td>
+    <td><input type="text" name="departure-airport-r" value="{{departure_airport_r}}" readonly/></td>
+    <td><input type="text" name="arrival-airport-r" value="{{arrival_airport_r}}" readonly/></td>
+    <td><input type="number" name="price-r" value="{{price_r}}" readonly/></td>
+  </tr>
+  <tr>
+    <input type="submit" value="purchase">
+  </tr>
+  {% endif %}
+  </table>
 </form>
+
 
 <script>
   document.getElementById("radio-one-div").addEventListener("click",function(){

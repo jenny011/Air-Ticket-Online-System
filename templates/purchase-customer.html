@@ -34,8 +34,8 @@
   <td>{{line['departure_time']}}</td>
   <td>{{line['arrival_date']}}</td>
   <td>{{line['arrival_time']}}</td>
-  <td>{{line['source']}}</td>
-  <td>{{line['destination']}}</td>
+  <td>{{line['departure_airport']}}</td>
+  <td>{{line['arrival_airport']}}</td>
   <td>{{line['price']}}</td>
 </tr>
 {% endfor %}
@@ -45,9 +45,9 @@
 
 <form action="/payCustomer" method="POST">
   <div id="radio-one-div">
-    <input type="radio" id="radio-one" name="cardtype" value="debit" checked />
+    <input type="radio" id="radio-one" name="cardtype" value="debit card" checked />
     <label for="radio-one">dedit card</label>
-    <input type="radio" id="radio-round" name="cardtype" value="credit"/>
+    <input type="radio" id="radio-round" name="cardtype" value="credit card"/>
     <label for="radio-round">credit card</label><br>
   </div>
   card number <input type="text" name = "card-number" placeholder="card number" required/> <br>
