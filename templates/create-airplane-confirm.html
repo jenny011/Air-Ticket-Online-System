@@ -1,0 +1,33 @@
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <!-- <link rel="stylesheet" href="css/style.css"> -->
+  <title>Air Ticket Online</title>
+</head>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<body>
+<a href="/logout">Logout</a>
+/ <a href="/staff_home">Back</a>
+<h1>Airplane added successfully</h1>
+
+<h2>Airplanes owned by {{airline}}</h2>
+<table>
+	<th>ID</th>
+	<th>Seating Capacity</th>
+{% for line in airplanes %}
+<tr>
+	<td>{{line['id']}}</td>
+	<td>{{line['amount_of_seats']}}</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+
+</html>

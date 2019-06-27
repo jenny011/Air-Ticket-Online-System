@@ -34,9 +34,6 @@
   <th>Arrival Time</th>
   <th>Source</th>
   <th>Destination</th>
-  <!--
-  <th>Price</th>
-  -->
   <th>Status</th>
 {% for line in flights %}
 <tr>
@@ -48,9 +45,6 @@
   <td>{{line['arrival_time']}}</td>
   <td>{{line['departure_airport']}}</td>
   <td>{{line['arrival_airport']}}</td>
-  <!--
-  <td>{{line['price']}}</td>
-  -->
   <td>{{line['status']}}</td>
 </tr>
 {% endfor %}
