@@ -81,6 +81,7 @@
   		<p class="error"><strong>Error:</strong> {{exist_airplane}}</p>
   	{% endif %}
   </form>
+  <div>{{exist_airplane}}</div>
 
   <h2>Add airport</h2>
   <form action="/createAirport" method="POST">
@@ -115,33 +116,11 @@
   <h3>Quarterly revenue of last year</h3>
   <div id="piechart" style="height: 300px; width: 70%;"></div>
 
-  <h3>Top 3 destinations of last 3 months</h3>
-  <table>
-    <th>Ranking</th>
-    <th>Airport</th>
-    <th>City</th>
-    {% for i in range(3) %}
-    <td>{{i+1}}</td>
-    <td>{{month_top[i]['airport_name']}}</td>
-    <td>{{month_top[i]['city']}}</td>
-    {% endfor %}
-  </table>
 
-  <h3>Top 3 destinations of last year</h3>
-  <table>
-    <th>Ranking</th>
-    <th>Airport</th>
-    <th>City</th>
-    {% for i in range(3) %}
-    <td>{{i+1}}</td>
-    <td>{{year_top[i]['airport_name']}}</td>
-    <td>{{year_top[i]['city']}}</td>
-    {% endfor %}
-  </table>
 
 </body>
 
-<script>
+<!-- <script>
   // draw pie chart
   let quarterly = [];
   let quarters = [1,2,3,4]
@@ -177,6 +156,6 @@
     chart.render();
     chart.data[0].set("dataPoints",parts);
   }
-</script>
+</script> -->
 
 </html>
