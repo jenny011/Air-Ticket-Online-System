@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="617de85c-6896-41c7-ac3e-4fe0ef00661c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/SQL codes/Air-Ticket-DDL.sql" beforeDir="false" afterPath="$PROJECT_DIR$/SQL codes/Air-Ticket-DDL.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/init_db.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -32,11 +31,11 @@
     <splitter split-orientation="horizontal" split-proportion="0.50972223">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/init_db.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="454">
-                  <caret line="1451" column="26" selection-start-line="1451" selection-start-column="26" selection-end-line="1451" selection-end-column="26" />
+                <state relative-caret-position="1868">
+                  <caret line="1435" column="40" lean-forward="true" selection-start-line="1435" selection-start-column="40" selection-end-line="1435" selection-end-column="40" />
                   <folding>
                     <element signature="e#23#100#0" expanded="true" />
                   </folding>
@@ -44,11 +43,11 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/test_insert tickets for existing flights.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="689">
-                  <caret line="78" column="14" lean-forward="true" selection-start-line="48" selection-end-line="78" selection-end-column="14" />
+                <state relative-caret-position="226">
+                  <caret line="46" column="27" lean-forward="true" selection-start-line="46" selection-start-column="27" selection-end-line="46" selection-end-column="27" />
                   <folding>
                     <element signature="e#23#100#0" expanded="true" />
                   </folding>
@@ -90,7 +89,7 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/templates/staff-home.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="210">
+                <state relative-caret-position="-1008">
                   <caret line="14" column="6" lean-forward="true" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
                 </state>
               </provider>
@@ -280,12 +279,12 @@
       <workItem from="1561472314585" duration="89000" />
       <workItem from="1561514810144" duration="6174000" />
       <workItem from="1561524229669" duration="9849000" />
-      <workItem from="1561594455322" duration="14305000" />
+      <workItem from="1561594455322" duration="15303000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="48242000" />
+    <option name="totallyTimeSpent" value="49240000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -411,6 +410,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../Databases/Flask_for_class/init1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="20" column="12" lean-forward="true" selection-start-line="20" selection-start-column="12" selection-end-line="20" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/templates/search-customer-one.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="518">
@@ -420,32 +426,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/staff-home.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
+        <state relative-caret-position="-1008">
           <caret line="14" column="6" lean-forward="true" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_insert tickets for existing flights.py">
+    <entry file="file://$PROJECT_DIR$/init_db.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="689">
-          <caret line="78" column="14" lean-forward="true" selection-start-line="48" selection-end-line="78" selection-end-column="14" />
+        <state relative-caret-position="1868">
+          <caret line="1435" column="40" lean-forward="true" selection-start-line="1435" selection-start-column="40" selection-end-line="1435" selection-end-column="40" />
           <folding>
             <element signature="e#23#100#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../Databases/Flask_for_class/init1.py">
+    <entry file="file://$PROJECT_DIR$/test_insert tickets for existing flights.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="20" column="12" lean-forward="true" selection-start-line="20" selection-start-column="12" selection-end-line="20" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/init_db.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="1451" column="26" selection-start-line="1451" selection-start-column="26" selection-end-line="1451" selection-end-column="26" />
+        <state relative-caret-position="226">
+          <caret line="46" column="27" lean-forward="true" selection-start-line="46" selection-start-column="27" selection-end-line="46" selection-end-column="27" />
           <folding>
             <element signature="e#23#100#0" expanded="true" />
           </folding>

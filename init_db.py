@@ -1380,7 +1380,7 @@ def createAirport():
 
         exist_airport = None
         if(data):
-            return redirect(url_for('staff_home',exist_airport="This airport already exists."))
+            return redirect(url_for('staff_home', exist_airport="This airport already exists."))
         else:
             cursor = conn.cursor();
             ins = 'INSERT INTO airport VALUES (%s, %s)'
@@ -1407,7 +1407,7 @@ def create_airport_confirm():
 # aveage ratings
 '''select airline_name, flight_number, departure_date, departure_time, avg(rating) as average_rating
 from rates
-group by (airline_name, flight_number, departure_date, departure_time)'''
+group by airline_name, flight_number, departure_date, departure_time'''
 
 # view comments (extra page?)
 '''select comments
@@ -1428,13 +1428,16 @@ select create view frequent_customer as
 select airline_name, email, name, num_ticket
 from frequent_customer
 where airline_name = %s'''
-'''
-select distinct email, name
+
+'''select distinct email, name
 from temp_frequent_customer
 where num_ticket = (select max(num_ticket) from frequent_customer)'''
 
 # drop the view after you get the result
 '''drop view emp_frequent_customer'''
+
+# see a list of all flights a particular Customer has taken on that airline??????
+
 #--------------view ticket sales report TODO--------------
 '''select count(ticket_id)
 from ticket natural join purchase
