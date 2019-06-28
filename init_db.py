@@ -10,8 +10,9 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -823,10 +824,10 @@ def payCustomer():
     username = session['username']
     flight_info1 = session['flight_info1']
     flight_info2 = session['flight_info2']
-<<<<<<< HEAD
-=======
-    purchase_date = datetime.date.today()
->>>>>>> 90eeb58fac5af6d866ee9f4f27f3e2b6783f3815
+# <<<<<<< HEAD
+# =======
+#     purchase_date = datetime.date.today()
+# >>>>>>> 90eeb58fac5af6d866ee9f4f27f3e2b6783f3815
     card_type = request.form["cardtype"]
     card_number = request.form['card-number']
     name_on_card = request.form['name-on-card']
@@ -1234,13 +1235,9 @@ def trackCustomer():
 #logout is the same for customer and staff
 @app.route('/logout',methods=['GET','POST'])
 def logout():
-    # while len(session) != 0:
-    #     session.pop()
-
-    print("session when logout1", session)
     usertype = session['usertype']
-<<<<<<< HEAD
-    #if usertype == "customer" and session['flight_info1'] is not None:
+# <<<<<<< HEAD
+    # if usertype == "customer" and session['flight_info1'] is not None:
     if usertype == "customer":
         if session.get("searchCustomer") is not None:
             # print("searchCustomer is not None")
@@ -1250,17 +1247,17 @@ def logout():
         if session.get("flight_info2") is not None:
             session.pop('flight_info2')
     elif usertype == "staff":
-=======
-    if usertype == "customer":
-        session.pop('flight_info1')
-        session.pop('flight_info2')
-        session.pop('searchCustomer')
-    if usertype == "staff":
->>>>>>> 90eeb58fac5af6d866ee9f4f27f3e2b6783f3815
         session.pop('airline')
+# # =======
+#     if usertype == "customer":
+#         session.pop('flight_info1')
+#         session.pop('flight_info2')
+#         session.pop('searchCustomer')
+#     if usertype == "staff":
+# >>>>>>> 90eeb58fac5af6d866ee9f4f27f3e2b6783f3815
+
     session.pop('usertype')
     session.pop('username')
-    print("session when logout2", session)
     return render_template("logout.html")
 
 
