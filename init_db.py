@@ -1469,7 +1469,8 @@ def create_flight_confirm():
     query = '''select * from flight
     where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) between %s and %s
     and airline_name = %s'''
-    cursor.execute(query, (from_date, applyto_date, airline))
+    # cursor.execute(query, (from_date, applyto_date, airline))
+    cursor.execute(query, (from_date, to_date, airline))
     data1 = cursor.fetchall()
     cursor.close()
     return render_template('create-flight-confirm.html',flights=data1)
