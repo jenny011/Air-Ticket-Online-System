@@ -452,8 +452,8 @@ def customer_home():
     cursor = conn.cursor()
     monthly_spending = []
     months=[]
-    date1 = datetime.strptime(str(from_date), '%Y-%m-%d')
-    date2 = datetime.strptime(str(to_date), '%Y-%m-%d')
+    date1 = datetime.datetime.strptime(str(from_date), '%Y-%m-%d')
+    date2 = datetime.datetime.strptime(str(to_date), '%Y-%m-%d')
     # r = relativedelta.relativedelta(date2, date1)
     # month_number = r.months + r.years*12
     month_number = (date2.year-date1.year)*12 + date2.month - date1.month
@@ -1071,8 +1071,8 @@ def track():
     cursor = conn.cursor()
     monthly_spending = []
     months=[]
-    date1 = datetime.strptime(from_date_track, '%Y-%m-%d')
-    date2 = datetime.strptime(to_date_track, '%Y-%m-%d')
+    date1 = datetime.datetime.strptime(from_date_track, '%Y-%m-%d')
+    date2 = datetime.datetime.strptime(to_date_track, '%Y-%m-%d')
     # r = relativedelta.relativedelta(date2, date1)
     # month_number = r.months + r.years*12
     year_number = date2.year-date1.year+1
@@ -1152,8 +1152,8 @@ def trackCustomer():
     cursor = conn.cursor()
     monthly_spending = []
     months=[]
-    date1 = datetime.strptime(from_date_track, '%Y-%m-%d')
-    date2 = datetime.strptime(to_date_track, '%Y-%m-%d')
+    date1 = datetime.datetime.strptime(from_date_track, '%Y-%m-%d')
+    date2 = datetime.datetime.strptime(to_date_track, '%Y-%m-%d')
     # r = relativedelta.relativedelta(date2, date1)
     # month_number = r.months + r.years*12
     year_number = date2.year-date1.year+1
