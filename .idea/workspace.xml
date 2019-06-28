@@ -28,14 +28,14 @@
     <select />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.50972223">
+    <splitter split-orientation="horizontal" split-proportion="0.56180555">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/init_db.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1868">
-                  <caret line="1435" column="40" lean-forward="true" selection-start-line="1435" selection-start-column="40" selection-end-line="1435" selection-end-column="40" />
+                <state relative-caret-position="557">
+                  <caret line="1259" column="27" selection-start-line="1259" selection-start-column="27" selection-end-line="1259" selection-end-column="27" />
                   <folding>
                     <element signature="e#23#100#0" expanded="true" />
                   </folding>
@@ -43,11 +43,11 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/test_insert tickets for existing flights.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="226">
-                  <caret line="46" column="27" lean-forward="true" selection-start-line="46" selection-start-column="27" selection-end-line="46" selection-end-column="27" />
+                <state relative-caret-position="392">
+                  <caret line="56" lean-forward="true" selection-start-line="56" selection-end-line="56" />
                   <folding>
                     <element signature="e#23#100#0" expanded="true" />
                   </folding>
@@ -77,20 +77,11 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/templates/search-customer-one.html">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="518">
-                  <caret line="54" column="38" lean-forward="true" selection-start-line="54" selection-start-column="38" selection-end-line="54" selection-end-column="38" />
-                </state>
-              </provider>
-            </entry>
-          </file>
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/templates/staff-home.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-1008">
-                  <caret line="14" column="6" lean-forward="true" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
+                <state relative-caret-position="932">
+                  <caret line="96" column="36" selection-start-line="96" selection-start-column="36" selection-end-line="96" selection-end-column="36" />
                 </state>
               </provider>
             </entry>
@@ -98,8 +89,11 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/templates/search-customer-round.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-785">
+                <state relative-caret-position="-1551">
                   <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
+                  <folding>
+                    <element signature="n#style#0;n#div#1;n#form#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -135,10 +129,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>loginCustomerAu</find>
-      <find>loginCustomerAuth</find>
-      <find>Back</find>
-      <find>redirec</find>
       <find>check</find>
       <find>customer_home</find>
       <find>view</find>
@@ -165,6 +155,10 @@
       <find>/rate</find>
       <find>/search</find>
       <find>staff</find>
+      <find>flight_info</find>
+      <find>logout</find>
+      <find>session['flight_info2']</find>
+      <find>ticket_</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -182,6 +176,7 @@
         <option value="$PROJECT_DIR$/templates/customer-home.html" />
         <option value="$PROJECT_DIR$/templates/search-customer-one.html" />
         <option value="$PROJECT_DIR$/test_insert tickets for existing flights.py" />
+        <option value="$PROJECT_DIR$/templates/staff-home.html" />
         <option value="$PROJECT_DIR$/init_db.py" />
       </list>
     </option>
@@ -279,12 +274,12 @@
       <workItem from="1561472314585" duration="89000" />
       <workItem from="1561514810144" duration="6174000" />
       <workItem from="1561524229669" duration="9849000" />
-      <workItem from="1561594455322" duration="15303000" />
+      <workItem from="1561594455322" duration="22934000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="49240000" />
+    <option name="totallyTimeSpent" value="56871000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -403,17 +398,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/search-customer-round.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-785">
-          <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../Databases/Flask_for_class/init1.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="196">
           <caret line="20" column="12" lean-forward="true" selection-start-line="20" selection-start-column="12" selection-end-line="20" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/search-customer-round.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1551">
+          <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#form#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_insert tickets for existing flights.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="392">
+          <caret line="56" lean-forward="true" selection-start-line="56" selection-end-line="56" />
+          <folding>
+            <element signature="e#23#100#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -426,25 +434,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/staff-home.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1008">
-          <caret line="14" column="6" lean-forward="true" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
+        <state relative-caret-position="932">
+          <caret line="96" column="36" selection-start-line="96" selection-start-column="36" selection-end-line="96" selection-end-column="36" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/init_db.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1868">
-          <caret line="1435" column="40" lean-forward="true" selection-start-line="1435" selection-start-column="40" selection-end-line="1435" selection-end-column="40" />
-          <folding>
-            <element signature="e#23#100#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_insert tickets for existing flights.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="46" column="27" lean-forward="true" selection-start-line="46" selection-start-column="27" selection-end-line="46" selection-end-column="27" />
+        <state relative-caret-position="557">
+          <caret line="1259" column="27" selection-start-line="1259" selection-start-column="27" selection-end-line="1259" selection-end-column="27" />
           <folding>
             <element signature="e#23#100#0" expanded="true" />
           </folding>
