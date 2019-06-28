@@ -1,8 +1,7 @@
 # Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
-from datetime import date
-from datetime import datetime
+import datetime
 from dateutil import relativedelta
 import random
 
@@ -11,9 +10,8 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
+                       password='',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -415,9 +413,9 @@ def checkPublic():
 @app.route('/customer_home')
 def customer_home():
     username = session['username']
-    today = date.today()
+    today = datetime.date.today()
     to_date = today
-    from_date = date(today.year-1, today.month, today.day)
+    from_date = datetime.date(today.year-1, today.month, today.day)
 
     # view
     cursor = conn.cursor()
@@ -486,8 +484,8 @@ def customer_home():
             to_d_day = to_date.day
         else:
             to_d_day = 1
-        from_d = date(from_d_year,from_d_month,from_d_day)
-        to_d = date(to_d_year,to_d_month,to_d_day)
+        from_d = datetime.date(from_d_year,from_d_month,from_d_day)
+        to_d = datetime.date(to_d_year,to_d_month,to_d_day)
         cursor.execute(query, (username, from_d, to_d))
         monthly=cursor.fetchall()
         if monthly[0]['sum(sold_price)']==None:
@@ -810,7 +808,7 @@ def payCustomer():
     username = session['username']
     flight_info1 = session['flight_info1']
     flight_info2 = session['flight_info2']
-    purchase_date = date.today()
+    purchase_date = datetime.date.today()
     card_type = request.form["cardtype"]
     card_number = request.form['card-number']
     name_on_card = request.form['name-on-card']
@@ -837,14 +835,12 @@ def payCustomer():
     session.pop('flight_info1')
     session.pop('flight_info2')
     session.pop('searchCustomer')
-    return redirect(url_for('customer_home'))
+    return render_template("purchase-customer-confirm.html")
 
 #------------------------------------------------------------------------------
 #------------!customer! rate my flights-------------
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!PROBLEM
 @app.route("/rate", methods=['POST'])
 def rate():
-    print(request.method)
     airline = request.form['airline']
     number = request.form['number']
     date = request.form['date']
@@ -884,7 +880,7 @@ def view():
     to_date = request.form['to-date']
 
     if from_date == "":
-        from_date = date.today()
+        from_date = datetime.date.today()
     if to_date == "":
         if source == "" and destination == "":
             cursor = conn.cursor()
@@ -973,7 +969,7 @@ def viewCustomer():
     to_date = request.form['to-date']
 
     if from_date == "":
-        from_date = date.today()
+        from_date = datetime.date.today()
     if to_date == "":
         if source == "" and destination == "":
             cursor = conn.cursor()
@@ -1118,8 +1114,8 @@ def track():
                 to_d_day = date2.day
             else:
                 to_d_day = 1
-            from_d = date(from_d_year,from_d_month,from_d_day)
-            to_d = date(to_d_year,to_d_month,to_d_day)
+            from_d = datetime.date(from_d_year,from_d_month,from_d_day)
+            to_d = datetime.date(to_d_year,to_d_month,to_d_day)
             # print(from_d,to_d)
             cursor.execute(query, (username, from_d, to_d))
             monthly=cursor.fetchall()
@@ -1199,8 +1195,8 @@ def trackCustomer():
                 to_d_day = date2.day
             else:
                 to_d_day = 1
-            from_d = date(from_d_year,from_d_month,from_d_day)
-            to_d = date(to_d_year,to_d_month,to_d_day)
+            from_d = datetime.date(from_d_year,from_d_month,from_d_day)
+            to_d = datetime.date(to_d_year,to_d_month,to_d_day)
             # print(from_d,to_d)
             cursor.execute(query, (username, from_d, to_d))
             monthly=cursor.fetchall()
@@ -1221,7 +1217,7 @@ def trackCustomer():
 @app.route('/logout',methods=['GET','POST'])
 def logout():
     usertype = session['usertype']
-    if usertype == "customer" and session['flight_info1'] is not None:
+    if usertype == "customer":
         session.pop('flight_info1')
         session.pop('flight_info2')
         session.pop('searchCustomer')
@@ -1258,7 +1254,7 @@ def viewFlights():
     to_date = request.form['to-date']
 
     if from_date == "":
-        from_date = date.today()
+        from_date = datetime.date.today()
     if to_date == "":
         if source == "" and destination == "":
             cursor = conn.cursor()
@@ -1421,36 +1417,6 @@ def createFlight():
             cursor.execute(query, (ticket_id, airline_name, flight_number, departure_date, departure_time))
             conn.commit()
         cursor.close()
-            # #add ticket
-            # cursor = conn.cursor();
-            # query = '''select amount_of_seats from flight natural join airplane
-            #     where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s'''
-            # cursor.execute(query, (airline, flight_number, departure_date, departure_time))
-            # seats = cursor.fetchall()
-            # cursor.close()
-            # seats = seats[0]['amount_of_seats']
-            #
-            # cursor = conn.cursor();
-            # query = '''select max(ticket_id) from ticket
-            #   where ticket_id like %s'''
-            # cursor.execute(query, ("1"+flight_number+"%"))
-            # last_ticket = cursor.fetchall()
-            # cursor.close()
-            # last_ticket = last_ticket[0]['max(ticket_id)']
-            # if last_ticket is None:
-            #     last_ticket = int("1"+flight_number)
-            # else:
-            #     last_ticket = int(last_ticket)
-            #
-            # for i in range(seats):
-            #     index = i+1+last_ticket
-            #     ticket_id = "1"+flight_number + str(index)
-            #
-            #     cursor = conn.cursor();
-            #     ins = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s)'
-            #     cursor.execute(ins, (ticket_id, airline, flight_number, departure_date, departure_time))
-            #     conn.commit()
-            #     cursor.close()
         return redirect(url_for('create_flight_confirm'))
     else:
         return redirect(url_for('login'))
@@ -1460,13 +1426,16 @@ def createFlight():
 def create_flight_confirm():
     username = session['username']
     airline = session['airline']
-    from_date = date.today()
+    from_date = datetime.date.today()
+    to_date = datetime.datetime.now() + datetime.timedelta(30)
+    to_date = datetime.date(to_date.year,to_date.month,to_date.day)
+    print(to_date)
 
     cursor = conn.cursor()
     query = '''select * from flight
-    where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s
+    where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) between %s and %s
     and airline_name = %s'''
-    cursor.execute(query, (from_date, airline))
+    cursor.execute(query, (from_date, applyto_date, airline))
     data1 = cursor.fetchall()
     cursor.close()
     return render_template('create-flight-confirm.html',flights=data1)
@@ -1598,7 +1567,7 @@ where airline_name = %s and purchase date between %s and %s'''
 # last month
 '''select select count(ticket_id)
 from ticket natural join purchase
-where airline_name = %s and 
+where airline_name = %s and
 purchase_date between NOW() - INTERVAL 1 MONTH and NOW()'''
 #--------------into staff_home: quarterly revenue TODO--------------
 
