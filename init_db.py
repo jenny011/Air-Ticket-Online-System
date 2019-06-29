@@ -85,7 +85,7 @@ def registerStaffAuth():
     first_name = request.form['first-name']
     last_name = request.form['last-name']
     DOB = request.form['DOB']
-    # phone_number = request.form['phone-number']
+    phone_number = request.form.getlist('phone-number')
 
     # cursor used to send queries
     cursor = conn.cursor()
@@ -105,6 +105,12 @@ def registerStaffAuth():
         cursor.execute(ins, (username, airline_name, password,
                              first_name, last_name, DOB))
         conn.commit()
+
+        for phone in phone_number:
+            if phone != "":
+                ins = 'INSERT INTO staff_phone VALUES(%s, %s)'
+                cursor.execute(ins, (username, phone))
+                conn.commit()
         cursor.close()
         #todo: redirect to staff login page?
         return render_template('login-staff.html')
@@ -1485,7 +1491,52 @@ def viewFlightsStaff():
 
 
 #--------------change flight status TODO--------------
+@app.route('/changeStatus',methods=['GET','POST'])
+def changeStatus():
+    usertype = session['usertype']
+    if usertype == "staff":
+        airline = session['airline']
 
+        cursor = conn.cursor();
+        query = '''select * from flight
+        where airline_name = %s and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()'''
+        cursor.execute(query, (airline))
+        data = cursor.fetchall()
+        cursor.close()
+
+        return render_template('change-status-staff.html', flights=data)
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/changeStatusStaff',methods=['GET','POST'])
+def changeStatusStaff():
+    usertype = session['usertype']
+    if usertype == "staff":
+        airline = session['airline']
+        status = request.form['status']
+        flight_number = request.form['flight-number']
+        departure_date = request.form['departure-date']
+        departure_time = request.form['departure-time']
+
+        cursor = conn.cursor();
+        alter = '''update flight
+                set status = %s
+                where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s'''
+        cursor.execute(alter, (status, airline, flight_number, departure_date, departure_time))
+        data = cursor.fetchall()
+        conn.commit()
+        cursor.close()
+
+        cursor = conn.cursor();
+        query = '''select * from flight
+        where airline_name = %s and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()'''
+        cursor.execute(query, (airline))
+        data = cursor.fetchall()
+        cursor.close()
+
+        return render_template('change-status-staff.html', flights=data)
+    else:
+        return redirect(url_for('login'))
 
 #--------------create flights------------------
 @app.route('/createFlight',methods=['GET','POST'])
@@ -1574,7 +1625,6 @@ def create_flight_confirm():
     data1 = cursor.fetchall()
     cursor.close()
     return render_template('create-flight-confirm.html',flights=data1)
-
 
 #--------------add airplane------------------
 @app.route('/createAirplane',methods=['GET','POST'])

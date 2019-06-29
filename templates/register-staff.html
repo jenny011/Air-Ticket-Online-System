@@ -21,7 +21,11 @@
     date of birth<br>
     <input type="date" name = "DOB" placeholder="YYYY/MM/DD" required/> <br>
   	phone number<br>
-    <input type="tel" name = "phone-number" placeholder="phone number" required/><br>
+    <div id="phone">
+      <input type="tel" name = "phone-number" placeholder="phone number" required/><br>
+    </div>
+    <button type="button" onclick="addPhone()">add phone</button><br>
+    <br>
   	<input type="submit" value = Register />
   	{% if error %}
   		<p class="error"><strong>Error:</strong> {{error}}</p>
@@ -29,5 +33,18 @@
   </form>
   <a href="/">Go back</a>
 </body>
+
+<script>
+function addPhone(){
+  phoneDiv = document.getElementById("phone");
+  phoneInput = document.createElement("input");
+  br = document.createElement("br");
+  phoneInput.type="tel";
+  phoneInput.name="phone-number";
+  phoneInput.placeholder="phone number";
+  phoneDiv.appendChild(phoneInput);
+  phoneDiv.appendChild(br);
+}
+</script>
 
 </html>
