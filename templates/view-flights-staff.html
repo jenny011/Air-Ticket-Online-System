@@ -18,10 +18,10 @@
   <h1>View flights</h1>
   <form action="/viewFlightsStaff" method="POST">
     date range <br>
-    from <input type="date" name = "from-date" placeholder="YYYY/MM/DD" /> <br>
-    to <input type="date" name = "to-date" placeholder="YYYY/MM/DD" /> <br>
-    source <input type="text" name = "source" placeholder="source" /> <br>
-    destination <input type="text" name = "destination" placeholder="destination" /> <br>
+    from <input type="date" name = "from-date" placeholder="YYYY/MM/DD" value="{{from_date}}" /> <br>
+    to <input type="date" name = "to-date" placeholder="YYYY/MM/DD" value="{{to_date}}" /> <br>
+    source <input type="text" name = "source" placeholder="source" value="{{source}}" /> <br>
+    destination <input type="text" name = "destination" placeholder="destination" value="{{destination}}" /> <br>
     <input type="submit" value = View />
   </form>
   <table>
@@ -33,6 +33,7 @@
     <th>Arrival Time</th>
     <th>Source</th>
     <th>Destination</th>
+    <th>Base Price</th>
     <th>Status</th>
   {% for line in flights %}
   <tr>
@@ -44,6 +45,7 @@
     <td>{{line['arrival_time']}}</td>
     <td>{{line['departure_airport']}}</td>
     <td>{{line['arrival_airport']}}</td>
+    <td>{{line['base_price']}}</td>
     <td>{{line['status']}}</td>
   </tr>
   {% endfor %}

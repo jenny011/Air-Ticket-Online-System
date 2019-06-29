@@ -10,9 +10,8 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
+                       password='',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -1270,15 +1269,20 @@ def logout():
 def staff_home():
     username = session['username']
     airline = session['airline']
-    cursor = conn.cursor();
-    query = 'SELECT * FROM flight WHERE airline_name = %s'
-    cursor.execute(query, (airline))
+    from_date = datetime.date.today()
+    to_date = datetime.datetime.now() + datetime.timedelta(30)
+    to_date = datetime.date(to_date.year,to_date.month,to_date.day)
+    cursor = conn.cursor()
+    query = '''select * from flight
+    where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) between %s and %s
+    and airline_name = %s'''
+    cursor.execute(query, (from_date, to_date, airline))
     data1 = cursor.fetchall()
     cursor.close()
-    return render_template('staff-home.html', username=username, flights=data1)
+    return render_template('staff-home.html', username=username, flights=data1, from_date=from_date, to_date=to_date)
 
-####!!!!!next 30 days???????????????
-#--------------view flights TODO????????all customers-------------
+
+#------------------view flights -----------------
 @app.route('/viewFlights',methods=['GET','POST'])
 def viewFlights():
     airline = session['airline']
@@ -1289,54 +1293,54 @@ def viewFlights():
 
     if from_date == "":
         from_date = datetime.date.today()
+    else:
+        from_date = datetime.datetime.strptime(from_date, '%Y-%m-%d')
+        from_date = datetime.date(from_date.year, from_date.month,from_date.day)
     if to_date == "":
+        to_date = from_date + datetime.timedelta(30)
+        to_date = datetime.date(to_date.year,to_date.month,to_date.day)
         if source == "" and destination == "":
             cursor = conn.cursor()
-            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
+            query = '''select *
             from flight
-            where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s
-            and airline_name = %s'''
-            cursor.execute(query, (from_date, airline))
+            where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s and airline_name = %s'''
+            cursor.execute(query, (from_date, to_date, airline))
             data1 = cursor.fetchall()
             cursor.close()
         elif source == "" and destination != "":
             cursor = conn.cursor()
-            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time,
-                departure_airport, arrival_airport, status
+            query = '''select *
                 from flight
                 where arrival_airport = %s
-                and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s
+                and departure_date between %s and %s
                 and airline_name = %s'''
-            cursor.execute(query, (destination, from_date, airline))
+            cursor.execute(query, (destination, from_date, to_date, airline))
             data1 = cursor.fetchall()
             cursor.close()
         elif source != "" and destination == "":
             cursor = conn.cursor()
-            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time,
-                departure_airport, arrival_airport, status
+            query = '''select *
                 from flight
                 where departure_airport = %s
-                and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s
+                and departure_date between %s and %s
                 and airline_name = %s'''
-            cursor.execute(query, (source, from_date, airline))
+            cursor.execute(query, (source, from_date, to_date, airline))
             data1 = cursor.fetchall()
             cursor.close()
         elif source != "" and destination != "":
             cursor = conn.cursor()
-            query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time,
-                departure_airport, arrival_airport, status
+            query = '''select *
                 from flight
                 where departure_airport = %s and arrival_airport = %s
-                and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s
+                and departure_date between %s and %s
                 and airline_name = %s'''
-            cursor.execute(query, (source, destination, from_date, airline))
+            cursor.execute(query, (source, destination, from_date, to_date, airline))
             data1 = cursor.fetchall()
             cursor.close()
     else:
         if source == "" and destination == "":
             cursor = conn.cursor()
-            query = '''select airline_name, flight_number, departure_date, departure_time,
-                    arrival_date, arrival_time, departure_airport, arrival_airport, status
+            query = '''select *
                     from flight
                     where departure_date between %s and %s
                     and airline_name = %s'''
@@ -1345,8 +1349,7 @@ def viewFlights():
             cursor.close()
         elif source == "" and destination != "":
             cursor = conn.cursor()
-            query = '''select airline_name, flight_number, departure_date, departure_time,
-                    arrival_date, arrival_time, departure_airport, arrival_airport, status
+            query = '''select *
                     from flight
                     where arrival_airport = %s
                     and departure_date between %s and %s
@@ -1356,8 +1359,7 @@ def viewFlights():
             cursor.close()
         elif source != "" and destination == "":
             cursor = conn.cursor()
-            query = '''select airline_name, flight_number, departure_date, departure_time,
-                    arrival_date, arrival_time, departure_airport, arrival_airport, status
+            query = '''select *
                     from flight
                     where departure_airport = %s
                     and departure_date between %s and %s
@@ -1367,8 +1369,7 @@ def viewFlights():
             cursor.close()
         elif source != "" and destination != "":
             cursor = conn.cursor()
-            query = '''select airline_name, flight_number, departure_date, departure_time,
-                    arrival_date, arrival_time, departure_airport, arrival_airport, status
+            query = '''select *
                     from flight
                     where departure_airport = %s and arrival_airport = %s
                     and departure_date between %s and %s
@@ -1379,12 +1380,110 @@ def viewFlights():
     return render_template('view-flights-staff.html', from_date=from_date, to_date=to_date,
                            source=source, destination=destination, flights=data1)
 
+@app.route('/viewFlightsStaff',methods=['GET','POST'])
+def viewFlightsStaff():
+    airline = session['airline']
+    source = request.form['source']
+    destination = request.form['destination']
+    from_date = request.form['from-date']
+    to_date = request.form['to-date']
+
+    if from_date == "":
+        from_date = datetime.date.today()
+    else:
+        from_date = datetime.datetime.strptime(from_date, '%Y-%m-%d')
+        from_date = datetime.date(from_date.year, from_date.month,from_date.day)
+    if to_date == "":
+        to_date = from_date + datetime.timedelta(30)
+        to_date = datetime.date(to_date.year,to_date.month,to_date.day)
+        if source == "" and destination == "":
+            cursor = conn.cursor()
+            query = '''select *
+            from flight
+            where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s and airline_name = %s'''
+            cursor.execute(query, (from_date, to_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source == "" and destination != "":
+            cursor = conn.cursor()
+            query = '''select *
+                from flight
+                where arrival_airport = %s
+                and departure_date between %s and %s
+                and airline_name = %s'''
+            cursor.execute(query, (destination, from_date, to_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "" and destination == "":
+            cursor = conn.cursor()
+            query = '''select *
+                from flight
+                where departure_airport = %s
+                and departure_date between %s and %s
+                and airline_name = %s'''
+            cursor.execute(query, (source, from_date, to_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "" and destination != "":
+            cursor = conn.cursor()
+            query = '''select *
+                from flight
+                where departure_airport = %s and arrival_airport = %s
+                and departure_date between %s and %s
+                and airline_name = %s'''
+            cursor.execute(query, (source, destination, from_date, to_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+    else:
+        if source == "" and destination == "":
+            cursor = conn.cursor()
+            query = '''select *
+                    from flight
+                    where departure_date between %s and %s
+                    and airline_name = %s'''
+            cursor.execute(query, (from_date, to_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source == "" and destination != "":
+            cursor = conn.cursor()
+            query = '''select *
+                    from flight
+                    where arrival_airport = %s
+                    and departure_date between %s and %s
+                    and airline_name = %s'''
+            cursor.execute(query, (destination, from_date, to_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "" and destination == "":
+            cursor = conn.cursor()
+            query = '''select *
+                    from flight
+                    where departure_airport = %s
+                    and departure_date between %s and %s
+                    and airline_name = %s'''
+            cursor.execute(query, (source, from_date, to_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+        elif source != "" and destination != "":
+            cursor = conn.cursor()
+            query = '''select *
+                    from flight
+                    where departure_airport = %s and arrival_airport = %s
+                    and departure_date between %s and %s
+                    and airline_name = %s'''
+            cursor.execute(query, (source, destination, from_date, to_date, airline))
+            data1 = cursor.fetchall()
+            cursor.close()
+    return render_template('view-flights-staff.html', from_date=from_date, to_date=to_date,
+                           source=source, destination=destination, flights=data1)
+
+#-----------------------???????VIEWall customers------------
+
 
 #--------------change flight status TODO--------------
 
 
-#--------------create flights SENDERROR------------------
-####!!!!!next 30 days???????????????
+#--------------create flights------------------
 @app.route('/createFlight',methods=['GET','POST'])
 def createFlight():
     username = session['username']
@@ -1411,7 +1510,7 @@ def createFlight():
 
         exist_flight = None
         if (data):
-            return redirect(url_for('staff_home', exist_flight="This flight already exists."))
+            return render_template('create-flight-confirm.html',exist_flight="This flight already exists.")
         else:
             cursor = conn.cursor();
             ins = 'INSERT INTO flight VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
@@ -1455,7 +1554,6 @@ def createFlight():
     else:
         return redirect(url_for('login'))
 
-####!!!!!next 30 days???????????????
 @app.route('/create_flight_confirm',methods=['GET','POST'])
 def create_flight_confirm():
     username = session['username']
@@ -1463,19 +1561,18 @@ def create_flight_confirm():
     from_date = datetime.date.today()
     to_date = datetime.datetime.now() + datetime.timedelta(30)
     to_date = datetime.date(to_date.year,to_date.month,to_date.day)
-    print(to_date)
 
     cursor = conn.cursor()
     query = '''select * from flight
     where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) between %s and %s
     and airline_name = %s'''
-    cursor.execute(query, (from_date, applyto_date, airline))
+    cursor.execute(query, (from_date, to_date, airline))
     data1 = cursor.fetchall()
     cursor.close()
     return render_template('create-flight-confirm.html',flights=data1)
 
 
-#--------------add airplane SENDERROR------------------
+#--------------add airplane------------------
 @app.route('/createAirplane',methods=['GET','POST'])
 def createAirplane():
     username = session['username']
@@ -1494,7 +1591,7 @@ def createAirplane():
 
         exist_airplane = None
         if(data):
-            return redirect(url_for('staff_home',exist_airplane="This airplane already exists."))
+            return render_template('create-airplane-confirm.html',exist_airplane="This airplane already exists.")
         else:
             cursor = conn.cursor();
             ins = 'INSERT INTO airplane VALUES (%s, %s, %s)'
@@ -1518,7 +1615,7 @@ def create_airplane_confirm():
     cursor.close()
     return render_template('create-airplane-confirm.html',airplanes=data1,airline=airline)
 
-#--------------add airport SENDERROR------------------
+#--------------add airport------------------
 @app.route('/createAirport',methods=['GET','POST'])
 def createAirport():
     username = session['username']
@@ -1536,7 +1633,7 @@ def createAirport():
 
         exist_airport = None
         if(data):
-            return redirect(url_for('staff_home', exist_airport="This airport already exists."))
+            return render_template('create-airport-confirm.html',exist_airport="This airport already exists.")
         else:
             cursor = conn.cursor();
             ins = 'INSERT INTO airport VALUES (%s, %s)'

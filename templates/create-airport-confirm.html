@@ -15,6 +15,12 @@
 <body>
 <a href="/logout">Logout</a>
 / <a href="/staff_home">Back</a>
+{% if exist_airport %}
+  <h1 class="error"><strong>Error:</strong><h1>
+  <h2>{{exist_airport}}</h2>
+{% endif %}
+
+{% if not exist_airport %}
 <h1>Airport added successfully</h1>
 
 <h2>Airports in the system</h2>
@@ -28,6 +34,7 @@
 </tr>
 {% endfor %}
 </table>
+{% endif %}
 </body>
 
 </html>

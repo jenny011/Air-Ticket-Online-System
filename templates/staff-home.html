@@ -18,8 +18,8 @@
   <h2>View flights</h2>
   <form action="/viewFlights" method="POST">
     date range <br>
-    from <input type="date" name = "from-date" placeholder="YYYY/MM/DD" /> <br>
-    to <input type="date" name = "to-date" placeholder="YYYY/MM/DD" /> <br>
+    from <input type="date" name = "from-date" placeholder="YYYY/MM/DD" value="{{from_date}}" /> <br>
+    to <input type="date" name = "to-date" placeholder="YYYY/MM/DD" value="{{to_date}}" /> <br>
     source <input type="text" name = "source" placeholder="source" /> <br>
     destination <input type="text" name = "destination" placeholder="destination" /> <br>
     <input type="submit" value = View />
@@ -33,6 +33,7 @@
     <th>Arrival Time</th>
     <th>Source</th>
     <th>Destination</th>
+    <th>Base Price</th>
     <th>Status</th>
   {% for line in flights %}
   <tr>
@@ -44,6 +45,7 @@
     <td>{{line['arrival_time']}}</td>
     <td>{{line['departure_airport']}}</td>
     <td>{{line['arrival_airport']}}</td>
+    <td>{{line['base_price']}}</td>
     <td>{{line['status']}}</td>
   </tr>
   {% endfor %}
@@ -67,9 +69,6 @@
     status<input type="text" name="status" placeholder="status" value="on-time" required/><br>
     airplane id<input type="text" name="airplane-id" placeholder="airplane id" required/><br>
     <input type="submit" value = Submit />
-    {% if exist_flight %}
-  		<p class="error"><strong>Error:</strong> {{exist_flight}}</p>
-  	{% endif %}
   </form>
 
   <h2>Add airplane</h2>
@@ -77,9 +76,6 @@
     airplane id <input type="text" name="airplane-id" placeholder="airplane id" required/><br>
     seating capacity <input type="number" name="seating-capacity" placeholder="seating capacity" min="1" step="1" required/><br>
     <input type="submit" value = Submit />
-    {% if exist_airplane %}
-  		<p class="error"><strong>Error:</strong> {{exist_airplane}}</p>
-  	{% endif %}
   </form>
   <div>{{exist_airplane}}</div>
 
@@ -88,9 +84,6 @@
     airport name <input type="text" name="airport-name" placeholder="airport name" required/><br>
     city <input type="text" name="city" placeholder="city" required/><br>
     <input type="submit" value = Submit />
-    {% if exist_airport %}
-  		<p class="error"><strong>Error:</strong> {{exist_airport}}</p>
-  	{% endif %}
   </form>
 
   <h2>View analyses</h2>
