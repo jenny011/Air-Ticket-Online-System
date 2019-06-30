@@ -1710,16 +1710,46 @@ def create_airport_confirm():
     return render_template('create-airport-confirm.html',airports=data1)
 
 #--------------view flight ratings TODO???--------------
+@app.route('/viewRatings', methods=['GET','POST'])
+def viewRatings():
+    usertype = session['usertype']
+    if usertype == "staff":
+        airline = session['airline']
+        cursor = conn.cursor();
+        query = '''select airline_name, flight_number, departure_date, departure_time, avg(rating) as average_rating
+                    from rates
+                    where airline_name = %s
+                    group by airline_name, flight_number, departure_date, departure_time
+                    Order by departure_date desc'''
+        cursor.execute(query, (airline))
+        data1 = cursor.fetchall()
+        cursor.close()
 
-# aveage ratings
-'''select airline_name, flight_number, departure_date, departure_time, avg(rating) as average_rating
-from rates
-group by airline_name, flight_number, departure_date, departure_time'''
+        return render_template('view-ratings.html', flights=data1)
+    else:
+        return redirect(url_for('login'))
 
-# view comments (extra page?)
-'''select comments
-from rates
-where (airline_name = %s and flight_number= %s and departure_date = %s, departure_time = %s)'''
+@app.route('/viewComments', methods=['GET','POST'])
+def viewComments():
+    usertype = session['usertype']
+    if usertype == "staff":
+        airline = session['airline']
+        flight_number = request.form['flight-number']
+        departure_date = request.form['departure-date']
+        departure_time = request.form['departure-time']
+
+        cursor = conn.cursor();
+        query = '''select email, rating, comments
+                    from rates
+                    where airline_name=%s and flight_number=%s and departure_date=%s and departure_time=%s'''
+        cursor.execute(query,(airline, flight_number, departure_date, departure_time))
+        data1 = cursor.fetchall()
+        cursor.close()
+
+        return render_template('view-ratings-comments.html', airline_name=airline, flight_number=flight_number, departure_date=departure_date, departure_time=departure_time, ratings=data1)
+    else:
+        return redirect(url_for('login'))
+        
 #--------------view frequent customer TODO--------------
 
 # create view (already in Air-Ticket-DDL)
