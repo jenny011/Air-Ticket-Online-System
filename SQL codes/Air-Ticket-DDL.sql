@@ -77,7 +77,7 @@ create table purchase
 	card_type varchar(50),
 	card_number varchar(50),
 	name_on_card varchar(50),
-	expiraton_date date,
+	expiraton_date varchar(50),
 	primary key (ticket_id, email),
 	foreign key (ticket_id) references ticket(ticket_id)
 		on update cascade,
@@ -135,10 +135,14 @@ ELSE base_price
 END AS price
 from flight natural left outer join flight_seats_sold;
 
+<<<<<<< HEAD
 -- create view frequent_customer as
 -- select airline_name, email, name, count(ticket_id) as num_ticket
 -- from (ticket natural join purchase) join customer using (email)
 -- group by airline_name, email;
+=======
+/* haven't been inserted in Test-Air-Ticket
+>>>>>>> bbf0cddb5fa60337cd97873e6ce8cf1764f5b265
 create view frequent_customer as
         select airline_name, email, name, count(ticket_id) as num_ticket
         from (ticket natural join purchase) join customer using (email)
@@ -150,3 +154,4 @@ select airline_name, arrival_airport, city, departure_date, sum(tickets_sold) as
 from flight_seats_sold natural join flight natural join airport
 where arrival_airport = airport_name
 group by airline_name, arrival_airport, city
+*/
