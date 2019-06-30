@@ -689,7 +689,7 @@ def checkPublic():
 # ================ Customer Use Cases ===================
 
 #-------------------------------customer home----------------------------------
-@app.route('/customer_home')
+@app.route('/customer_home', methods=['GET', 'POST'])
 def customer_home():
     try:
         usertype = session['usertype']
