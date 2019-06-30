@@ -135,8 +135,7 @@ ELSE base_price
 END AS price
 from flight natural left outer join flight_seats_sold;
 
-<<<<<<< HEAD
-=======
+
 /* haven't been inserted in Test-Air-Ticket
 >>>>>>> c5d4cbb44db9df12eb6f0d255e5f56b05130fc54
 create view frequent_customer as
