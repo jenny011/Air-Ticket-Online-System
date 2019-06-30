@@ -11,13 +11,8 @@ app = Flask(__name__)
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
                        user='root',
-<<<<<<< HEAD
                        password='',
                        db='Air-Ticket',
-=======
-                       password='root',
-                       db='Test-Air-Ticket',
->>>>>>> bbf0cddb5fa60337cd97873e6ce8cf1764f5b265
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
@@ -1808,12 +1803,6 @@ def frequentCustomer():
         return render_template('view-frequent-customer.html', customers = data1)
     else:
         return redirect(url_for('login'))
-
-# this view is to be deleted after execution
-
-
-# drop the view after you get the result
-'''drop view emp_frequent_customer'''
 
 # see a list of all flights a particular Customer has taken on that airline??????
 
