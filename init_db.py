@@ -13,7 +13,7 @@ conn = pymysql.connect(host='localhost',
                        port=8889,
                        user='root',
                        password='root',
-                       db='Air-Ticket',
+                       db='Test-Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
@@ -155,7 +155,6 @@ def registerCustomerAuth():
                              passport_country, DOB))
         conn.commit()
         cursor.close()
-        #todo: redirect to customer login page?
         return render_template('login-customer.html')
 
 
@@ -839,11 +838,13 @@ def payCustomer():
     card_number = request.form['card-number']
     name_on_card = request.form['name-on-card']
     card_expiration = request.form['card-expiration']
+    print("expiration date", card_expiration, type(card_expiration))
     cursor = conn.cursor()
     ins = '''insert into purchase
     (ticket_id, email, purchase_date, purchase_time, sold_price, card_type, card_number, name_on_card, expiraton_date)
     values (%s, %s, cast(now() as date), cast(now() as time), %s, %s, %s, %s, %s)
     '''
+
     cursor.execute(ins, (flight_info1["ticket_id"], username, flight_info1["price"],
                            card_type, card_number, name_on_card, card_expiration))
     conn.commit()
