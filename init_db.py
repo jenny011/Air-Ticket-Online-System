@@ -12,10 +12,9 @@ app = Flask(__name__)
 conn = pymysql.connect(host='localhost',
                        user='root',
                        password='',
-                       db='Test-Air-Ticket',
+                       db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
-
 '''
 on Eileen's server:
 conn = pymysql.connect(host='localhost',
@@ -101,9 +100,7 @@ def registerStaffAuth():
         error = "This user already exists"
         return render_template('register-staff.html', error=error)
     else:
-        # ins = 'INSERT INTO airline_staff VALUES(%s, %s, md5(%s), %s, %s, %s)'
-        ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
-
+        ins = 'INSERT INTO airline_staff VALUES(%s, %s, md5(%s), %s, %s, %s)'
         cursor.execute(ins, (username, airline_name, password,
                              first_name, last_name, DOB))
         conn.commit()
@@ -147,11 +144,8 @@ def registerCustomerAuth():
         error = "This user already exists"
         return render_template('register.html', error=error)
     else:
-        # ins = 'INSERT INTO customer VALUES' \
-        #       '(%s, %s, md5(%s), %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         ins = 'INSERT INTO customer VALUES' \
-              '(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-
+              '(%s, %s, md5(%s), %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(ins, (email, name, password,
                              building_number, street, city, state,
                              phone_number, passport_number, passport_expiration,
@@ -179,8 +173,8 @@ def loginStaffAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    # query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = md5(%s)'
-    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = %s'
+    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = md5(%s)'
+    # query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = %s'
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -209,9 +203,7 @@ def loginCustomerAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    # query = 'SELECT * FROM customer WHERE email = %s and password = md5(%s)'
-    query = 'SELECT * FROM customer WHERE email = %s and password = %s'
-
+    query = 'SELECT * FROM customer WHERE email = %s and password = md5(%s)'
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -250,7 +242,6 @@ def searchPublic():
                 and amount_of_seats > tickets_sold'''
         cursor.execute(query, (source, destination, departure_date))
         data1 = cursor.fetchall()
-        # print("data in search public", data1)
         cursor.close()
         return render_template('search-one.html', source=source, destination=destination, departure_date=departure_date, flights=data1)
 
@@ -274,7 +265,6 @@ def searchPublic():
         cursor.execute(query2, (destination, source, return_date))
         # execution not successful
         data2 = cursor.fetchall()
-        print("return flight info", data2)
         cursor.close()
         return render_template('search-round.html', source=source, destination=destination, departure_date=departure_date,
                                return_date=return_date, departure_flights=data1, return_flights=data2)
@@ -658,7 +648,6 @@ def searchCustomerRound():
         cursor.execute(query, (destination, source, return_date))
         data2 = cursor.fetchall()
         cursor.close()
-        print("search round, data 1: ", data1, "\ndata 2:", data2)
         return render_template('search-customer-round.html', source=source, destination=destination, depart_date=depart_date, return_date=return_date, departure_flights=data1, return_flights=data2)
 
 
@@ -684,9 +673,7 @@ def purchaseCustomerOneWay():
     ticket_id = cursor.fetchone()
     cursor.close()
     # store flight info in session
-    print("ticket id is ", ticket_id)
     flight_info1 = {"airline_name":airline_name, "flight_number":flight_number, "departure_date":departure_date, "departure_time":departure_time, "arrival_date":arrival_date, "arrival_time":arrival_time, "departure_airport":source, "arrival_airport":destination, "price":price, "ticket_id":ticket_id["ticket_id"]}
-    print("flight_info1", flight_info1)
     session['flight_info1'] = flight_info1
     return redirect(url_for('purchase_customer'))
     # return render_template("purchase-customer.html", flights=[flight_info1], total=flight_info1["price"])
@@ -711,7 +698,6 @@ def purchaseCustomerRoundDeparture():
     price = request.form['price']
     if session['flight_info2'] != {}:
         prev_flight = session['flight_info2']
-        print("++++++++++++++++", prev_flight)
         back = True
         cursor = conn.cursor()
         query = '''select ticket_id
@@ -774,7 +760,6 @@ def purchaseCustomerRoundReturn():
     price = request.form['price']
     if session['flight_info1'] != {}:
         prev_flight = session['flight_info1']
-        print("++++++++++++++",prev_flight)
         departure = True
         cursor = conn.cursor()
         query = '''select ticket_id
@@ -836,15 +821,10 @@ def payCustomer():
     username = session['username']
     flight_info1 = session['flight_info1']
     flight_info2 = session['flight_info2']
-# <<<<<<< HEAD
-# =======
-#     purchase_date = datetime.date.today()
-# >>>>>>> 90eeb58fac5af6d866ee9f4f27f3e2b6783f3815
     card_type = request.form["cardtype"]
     card_number = request.form['card-number']
     name_on_card = request.form['name-on-card']
     card_expiration = request.form['card-expiration']
-    print("expiration date", card_expiration, type(card_expiration))
     cursor = conn.cursor()
     ins = '''insert into purchase
     (ticket_id, email, purchase_date, purchase_time, sold_price, card_type, card_number, name_on_card, expiraton_date)
@@ -1150,7 +1130,6 @@ def track():
                 to_d_day = 1
             from_d = datetime.date(from_d_year,from_d_month,from_d_day)
             to_d = datetime.date(to_d_year,to_d_month,to_d_day)
-            # print(from_d,to_d)
             cursor.execute(query, (username, from_d, to_d))
             monthly=cursor.fetchall()
             if monthly[0]['sum(sold_price)']==None:
@@ -1161,7 +1140,6 @@ def track():
     if date2.day != 1:
         month_number += 1
     cursor.close()
-    # print(monthly_spending)
     return render_template('track-customer.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date_track=from_date_track, to_date_track=to_date_track, month_numnber=month_number, display_number = month_number, months = months)
 
 
@@ -1237,7 +1215,6 @@ def trackCustomer():
                 to_d_day = 1
             from_d = datetime.date(from_d_year,from_d_month,from_d_day)
             to_d = datetime.date(to_d_year,to_d_month,to_d_day)
-            # print(from_d,to_d)
             cursor.execute(query, (username, from_d, to_d))
             monthly=cursor.fetchall()
             if monthly[0]['sum(sold_price)']==None:
@@ -1248,7 +1225,6 @@ def trackCustomer():
     if date2.day != 1:
         month_number += 1
     cursor.close()
-    # print(monthly_spending)
     return render_template('track-customer.html', total=total_spending[0]['sum(sold_price)'], monthly_spending=monthly_spending, from_date_track=from_date_track, to_date_track=to_date_track, month_numnber=month_number, display_number = month_number, months = months)
 
 
@@ -1259,7 +1235,6 @@ def logout():
     usertype = session['usertype']
     if usertype == "customer":
         if session.get("searchCustomer") is not None:
-            # print("searchCustomer is not None")
             session.pop('searchCustomer')
         if session.get("flight_info1") is not None:
             session.pop('flight_info1')
@@ -1514,7 +1489,7 @@ def viewFlightCustomers():
     else:
         return redirect(url_for('login'))
 
-#--------------change flight status TODO--------------
+#--------------change flight status --------------
 @app.route('/changeStatus',methods=['GET','POST'])
 def changeStatus():
     usertype = session['usertype']
@@ -1606,7 +1581,6 @@ def createFlight():
         where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s'''
         cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
         seat_data = cursor.fetchone()
-        print(seat_data)
         cursor.close()
 
         # -----insert tickets for the flight----
@@ -1975,9 +1949,7 @@ def salesStaff():
                     to_d_day = 1
                 from_d = datetime.date(from_d_year,from_d_month,from_d_day)
                 to_d = datetime.date(to_d_year,to_d_month,to_d_day)
-                # print(from_d,to_d)
                 cursor.execute(query, (airline, from_d, to_d))
-                print("+++++++=",from_d,to_d)
                 monthly=cursor.fetchall()
                 if monthly[0]['count(ticket_id)']==None:
                     monthly[0]['count(ticket_id)']=0
