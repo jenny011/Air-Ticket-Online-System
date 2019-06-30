@@ -10,8 +10,9 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -669,15 +670,15 @@ def purchaseCustomerOneWay():
     price = request.form['price']
     # get ticket info
     cursor = conn.cursor()
-    query = '''select * from flight_price natural join flight_seats_sold natural join flight
-                    where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
-                    and departure_airport = %s and arrival_airport = %s and departure_date = %s
-                    and amount_of_seats > tickets_sold
-                    and status != "cancelled"'''
+    query = '''select ticket_id
+                from ticket
+                where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s
+                and ticket_id not in (select ticket_id from purchase)'''
     cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
     ticket_id = cursor.fetchone()
     cursor.close()
     # store flight info in session
+    print("ticket id is ", ticket_id)
     flight_info1 = {"airline_name":airline_name, "flight_number":flight_number, "departure_date":departure_date, "departure_time":departure_time, "arrival_date":arrival_date, "arrival_time":arrival_time, "departure_airport":source, "arrival_airport":destination, "price":price, "ticket_id":ticket_id["ticket_id"]}
     print("flight_info1", flight_info1)
     session['flight_info1'] = flight_info1
