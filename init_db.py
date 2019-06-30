@@ -17,6 +17,7 @@ conn = pymysql.connect(host='localhost',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
+
 '''
 on Eileen's server:
 conn = pymysql.connect(host='localhost',
@@ -102,7 +103,7 @@ def registerStaffAuth():
         error = "This user already exists"
         return render_template('register-staff.html', error=error)
     else:
-        ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
+        ins = 'INSERT INTO airline_staff VALUES(%s, %s, md5(%s), %s, %s, %s)'
         cursor.execute(ins, (username, airline_name, password,
                              first_name, last_name, DOB))
         conn.commit()
@@ -147,7 +148,7 @@ def registerCustomerAuth():
         return render_template('register.html', error=error)
     else:
         ins = 'INSERT INTO customer VALUES' \
-              '(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+              '(%s, %s, md5(%s), %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(ins, (email, name, password,
                              building_number, street, city, state,
                              phone_number, passport_number, passport_expiration,
@@ -176,7 +177,7 @@ def loginStaffAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = %s'
+    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = md5(%s)'
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -205,7 +206,7 @@ def loginCustomerAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    query = 'SELECT * FROM customer WHERE email = %s and password = %s'
+    query = 'SELECT * FROM customer WHERE email = %s and password = md5(%s)'
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
