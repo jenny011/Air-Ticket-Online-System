@@ -12,7 +12,7 @@ app = Flask(__name__)
 conn = pymysql.connect(host='localhost',
                        user='root',
                        password='',
-                       db='Air-Ticket',
+                       db='Test-Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
@@ -1257,8 +1257,6 @@ def trackCustomer():
 @app.route('/logout',methods=['GET','POST'])
 def logout():
     usertype = session['usertype']
-# <<<<<<< HEAD
-    # if usertype == "customer" and session['flight_info1'] is not None:
     if usertype == "customer":
         if session.get("searchCustomer") is not None:
             # print("searchCustomer is not None")
@@ -1269,14 +1267,6 @@ def logout():
             session.pop('flight_info2')
     elif usertype == "staff":
         session.pop('airline')
-# # =======
-#     if usertype == "customer":
-#         session.pop('flight_info1')
-#         session.pop('flight_info2')
-#         session.pop('searchCustomer')
-#     if usertype == "staff":
-# >>>>>>> 90eeb58fac5af6d866ee9f4f27f3e2b6783f3815
-
     session.pop('usertype')
     session.pop('username')
     return render_template("logout.html")
