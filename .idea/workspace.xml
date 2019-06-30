@@ -3,7 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="617de85c-6896-41c7-ac3e-4fe0ef00661c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SQL codes/Air-Ticket-DDL.sql" beforeDir="false" afterPath="$PROJECT_DIR$/SQL codes/Air-Ticket-DDL.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/init_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login-staff.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login-staff.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/register-staff.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/register-staff.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -29,14 +32,14 @@
     <select />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.56180555">
+    <splitter split-orientation="horizontal" split-proportion="0.42708334">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/init_db.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="559">
-                  <caret line="1471" selection-start-line="1471" selection-end-line="1471" selection-end-column="63" />
+                <state relative-caret-position="225">
+                  <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
                   <folding>
                     <element signature="e#23#100#0" expanded="true" />
                   </folding>
@@ -78,11 +81,29 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/templates/staff-home.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="774">
-                  <caret line="96" column="36" selection-start-line="96" selection-start-column="36" selection-end-line="96" selection-end-column="36" />
+                <state relative-caret-position="1440">
+                  <caret line="96" column="9" selection-start-line="96" selection-start-column="9" selection-end-line="96" selection-end-column="9" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/templates/register-staff.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="465">
+                  <caret line="31" column="15" lean-forward="true" selection-start-line="31" selection-start-column="15" selection-end-line="31" selection-end-column="15" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/templates/login-staff.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="330">
+                  <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
                 </state>
               </provider>
             </entry>
@@ -176,6 +197,8 @@
         <option value="$PROJECT_DIR$/test_insert tickets for existing flights.py" />
         <option value="$PROJECT_DIR$/templates/staff-home.html" />
         <option value="$PROJECT_DIR$/init_db.py" />
+        <option value="$PROJECT_DIR$/templates/register-staff.html" />
+        <option value="$PROJECT_DIR$/templates/login-staff.html" />
       </list>
     </option>
   </component>
@@ -274,12 +297,13 @@
       <workItem from="1561524229669" duration="9849000" />
       <workItem from="1561594455322" duration="23232000" />
       <workItem from="1561709022898" duration="5000" />
-      <workItem from="1561709031262" duration="1070000" />
+      <workItem from="1561709031262" duration="1195000" />
+      <workItem from="1561875873092" duration="1022000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="58244000" />
+    <option name="totallyTimeSpent" value="59391000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -384,6 +408,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/test_insert tickets for existing flights.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="56" selection-start-line="56" selection-end-line="56" />
+          <folding>
+            <element signature="e#23#100#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../Databases/Flask_for_class/init1.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -395,20 +429,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="17" column="17" selection-start-line="17" selection-start-column="17" selection-end-line="17" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/staff-home.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="774">
-          <caret line="96" column="36" selection-start-line="96" selection-start-column="36" selection-end-line="96" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/search-customer-round.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
         </state>
       </provider>
     </entry>
@@ -426,23 +446,41 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_insert tickets for existing flights.py">
+    <entry file="file://$PROJECT_DIR$/init_db.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="56" selection-start-line="56" selection-end-line="56" />
+        <state relative-caret-position="225">
+          <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
           <folding>
             <element signature="e#23#100#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/init_db.py">
+    <entry file="file://$PROJECT_DIR$/templates/search-customer-round.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="559">
-          <caret line="1471" selection-start-line="1471" selection-end-line="1471" selection-end-column="63" />
-          <folding>
-            <element signature="e#23#100#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="435">
+          <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/staff-home.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1440">
+          <caret line="96" column="9" selection-start-line="96" selection-start-column="9" selection-end-line="96" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/register-staff.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="31" column="15" lean-forward="true" selection-start-line="31" selection-start-column="15" selection-end-line="31" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/login-staff.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
         </state>
       </provider>
     </entry>
