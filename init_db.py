@@ -1082,6 +1082,7 @@ def track():
     username = session['username']
     from_date_track = request.form['from-date']
     to_date_track = request.form['to-date']
+    #Track-total
     cursor = conn.cursor()
     query = '''select sum(sold_price) from purchase where email = %s
     and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
@@ -1192,7 +1193,10 @@ def trackCustomer():
             month_number = 12
             init_month = 1
         else:
-            month_number = date2.month - date1.month + 1
+            if date2.day == 1:
+                month_number = date2.month - date1.month
+            else:
+                month_number = date2.month - date1.month + 1
             init_month = date1.month
         for j in range(month_number):
             query = '''select sum(sold_price) from purchase where email = %s
@@ -1780,21 +1784,22 @@ where num_ticket = (select max(num_ticket) from frequent_customer)'''
 def sales():
     usertype = session['usertype']
     if usertype == "staff":
-        from_date = datetime.date.today()
-        to_date = from_date + relativedelta(year=-1)
-        #Track-total
+        airline = session['airline']
+        to_date = datetime.date.today()
+        from_date = to_date + relativedelta.relativedelta(years=-1)
+        #Total
         cursor = conn.cursor()
-        query = '''select sum(sold_price) from purchase where email = %s
-        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
-        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
-        cursor.execute(query, (username, from_date, to_date))
-        total_spending = cursor.fetchall()
-        if total_spending[0]['sum(sold_price)']==None:
-            total_spending[0]['sum(sold_price)']=0
+        query = '''select count(ticket_id)
+        from ticket natural join purchase
+        where airline_name = %s and purchase_date between %s and %s'''
+        cursor.execute(query, (airline, from_date, to_date))
+        total = cursor.fetchall()
+        if total[0]['count(ticket_id)']==None:
+            total[0]['count(ticket_id)']=0
         cursor.close()
-        #Track-monthly
+        #Monthly
         cursor = conn.cursor()
-        monthly_spending = []
+        monthly_sales = []
         months=[]
         date1 = datetime.datetime.strptime(str(from_date), '%Y-%m-%d')
         date2 = datetime.datetime.strptime(str(to_date), '%Y-%m-%d')
@@ -1804,7 +1809,9 @@ def sales():
         if from_date.day != 1:
             month_number += 1
         for i in range(month_number):
-            query = '''select sum(sold_price) from purchase where email = %s
+            query = '''select count(ticket_id)
+            from ticket natural join purchase
+            where airline_name = %s
             and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
             and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
             if from_date.month+i <= 12:
@@ -1830,27 +1837,120 @@ def sales():
                 to_d_day = 1
             from_d = datetime.date(from_d_year,from_d_month,from_d_day)
             to_d = datetime.date(to_d_year,to_d_month,to_d_day)
-            cursor.execute(query, (username, from_d, to_d))
+            cursor.execute(query, (airline, from_d, to_d))
             monthly=cursor.fetchall()
-            if monthly[0]['sum(sold_price)']==None:
-                monthly[0]['sum(sold_price)']=0
+            if monthly[0]['count(ticket_id)']==None:
+                monthly[0]['count(ticket_id)']=0
             months.append(str(from_d_year)+"-"+str(from_d_month))
-            monthly_spending.append(monthly)
+            monthly_sales.append(monthly)
         cursor.close()
 
-        return render_template('view-ticket-sales.html', from_date=from_date, to_date=to_date, total=total, sales=data1)
+        return render_template('view-ticket-sales.html', from_date=from_date, to_date=to_date, total=total[0]['count(ticket_id)'], monthly_sales=monthly_sales, months=months, display_number = month_number)
     else:
         return redirect(url_for('login'))
 
-'''select count(ticket_id)
-from ticket natural join purchase
-where airline_name = %s and purchase date between %s and %s'''
+@app.route('/salesStaff',methods=['GET','POST'])
+def salesStaff():
+    usertype = session['usertype']
+    if usertype == "staff":
+        airline = session['airline']
+        try:
+            autoChoice = request.form['autoChoice']
+        except:
+            autoChoice = None
+        if autoChoice == 'View last month':
+            TODAY = datetime.date.today()
+            from_date = str(TODAY + relativedelta.relativedelta(months=-1,day=1))
+            to_date = str(TODAY + relativedelta.relativedelta(day=1))
+            to_date = str(to_date)
+        elif autoChoice == 'View last year':
+            to_date = datetime.date.today()
+            from_date = str(to_date + relativedelta.relativedelta(years=-1))
+            to_date = str(to_date)
+        else:
+            from_date = request.form['from-date']
+            to_date = request.form['to-date']
+        cursor = conn.cursor()
+        query = '''select count(ticket_id)
+        from ticket natural join purchase
+        where airline_name = %s
+        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
+        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
+        cursor.execute(query, (airline, from_date, to_date))
+        total = cursor.fetchall()
+        if total[0]['count(ticket_id)']==None:
+            total[0]['count(ticket_id)']=0
+        cursor.close()
+        #Track-monthly
+        cursor = conn.cursor()
+        monthly_sales = []
+        months=[]
+        date1 = datetime.datetime.strptime(from_date, '%Y-%m-%d')
+        date2 = datetime.datetime.strptime(to_date, '%Y-%m-%d')
+        # r = relativedelta.relativedelta(date2, date1)
+        # month_number = r.months + r.years*12
+        year_number = date2.year-date1.year+1
+        for i in range(year_number):
+            if i == 0 and year_number > 1:
+                month_number = 13 - date1.month
+                init_month = date1.month
+            elif i == year_number - 1 and year_number > 1:
+                month_number = date2.month
+                init_month = 1
+            elif year_number > 1:
+                month_number = 12
+                init_month = 1
+            else:
+                if date2.day == 1:
+                    month_number = date2.month - date1.month
+                else:
+                    month_number = date2.month - date1.month + 1
+                init_month = date1.month
+            for j in range(month_number):
+                query ='''select count(ticket_id)
+                from ticket natural join purchase
+                where airline_name = %s
+                and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
+                and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
+                if init_month+j <= 12:
+                    from_d_year = date1.year+i
+                    from_d_month = init_month+j
+                else:
+                    from_d_year = date1.year+1+i
+                    from_d_month = init_month+j-12
+                if init_month+j+1 <= 12:
+                    to_d_year = date1.year+i
+                    to_d_month = init_month+j+1
+                else:
+                    to_d_year = date1.year+1+i
+                    to_d_month = init_month+j-11
+                if j == 0 and i == 0:
+                    from_d_day = date1.day
+                else:
+                    from_d_day = 1
+                if j == month_number -1 and i == year_number-1:
+                    to_d_month = date2.month
+                    to_d_day = date2.day
+                else:
+                    to_d_day = 1
+                from_d = datetime.date(from_d_year,from_d_month,from_d_day)
+                to_d = datetime.date(to_d_year,to_d_month,to_d_day)
+                # print(from_d,to_d)
+                cursor.execute(query, (airline, from_d, to_d))
+                print("+++++++=",from_d,to_d)
+                monthly=cursor.fetchall()
+                if monthly[0]['count(ticket_id)']==None:
+                    monthly[0]['count(ticket_id)']=0
+                months.append(str(from_d_year)+"-"+str(from_d_month))
+                monthly_sales.append(monthly)
+        month_number = (date2.year-date1.year)*12 + date2.month - date1.month
+        if date2.day != 1:
+            month_number += 1
+        cursor.close()
 
-# last month
-'''select select count(ticket_id)
-from ticket natural join purchase
-where airline_name = %s and
-purchase_date between NOW() - INTERVAL 1 MONTH and NOW()'''
+        return render_template('view-ticket-sales.html', from_date=from_date, to_date=to_date, total=total[0]['count(ticket_id)'], monthly_sales=monthly_sales, months=months, display_number = month_number)
+    else:
+        return redirect(url_for('login'))
 
 #--------------quarterly revenue--------------
 @app.route('/revenue', methods=['GET','POST'])
