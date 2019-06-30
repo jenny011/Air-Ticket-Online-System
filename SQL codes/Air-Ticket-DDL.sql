@@ -135,10 +135,15 @@ ELSE base_price
 END AS price
 from flight natural left outer join flight_seats_sold;
 
+-- create view frequent_customer as
+-- select airline_name, email, name, count(ticket_id) as num_ticket
+-- from (ticket natural join purchase) join customer using (email)
+-- group by airline_name, email;
 create view frequent_customer as
-select airline_name, email, name, count(ticket_id) as num_ticket
-from (ticket natural join purchase) join customer using (email)
-group by airline_name, email;
+        select airline_name, email, name, count(ticket_id) as num_ticket
+        from (ticket natural join purchase) join customer using (email)
+        where YEAR(purchase_date) = YEAR(now())-1
+        group by airline_name, email
 
 create view top_destinations as
 select airline_name, arrival_airport, city, departure_date, sum(tickets_sold) as num_ticket
