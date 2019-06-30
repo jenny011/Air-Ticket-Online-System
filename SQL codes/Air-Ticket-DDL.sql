@@ -135,14 +135,7 @@ ELSE base_price
 END AS price
 from flight natural left outer join flight_seats_sold;
 
-<<<<<<< HEAD
--- create view frequent_customer as
--- select airline_name, email, name, count(ticket_id) as num_ticket
--- from (ticket natural join purchase) join customer using (email)
--- group by airline_name, email;
-=======
 /* haven't been inserted in Test-Air-Ticket
->>>>>>> bbf0cddb5fa60337cd97873e6ce8cf1764f5b265
 create view frequent_customer as
         select airline_name, email, name, count(ticket_id) as num_ticket
         from (ticket natural join purchase) join customer using (email)

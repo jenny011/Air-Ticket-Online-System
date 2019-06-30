@@ -10,12 +10,12 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
-                       db='Air-Ticket',
+                       password='root',
+                       db='Test-Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
-
 '''
 on Eileen's server:
 conn = pymysql.connect(host='localhost',
@@ -101,8 +101,8 @@ def registerStaffAuth():
         error = "This user already exists"
         return render_template('register-staff.html', error=error)
     else:
-        # ins = 'INSERT INTO airline_staff VALUES(%s, %s, md5(%s), %s, %s, %s)'
-        ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
+        ins = 'INSERT INTO airline_staff VALUES(%s, %s, md5(%s), %s, %s, %s)'
+
 
         cursor.execute(ins, (username, airline_name, password,
                              first_name, last_name, DOB))
@@ -147,10 +147,8 @@ def registerCustomerAuth():
         error = "This user already exists"
         return render_template('register.html', error=error)
     else:
-        # ins = 'INSERT INTO customer VALUES' \
-        #       '(%s, %s, md5(%s), %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         ins = 'INSERT INTO customer VALUES' \
-              '(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+              '(%s, %s, md5(%s), %s, %s, %s, %s, %s, %s, %s, %s, %s)'
 
         cursor.execute(ins, (email, name, password,
                              building_number, street, city, state,
@@ -179,8 +177,8 @@ def loginStaffAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    # query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = md5(%s)'
-    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = %s'
+    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = md5(%s)'
+    # query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = %s'
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -209,8 +207,8 @@ def loginCustomerAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    # query = 'SELECT * FROM customer WHERE email = %s and password = md5(%s)'
-    query = 'SELECT * FROM customer WHERE email = %s and password = %s'
+    query = 'SELECT * FROM customer WHERE email = %s and password = md5(%s)'
+    # query = 'SELECT * FROM customer WHERE email = %s and password = %s'
 
     cursor.execute(query, (username, password))
     # stores the results in a variable
@@ -684,9 +682,7 @@ def purchaseCustomerOneWay():
     ticket_id = cursor.fetchone()
     cursor.close()
     # store flight info in session
-    print("ticket id is ", ticket_id)
     flight_info1 = {"airline_name":airline_name, "flight_number":flight_number, "departure_date":departure_date, "departure_time":departure_time, "arrival_date":arrival_date, "arrival_time":arrival_time, "departure_airport":source, "arrival_airport":destination, "price":price, "ticket_id":ticket_id["ticket_id"]}
-    print("flight_info1", flight_info1)
     session['flight_info1'] = flight_info1
     return redirect(url_for('purchase_customer'))
     # return render_template("purchase-customer.html", flights=[flight_info1], total=flight_info1["price"])
@@ -836,10 +832,6 @@ def payCustomer():
     username = session['username']
     flight_info1 = session['flight_info1']
     flight_info2 = session['flight_info2']
-# <<<<<<< HEAD
-# =======
-#     purchase_date = datetime.date.today()
-# >>>>>>> 90eeb58fac5af6d866ee9f4f27f3e2b6783f3815
     card_type = request.form["cardtype"]
     card_number = request.form['card-number']
     name_on_card = request.form['name-on-card']
@@ -1257,11 +1249,8 @@ def trackCustomer():
 @app.route('/logout',methods=['GET','POST'])
 def logout():
     usertype = session['usertype']
-# <<<<<<< HEAD
-    # if usertype == "customer" and session['flight_info1'] is not None:
     if usertype == "customer":
         if session.get("searchCustomer") is not None:
-            # print("searchCustomer is not None")
             session.pop('searchCustomer')
         if session.get("flight_info1") is not None:
             session.pop('flight_info1')
@@ -1269,14 +1258,6 @@ def logout():
             session.pop('flight_info2')
     elif usertype == "staff":
         session.pop('airline')
-# # =======
-#     if usertype == "customer":
-#         session.pop('flight_info1')
-#         session.pop('flight_info2')
-#         session.pop('searchCustomer')
-#     if usertype == "staff":
-# >>>>>>> 90eeb58fac5af6d866ee9f4f27f3e2b6783f3815
-
     session.pop('usertype')
     session.pop('username')
     return render_template("logout.html")
@@ -1524,7 +1505,7 @@ def viewFlightCustomers():
     else:
         return redirect(url_for('login'))
 
-#--------------change flight status TODO--------------
+#--------------change flight status --------------
 @app.route('/changeStatus',methods=['GET','POST'])
 def changeStatus():
     usertype = session['usertype']
