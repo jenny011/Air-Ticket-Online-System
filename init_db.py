@@ -10,13 +10,11 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
-                       db='Test-Air-Ticket',
+                       password='',
+                       db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
-
 
 '''
 on Eileen's server:
@@ -103,7 +101,9 @@ def registerStaffAuth():
         error = "This user already exists"
         return render_template('register-staff.html', error=error)
     else:
-        ins = 'INSERT INTO airline_staff VALUES(%s, %s, md5(%s), %s, %s, %s)'
+        # ins = 'INSERT INTO airline_staff VALUES(%s, %s, md5(%s), %s, %s, %s)'
+        ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
+
         cursor.execute(ins, (username, airline_name, password,
                              first_name, last_name, DOB))
         conn.commit()
@@ -147,8 +147,11 @@ def registerCustomerAuth():
         error = "This user already exists"
         return render_template('register.html', error=error)
     else:
+        # ins = 'INSERT INTO customer VALUES' \
+        #       '(%s, %s, md5(%s), %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         ins = 'INSERT INTO customer VALUES' \
-              '(%s, %s, md5(%s), %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+              '(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+
         cursor.execute(ins, (email, name, password,
                              building_number, street, city, state,
                              phone_number, passport_number, passport_expiration,
@@ -176,7 +179,8 @@ def loginStaffAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = md5(%s)'
+    # query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = md5(%s)'
+    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = %s'
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -205,7 +209,9 @@ def loginCustomerAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    query = 'SELECT * FROM customer WHERE email = %s and password = md5(%s)'
+    # query = 'SELECT * FROM customer WHERE email = %s and password = md5(%s)'
+    query = 'SELECT * FROM customer WHERE email = %s and password = %s'
+
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -1190,7 +1196,10 @@ def trackCustomer():
             month_number = 13 - date1.month
             init_month = date1.month
         elif i == year_number - 1 and year_number > 1:
-            month_number = date2.month
+            if date2.day == 1:
+                month_number = date2.month-1
+            else:
+                month_number = date2.month
             init_month = 1
         elif year_number > 1:
             month_number = 12
@@ -1494,8 +1503,26 @@ def viewFlightsStaff():
     return render_template('view-flights-staff.html', from_date=from_date, to_date=to_date,
                            source=source, destination=destination, flights=data1)
 
-#-----------------------???????VIEWall customers------------
+# #-----------------------???????VIEWall customers------------
+@app.route('/viewFlightCustomers', methods=['GET','POST'])
+def viewFlightCustomers():
+    usertype = session['usertype']
+    if usertype == "staff":
+        airline = session['airline']
+        flight_number = request.form['flight-number']
+        departure_date = request.form['departure-date']
+        departure_time = request.form['departure-time']
+        cursor = conn.cursor()
+        query = '''select email
+                from flight natural join ticket natural join purchase
+                where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s'''
+        cursor.execute(query, (airline, flight_number, departure_date, departure_time))
+        data1 = cursor.fetchall()
+        cursor.close()
 
+        return render_template('view-flight-customers.html', airline=airline, flight_number=flight_number, departure_date=departure_date, departure_time=departure_time, customers=data1)
+    else:
+        return redirect(url_for('login'))
 
 #--------------change flight status TODO--------------
 @app.route('/changeStatus',methods=['GET','POST'])
@@ -1504,7 +1531,7 @@ def changeStatus():
     if usertype == "staff":
         airline = session['airline']
 
-        cursor = conn.cursor();
+        cursor = conn.cursor()
         query = '''select * from flight
         where airline_name = %s and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()'''
         cursor.execute(query, (airline))
@@ -1525,7 +1552,7 @@ def changeStatusStaff():
         departure_date = request.form['departure-date']
         departure_time = request.form['departure-time']
 
-        cursor = conn.cursor();
+        cursor = conn.cursor()
         alter = '''update flight
                 set status = %s
                 where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s'''
@@ -1534,7 +1561,7 @@ def changeStatusStaff():
         conn.commit()
         cursor.close()
 
-        cursor = conn.cursor();
+        cursor = conn.cursor()
         query = '''select * from flight
         where airline_name = %s and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()'''
         cursor.execute(query, (airline))
@@ -1563,7 +1590,7 @@ def createFlight():
         status = request.form['status']
         airplane_id = request.form['airplane-id']
 
-        cursor = conn.cursor();
+        cursor = conn.cursor()
         query = '''select * from flight
         where airline_name=%s and flight_number=%s and departure_date=%s and departure_time=%s'''
         cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
@@ -1574,7 +1601,7 @@ def createFlight():
         if (data):
             return render_template('create-flight-confirm.html',exist_flight="This flight already exists.")
         else:
-            cursor = conn.cursor();
+            cursor = conn.cursor()
             ins = 'INSERT INTO flight VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
             cursor.execute(ins, (
             airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport,
@@ -1643,7 +1670,7 @@ def createAirplane():
         airplane_id = request.form['airplane-id']
         seating_capacity = request.form['seating-capacity']
 
-        cursor = conn.cursor();
+        cursor = conn.cursor()
         query = '''select * from airplane
           where airline_name=%s and id=%s'''
         cursor.execute(query, (airline, airplane_id))
@@ -1654,7 +1681,7 @@ def createAirplane():
         if(data):
             return render_template('create-airplane-confirm.html',exist_airplane="This airplane already exists.")
         else:
-            cursor = conn.cursor();
+            cursor = conn.cursor()
             ins = 'INSERT INTO airplane VALUES (%s, %s, %s)'
             cursor.execute(ins, (airline, airplane_id, seating_capacity))
             conn.commit()
@@ -1685,7 +1712,7 @@ def createAirport():
         airport_name = request.form['airport-name']
         city = request.form['city']
 
-        cursor = conn.cursor();
+        cursor = conn.cursor()
         query = '''select * from airport
           where airport_name=%s and city=%s'''
         cursor.execute(query, (airport_name, city))
@@ -1696,7 +1723,7 @@ def createAirport():
         if(data):
             return render_template('create-airport-confirm.html',exist_airport="This airport already exists.")
         else:
-            cursor = conn.cursor();
+            cursor = conn.cursor()
             ins = 'INSERT INTO airport VALUES (%s, %s)'
             cursor.execute(ins, (airport_name, city))
             conn.commit()
@@ -1716,13 +1743,13 @@ def create_airport_confirm():
     cursor.close()
     return render_template('create-airport-confirm.html',airports=data1)
 
-#--------------view flight ratings TODO???--------------
+#--------------view flight ratings TODO--------------
 @app.route('/viewRatings', methods=['GET','POST'])
 def viewRatings():
     usertype = session['usertype']
     if usertype == "staff":
         airline = session['airline']
-        cursor = conn.cursor();
+        cursor = conn.cursor()
         query = '''select airline_name, flight_number, departure_date, departure_time, avg(rating) as average_rating
                     from rates
                     where airline_name = %s
@@ -1745,7 +1772,7 @@ def viewComments():
         departure_date = request.form['departure-date']
         departure_time = request.form['departure-time']
 
-        cursor = conn.cursor();
+        cursor = conn.cursor()
         query = '''select email, rating, comments
                     from rates
                     where airline_name=%s and flight_number=%s and departure_date=%s and departure_time=%s'''
@@ -1758,27 +1785,24 @@ def viewComments():
         return redirect(url_for('login'))
 
 #--------------view frequent customer TODO--------------
+@app.route('/frequentCustomer', methods=['GET','POST'])
+def frequentCustomer():
+    usertype = session['usertype']
+    if usertype == "staff":
+        airline = session['airline']
 
-# create view (already in Air-Ticket-DDL)
-# '''create view frequent_customer as
-# select airline_name, email, name, count(ticket_id) as num_ticket
-# from (ticket natural join purchase) join customer using (email)
-# group by airline_name, email'''
+        cursor = conn.cursor()
+        query = '''select distinct email, name, A.num_ticket
+        from frequent_customer as A
+        where airline_name = %s
+        and A.num_ticket = (select max(B.num_ticket) from frequent_customer as B)'''
+        cursor.execute(query,(airline))
+        data1 = cursor.fetchall()
+        cursor.close()
 
-# this view is to be deleted after execution
-
-'''create view temp_frequent_customer as
-select create view frequent_customer as
-select airline_name, email, name, num_ticket
-from frequent_customer
-where airline_name = %s'''
-
-'''select distinct email, name
-from temp_frequent_customer
-where num_ticket = (select max(num_ticket) from frequent_customer)'''
-
-# drop the view after you get the result
-'''drop view emp_frequent_customer'''
+        return render_template('view-frequent-customer.html', customers = data1)
+    else:
+        return redirect(url_for('login'))
 
 # see a list of all flights a particular Customer has taken on that airline??????
 
@@ -1898,7 +1922,10 @@ def salesStaff():
                 month_number = 13 - date1.month
                 init_month = date1.month
             elif i == year_number - 1 and year_number > 1:
-                month_number = date2.month
+                if date2.day == 1:
+                    month_number = date2.month-1
+                else:
+                    month_number = date2.month
                 init_month = 1
             elif year_number > 1:
                 month_number = 12
