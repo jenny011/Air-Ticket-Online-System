@@ -10,11 +10,13 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
+
 
 '''
 on Eileen's server:
@@ -22,7 +24,7 @@ conn = pymysql.connect(host='localhost',
                        port=8889,
                        user='root',
                        password='root',
-                       db='Air-Ticket',
+                       db='Test-Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
@@ -101,7 +103,7 @@ def registerStaffAuth():
         error = "This user already exists"
         return render_template('register-staff.html', error=error)
     else:
-        ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
+        ins = 'INSERT INTO airline_staff VALUES(%s, %s, md5(%s), %s, %s, %s)'
         cursor.execute(ins, (username, airline_name, password,
                              first_name, last_name, DOB))
         conn.commit()
@@ -146,7 +148,7 @@ def registerCustomerAuth():
         return render_template('register.html', error=error)
     else:
         ins = 'INSERT INTO customer VALUES' \
-              '(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+              '(%s, %s, md5(%s), %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(ins, (email, name, password,
                              building_number, street, city, state,
                              phone_number, passport_number, passport_expiration,
@@ -175,7 +177,7 @@ def loginStaffAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = %s'
+    query = 'SELECT * FROM airline_staff WHERE user_name = %s and password = md5(%s)'
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -204,7 +206,7 @@ def loginCustomerAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    query = 'SELECT * FROM customer WHERE email = %s and password = %s'
+    query = 'SELECT * FROM customer WHERE email = %s and password = md5(%s)'
     cursor.execute(query, (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -669,15 +671,15 @@ def purchaseCustomerOneWay():
     price = request.form['price']
     # get ticket info
     cursor = conn.cursor()
-    query = '''select * from flight_price natural join flight_seats_sold natural join flight
-                    where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
-                    and departure_airport = %s and arrival_airport = %s and departure_date = %s
-                    and amount_of_seats > tickets_sold
-                    and status != "cancelled"'''
+    query = '''select ticket_id
+                from ticket
+                where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s
+                and ticket_id not in (select ticket_id from purchase)'''
     cursor.execute(query, (airline_name, flight_number, departure_date, departure_time))
     ticket_id = cursor.fetchone()
     cursor.close()
     # store flight info in session
+    print("ticket id is ", ticket_id)
     flight_info1 = {"airline_name":airline_name, "flight_number":flight_number, "departure_date":departure_date, "departure_time":departure_time, "arrival_date":arrival_date, "arrival_time":arrival_time, "departure_airport":source, "arrival_airport":destination, "price":price, "ticket_id":ticket_id["ticket_id"]}
     print("flight_info1", flight_info1)
     session['flight_info1'] = flight_info1
