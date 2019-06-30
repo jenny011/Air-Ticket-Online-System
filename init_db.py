@@ -1503,7 +1503,7 @@ def viewFlightsStaff():
     return render_template('view-flights-staff.html', from_date=from_date, to_date=to_date,
                            source=source, destination=destination, flights=data1)
 
-# #-----------------------???????VIEWall customers------------
+#-------------------View all customers----------------
 @app.route('/viewFlightCustomers', methods=['GET','POST'])
 def viewFlightCustomers():
     usertype = session['usertype']
@@ -1513,8 +1513,8 @@ def viewFlightCustomers():
         departure_date = request.form['departure-date']
         departure_time = request.form['departure-time']
         cursor = conn.cursor()
-        query = '''select email
-                from flight natural join ticket natural join purchase
+        query = '''select email, name
+                from flight natural join ticket natural join purchase natural join customer
                 where airline_name = %s and flight_number = %s and departure_date = %s and departure_time = %s'''
         cursor.execute(query, (airline, flight_number, departure_date, departure_time))
         data1 = cursor.fetchall()
@@ -1743,7 +1743,7 @@ def create_airport_confirm():
     cursor.close()
     return render_template('create-airport-confirm.html',airports=data1)
 
-#--------------view flight ratings TODO--------------
+#--------------view flight ratings--------------
 @app.route('/viewRatings', methods=['GET','POST'])
 def viewRatings():
     usertype = session['usertype']
@@ -1784,7 +1784,7 @@ def viewComments():
     else:
         return redirect(url_for('login'))
 
-#--------------view frequent customer TODO--------------
+#--------------view frequent customer--------------
 @app.route('/frequentCustomer', methods=['GET','POST'])
 def frequentCustomer():
     usertype = session['usertype']
@@ -1804,7 +1804,27 @@ def frequentCustomer():
     else:
         return redirect(url_for('login'))
 
-# see a list of all flights a particular Customer has taken on that airline??????
+#--------------view flights taken--------------
+@app.route('/viewFlightsTaken', methods=['GET','POST'])
+def viewFlightsTaken():
+    usertype = session['usertype']
+    if usertype == "staff":
+        airline=session['airline']
+        email=request.form['email']
+        name=request.form['name']
+
+        cursor = conn.cursor()
+        query = '''select *
+        from flight natural join ticket natural join purchase
+        where airline_name = %s
+        and email = %s'''
+        cursor.execute(query,(airline,email))
+        data1 = cursor.fetchall()
+        cursor.close()
+
+        return render_template('view-flights-taken.html', name=name, flights=data1)
+    else:
+        return redirect(url_for('login'))
 
 #--------------view ticket sales report TODO--------------
 @app.route('/sales',methods=['GET','POST'])
