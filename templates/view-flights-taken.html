@@ -14,7 +14,7 @@
 
 <body>
 <a href="/logout">Logout</a>
-/ <a href="/staff_home">Back</a>
+/ <a href="/view_all_customers">Back</a>
 <h1>Flights {{name}} has taken</h1>
 
 <table>
@@ -34,8 +34,8 @@
   <td>{{line['departure_time']}}</td>
   <td>{{line['arrival_date']}}</td>
   <td>{{line['arrival_time']}}</td>
-  <td>{{line['arrival_airport']}}</td>
   <td>{{line['departure_airport']}}</td>
+  <td>{{line['arrival_airport']}}</td>
 </tr>
 {% endfor %}
 </table>
