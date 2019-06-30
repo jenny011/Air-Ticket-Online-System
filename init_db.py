@@ -10,10 +10,9 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
-                       db='Test-Air-Ticket',
+                       password='',
+                       db='Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
@@ -23,7 +22,7 @@ conn = pymysql.connect(host='localhost',
                        port=8889,
                        user='root',
                        password='root',
-                       db='Air-Ticket',
+                       db='Test-Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
@@ -1711,16 +1710,46 @@ def create_airport_confirm():
     return render_template('create-airport-confirm.html',airports=data1)
 
 #--------------view flight ratings TODO???--------------
+@app.route('/viewRatings', methods=['GET','POST'])
+def viewRatings():
+    usertype = session['usertype']
+    if usertype == "staff":
+        airline = session['airline']
+        cursor = conn.cursor();
+        query = '''select airline_name, flight_number, departure_date, departure_time, avg(rating) as average_rating
+                    from rates
+                    where airline_name = %s
+                    group by airline_name, flight_number, departure_date, departure_time
+                    Order by departure_date desc'''
+        cursor.execute(query, (airline))
+        data1 = cursor.fetchall()
+        cursor.close()
 
-# aveage ratings
-'''select airline_name, flight_number, departure_date, departure_time, avg(rating) as average_rating
-from rates
-group by airline_name, flight_number, departure_date, departure_time'''
+        return render_template('view-ratings.html', flights=data1)
+    else:
+        return redirect(url_for('login'))
 
-# view comments (extra page?)
-'''select comments
-from rates
-where (airline_name = %s and flight_number= %s and departure_date = %s, departure_time = %s)'''
+@app.route('/viewComments', methods=['GET','POST'])
+def viewComments():
+    usertype = session['usertype']
+    if usertype == "staff":
+        airline = session['airline']
+        flight_number = request.form['flight-number']
+        departure_date = request.form['departure-date']
+        departure_time = request.form['departure-time']
+
+        cursor = conn.cursor();
+        query = '''select email, rating, comments
+                    from rates
+                    where airline_name=%s and flight_number=%s and departure_date=%s and departure_time=%s'''
+        cursor.execute(query,(airline, flight_number, departure_date, departure_time))
+        data1 = cursor.fetchall()
+        cursor.close()
+
+        return render_template('view-ratings-comments.html', airline_name=airline, flight_number=flight_number, departure_date=departure_date, departure_time=departure_time, ratings=data1)
+    else:
+        return redirect(url_for('login'))
+
 #--------------view frequent customer TODO--------------
 
 # create view (already in Air-Ticket-DDL)
@@ -1747,6 +1776,72 @@ where num_ticket = (select max(num_ticket) from frequent_customer)'''
 # see a list of all flights a particular Customer has taken on that airline??????
 
 #--------------view ticket sales report TODO--------------
+@app.route('/sales',methods=['GET','POST'])
+def sales():
+    usertype = session['usertype']
+    if usertype == "staff":
+        from_date = datetime.date.today()
+        to_date = from_date + relativedelta(year=-1)
+        #Track-total
+        cursor = conn.cursor()
+        query = '''select sum(sold_price) from purchase where email = %s
+        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
+        and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
+        cursor.execute(query, (username, from_date, to_date))
+        total_spending = cursor.fetchall()
+        if total_spending[0]['sum(sold_price)']==None:
+            total_spending[0]['sum(sold_price)']=0
+        cursor.close()
+        #Track-monthly
+        cursor = conn.cursor()
+        monthly_spending = []
+        months=[]
+        date1 = datetime.datetime.strptime(str(from_date), '%Y-%m-%d')
+        date2 = datetime.datetime.strptime(str(to_date), '%Y-%m-%d')
+        # r = relativedelta.relativedelta(date2, date1)
+        # month_number = r.months + r.years*12
+        month_number = (date2.year-date1.year)*12 + date2.month - date1.month
+        if from_date.day != 1:
+            month_number += 1
+        for i in range(month_number):
+            query = '''select sum(sold_price) from purchase where email = %s
+            and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) >= %s
+            and timestamp(cast(purchase_date as datetime)+cast(purchase_time as time)) < %s'''
+            if from_date.month+i <= 12:
+                from_d_year = from_date.year
+                from_d_month = from_date.month+i
+            else:
+                from_d_year = from_date.year+1
+                from_d_month = from_date.month+i-12
+            if from_date.month+i+1 <= 12:
+                to_d_year = from_date.year
+                to_d_month = from_date.month+i+1
+            else:
+                to_d_year = from_date.year+1
+                to_d_month = from_date.month+i-11
+            if i == 0:
+                from_d_day = from_date.day
+            else:
+                from_d_day = 1
+            if i == month_number-1:
+                to_d_month = to_date.month
+                to_d_day = to_date.day
+            else:
+                to_d_day = 1
+            from_d = datetime.date(from_d_year,from_d_month,from_d_day)
+            to_d = datetime.date(to_d_year,to_d_month,to_d_day)
+            cursor.execute(query, (username, from_d, to_d))
+            monthly=cursor.fetchall()
+            if monthly[0]['sum(sold_price)']==None:
+                monthly[0]['sum(sold_price)']=0
+            months.append(str(from_d_year)+"-"+str(from_d_month))
+            monthly_spending.append(monthly)
+        cursor.close()
+
+        return render_template('view-ticket-sales.html', from_date=from_date, to_date=to_date, total=total, sales=data1)
+    else:
+        return redirect(url_for('login'))
+
 '''select count(ticket_id)
 from ticket natural join purchase
 where airline_name = %s and purchase date between %s and %s'''

@@ -60,9 +60,9 @@
   <form action="/createFlight" method="POST">
     flight number <input type="text" name="flight-number" placeholder="flight number" required/><br>
     departure date<input type="date" name="departure-date" placeholder="YYYY/MM/DD" required/><br>
-    departure time<input type="time" name="departure-time" placeholder="HH:MM:SS" required/><br>
+    departure time<input type="time" name="departure-time" step="1" placeholder="HH:MM:SS" required/><br>
     arrival date<input type="date" name="arrival-date" placeholder="YYYY/MM/DD" required/><br>
-    arrival time<input type="time" name="arrival-time" placeholder="HH:MM:SS" required/><br>
+    arrival time<input type="time" name="arrival-time" step="1" placeholder="HH:MM:SS" required/><br>
     departure airport<input type="text" name="departure-airport" placeholder="departure airport" required/><br>
     arrival airport<input type="text" name="arrival-airport" placeholder="arrival airport" required/><br>
     base price<input type="number" name="base-price" placeholder="base price" required/><br>

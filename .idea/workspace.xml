@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="617de85c-6896-41c7-ac3e-4fe0ef00661c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/SQL codes/Test-Air-Ticket-insert.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SQL codes/Air-Ticket-DDL.sql" beforeDir="false" afterPath="$PROJECT_DIR$/SQL codes/Air-Ticket-DDL.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/init_db.py" afterDir="false" />
@@ -81,11 +82,11 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/templates/staff-home.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1440">
-                  <caret line="96" column="9" selection-start-line="96" selection-start-column="9" selection-end-line="96" selection-end-column="9" />
+                <state relative-caret-position="276">
+                  <caret line="63" column="11" selection-start-line="62" selection-start-column="4" selection-end-line="63" selection-end-column="11" />
                 </state>
               </provider>
             </entry>
@@ -99,7 +100,7 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/templates/login-staff.html">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="330">
@@ -298,12 +299,12 @@
       <workItem from="1561594455322" duration="23232000" />
       <workItem from="1561709022898" duration="5000" />
       <workItem from="1561709031262" duration="1195000" />
-      <workItem from="1561875873092" duration="1022000" />
+      <workItem from="1561875873092" duration="1282000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="59391000" />
+    <option name="totallyTimeSpent" value="59651000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -463,10 +464,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/staff-home.html">
+    <entry file="file://$PROJECT_DIR$/templates/login-staff.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1440">
-          <caret line="96" column="9" selection-start-line="96" selection-start-column="9" selection-end-line="96" selection-end-column="9" />
+        <state relative-caret-position="330">
+          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
         </state>
       </provider>
     </entry>
@@ -477,10 +478,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/login-staff.html">
+    <entry file="file://$PROJECT_DIR$/templates/staff-home.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
+        <state relative-caret-position="276">
+          <caret line="63" column="11" selection-start-line="62" selection-start-column="4" selection-end-line="63" selection-end-column="11" />
         </state>
       </provider>
     </entry>
