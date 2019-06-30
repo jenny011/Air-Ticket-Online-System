@@ -8,13 +8,15 @@
 
 <body>
 <a href="/logout">Logout</a>
-/ <a href="/customer_home">Back</a>
+/ <a href="/staff_home">Back</a>
 <h1>Ticket sales</h1>
-<form action="/trackCustomer" method="POST">
+<form action="/salesStaff" method="POST">
+  <input type="submit" name="autoChoice" value="View last month" /><br>
+  <input type="submit" name="autoChoice" value="View last year" /><br>
   date range <br>
   from <input id="from" type="date" name = "from-date" placeholder="YYYY/MM/DD" value={{from_date}} /> <br>
-  to <input id="to" type="date" name = "to-date" placeholder="YYYY/MM/DD" value={{to_date}} /> <br>
-  <input type="submit" value = Track />
+  to <input id="to" type="date" name = "to-date" placeholder="YYYY/MM/DD" value={{to_date}} />(not included) <br>
+  <input type="submit" value = View />
 </form>
 <div>Total Sales: {{total}}</div>
 <div id="barchart" style="height: 400px; width: 90%;"></div>
@@ -24,15 +26,15 @@
 <script>
 //draw bar chart
   let monthly = [], Xaxis=[];
-  let months = {{months | tojson}};
-  {% if monthly_spending is defined and monthly_spending %}
-    let monthly_spending = {{ monthly_spending | tojson }};
+  let months = {{ months | tojson }};
+  {% if monthly_sales is defined and monthly_sales %}
+    let monthly_sales = {{ monthly_sales | tojson }};
   {% endif %}
   let display_number = {{display_number}};
   for(let i=1; i<=display_number; i++){
     // reversed
-    let index = monthly_spending.length-i;
-    monthly.push(monthly_spending[index][0]['sum(sold_price)']);
+    let index = monthly_sales.length-i;
+    monthly.push(monthly_sales[index][0]['count(ticket_id)']);
     Xaxis.push(months[index]);
   }
   window.onload = function () {
@@ -40,13 +42,13 @@
     	animationEnabled: true,
     	theme: "light2",
     	title:{
-    		text: "Monthly Spending"
+    		text: "Monthly Sales"
     	},
       axisX: {
         title: "Month"
       },
     	axisY: {
-    		title: "Spending (RMB)"
+    		title: "Tickets sold"
     	},
     	data: [{
     		type: "column",
