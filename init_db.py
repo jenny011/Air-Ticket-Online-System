@@ -36,11 +36,16 @@ conn = pymysql.connect(host='localhost',
 
 @app.route('/')
 def public():
-    return render_template('index.html')
+    loggedin=None
+    usertype=None
+    if session != {}:
+        loggedin=True
+        usertype = session['usertype']
+    return render_template('index.html', loggedin=loggedin, usertype = usertype)
 
 @app.route('/register')
 def register():
-	return render_template('register.html')
+    return render_template('register.html')
 
 @app.route('/register_staff')
 def register_staff():
@@ -53,7 +58,7 @@ def register_customer():
 
 @app.route('/login')
 def login():
-	return render_template('login.html')
+    return render_template('login.html')
 #login page, choose staff or customer
 @app.route('/login_staff')
 def login_staff():

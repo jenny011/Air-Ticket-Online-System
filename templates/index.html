@@ -13,7 +13,7 @@
 </style>
 
 <body>
-{% if not message %}
+{% if not loggedin %}
 	<a href="/login">Login</a>
 	/ <a href="/register">Register</a>
   <h1>Air Ticket System</h1>
@@ -49,13 +49,14 @@
   </form>
 {% endif %}
 
-{% if message %}
+{% if loggedin %}
 	<a href="/logout">Logout</a>
-	<a href="/remove_account">Remove Account</a>
-	<p class="message">You are logged in {{message}}.</p> <br>
-	<a href="/view">View purchased flights</a> <br>
-	<a href="/search">Search for flights</a> <br>
-	<a href="/rate">Rate flights</a> <br>
+	<p class="message">You are logged in</p> <br>
+  {% if usertype == 'staff' %}
+	   <a href="/staff_home">Home</a> <br>
+  {% elif usertype == 'customer' %}
+    <a href="/customer_home">Home</a> <br>
+  {% endif %}
 	<br>
 {% endif %}
 </body>
