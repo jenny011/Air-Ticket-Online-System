@@ -10,9 +10,8 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
                        user='root',
-                       password='root',
+                       password='',
                        db='Test-Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -711,6 +710,13 @@ def customer_home():
             session['flight_info1'] = {}
             session['flight_info2'] = {}
 
+            cursor = conn.cursor()
+            query = '''select name from customer where email = %s'''
+            cursor.execute(query, (username))
+            name = cursor.fetchone()
+            cursor.close()
+            name = name['name']
+
             # view
             cursor = conn.cursor()
             query = '''select airline_name, flight_number, departure_date, departure_time, arrival_date, arrival_time, departure_airport, arrival_airport, status
@@ -791,7 +797,7 @@ def customer_home():
 
             return render_template('customer-home.html', flights=data1, unrated=data2, total=total_spending[0]['sum(sold_price)'],
                                    monthly_spending=monthly_spending, from_date=to_date, from_date_track=from_date,to_date_track=to_date,
-                                   display_number=6, months=months)
+                                   display_number=6, months=months,name=name)
         else:
             return redirect(url_for('logout'))
     except:

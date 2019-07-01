@@ -13,53 +13,51 @@
 </style>
 
 <body>
-{% if not loggedin %}
-	<a href="/login">Login</a>
-	/ <a href="/register">Register</a>
-  <h1>Air Ticket System</h1>
-  <h2>Search for flights</h2>
-  <form action="/searchPublic" method="POST">
-    source <input type="text" name = "source" placeholder="source" required/> <br>
-    destination <input type="text" name = "destination" placeholder="destination" required/> <br>
-    <div id="radio-one-div">
-      <input type="radio" id="radio-one" name="triptype" value="one-way" />
-      <label for="radio-one">one-way trip</label>
-      <input type="radio" id="radio-round" name="triptype" value="round" checked/>
-      <label for="radio-round">round trip</label><br>
-    </div>
-    departure date <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
-    <div id='return-date-div' style="visibility:visible;">
-      return date <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
-    </div>
-
-  	<input type="submit" value = Search />
-  </form>
-
-
-  <h2>Check flight status</h2>
-  <form action="/checkIndex" method="POST">
-    airline <input type="text" name="airline_name" placeholder="airline name" required/> <br>
-    flight number <input type="text" name="flight_number" placeholder="flight number" required/> <br>
-    <input type="radio" id="radio-one" name="datetype" value="departure_date" checked/>
-    <label for="radio-one">departure date</label>
-    <input type="radio" id="radio-two" name="datetype" value="arrival_date" />
-    <label for="radio-two">arrival date</label><br>
-    <input type="date" name = "date" placeholder="YYYY/MM/DD" required/> <br>
-    <input type="submit" value = Check />
-  </form>
+{% if not loggedin%}
+<a href="/login">Login</a>
+/ <a href="/register">Register</a>
 {% endif %}
-
 {% if loggedin %}
 	<a href="/logout">Logout</a>
-  <p>Some error ocurred</p>
-	<p>You are logged in</p>
   {% if usertype == 'staff' %}
-	   <a href="/staff_home">Go to Home</a> <br>
+	   / <a href="/staff_home">Home</a> <br>
   {% elif usertype == 'customer' %}
-    <a href="/customer_home">Go back to Home</a> <br>
+    / <a href="/customer_home">Home</a> <br>
   {% endif %}
 	<br>
 {% endif %}
+<h1>Air Ticket System</h1>
+<h2>Search for flights</h2>
+<form action="/searchPublic" method="POST">
+  source <input type="text" name = "source" placeholder="source" required/> <br>
+  destination <input type="text" name = "destination" placeholder="destination" required/> <br>
+  <div id="radio-one-div">
+    <input type="radio" id="radio-one" name="triptype" value="one-way" />
+    <label for="radio-one">one-way trip</label>
+    <input type="radio" id="radio-round" name="triptype" value="round" checked/>
+    <label for="radio-round">round trip</label><br>
+  </div>
+  departure date <input type="date" name = "departure-date" placeholder="YYYY/DD/MM" required/> <br>
+  <div id='return-date-div' style="visibility:visible;">
+    return date <input id="return-date" type="date" name = "return-date" placeholder="YYYY/DD/MM" required/> <br>
+  </div>
+
+	<input type="submit" value = Search />
+</form>
+
+
+<h2>Check flight status</h2>
+<form action="/checkIndex" method="POST">
+  airline <input type="text" name="airline_name" placeholder="airline name" required/> <br>
+  flight number <input type="text" name="flight_number" placeholder="flight number" required/> <br>
+  <input type="radio" id="radio-one" name="datetype" value="departure_date" checked/>
+  <label for="radio-one">departure date</label>
+  <input type="radio" id="radio-two" name="datetype" value="arrival_date" />
+  <label for="radio-two">arrival date</label><br>
+  <input type="date" name = "date" placeholder="YYYY/MM/DD" required/> <br>
+  <input type="submit" value = Check />
+</form>
+
 </body>
 
 <script>
