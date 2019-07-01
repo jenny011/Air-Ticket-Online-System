@@ -10,11 +10,13 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='Test-Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
+
 '''
 on Eileen's server:
 conn = pymysql.connect(host='localhost',
@@ -2717,10 +2719,44 @@ def createFlight():
             data = cursor.fetchall()
             cursor.close()
 
+            #check airport:
+            cursor = conn.cursor()
+            query = '''select * from airport
+                        where airport_name = %s'''
+            cursor.execute(query, (departure_airport))
+            d_airport = cursor.fetchall()
+            cursor.close()
+
+            cursor = conn.cursor()
+            query = '''select * from airport where airport_name = %s'''
+            cursor.execute(query, (arrival_airport))
+            a_airport = cursor.fetchall()
+            cursor.close()
+
+            #check airplane
+            cursor = conn.cursor()
+            query = '''select * from airplane where id = %s'''
+            cursor.execute(query, (airplane_id))
+            airplane = cursor.fetchall()
+            cursor.close()
+
+            #check date
+            departure = departure_date + departure_time
+            arrival = arrival_date + arrival_time
+            if arrival <= departure:
+                return render_template('create-flight-confirm.html', exist_flight="Incorrect date or time.")
+            if not (d_airport):
+                return render_template('create-flight-confirm.html', exist_flight="Departure airport does not exist.")
+            if not (a_airport):
+                return render_template('create-flight-confirm.html', exist_flight="Arrival airport does not exist.")
+            if not (airplane):
+                return render_template('create-flight-confirm.html', exist_flight="Airplane does not exist.")
+
             exist_flight = None
             if (data):
                 return render_template('create-flight-confirm.html',exist_flight="This flight already exists.")
             else:
+
                 cursor = conn.cursor()
                 ins = 'INSERT INTO flight VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
                 cursor.execute(ins, (
@@ -2728,6 +2764,8 @@ def createFlight():
                 arrival_airport, base_price, status, airplane_id))
                 conn.commit()
                 cursor.close()
+
+
 
             # -----create tickets for that flight------
             cursor = conn.cursor()
