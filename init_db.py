@@ -2173,7 +2173,8 @@ def staff_home():
             cursor = conn.cursor()
             query = '''select * from flight
             where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) between %s and %s
-            and airline_name = %s'''
+            and airline_name = %s
+            order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
             cursor.execute(query, (from_date, to_date, airline))
             data1 = cursor.fetchall()
             cursor.close()
@@ -2207,7 +2208,8 @@ def viewFlights():
                     cursor = conn.cursor()
                     query = '''select *
                     from flight
-                    where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s and airline_name = %s'''
+                    where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s and airline_name = %s
+                    order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     cursor.close()
@@ -2217,7 +2219,8 @@ def viewFlights():
                         from flight
                         where arrival_airport = %s
                         and departure_date between %s and %s
-                        and airline_name = %s'''
+                        and airline_name = %s
+                        order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (destination, from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     if (not data1):
@@ -2226,7 +2229,8 @@ def viewFlights():
                                 where arrival_airport = airport_name
                                 and city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     cursor.close()
@@ -2236,7 +2240,8 @@ def viewFlights():
                         from flight
                         where departure_airport = %s
                         and departure_date between %s and %s
-                        and airline_name = %s'''
+                        and airline_name = %s
+                        order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (source, from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     if (not data1):
@@ -2245,7 +2250,8 @@ def viewFlights():
                                 where departure_airport = airport_name
                                 and city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     cursor.close()
@@ -2255,7 +2261,8 @@ def viewFlights():
                         from flight
                         where departure_airport = %s and arrival_airport = %s
                         and departure_date between %s and %s
-                        and airline_name = %s'''
+                        and airline_name = %s
+                        order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (source, destination, from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     if (not data1):
@@ -2264,7 +2271,8 @@ def viewFlights():
                                 where departure_airport = A.airport_name and arrival_airport = B.airport_name
                                 and A.city = %s and B.city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     if (not data1):
@@ -2273,7 +2281,8 @@ def viewFlights():
                                 where departure_airport = A.airport_name and arrival_airport = B.airport_name
                                 and departure_airport = %s and B.city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     if (not data1):
@@ -2282,7 +2291,8 @@ def viewFlights():
                                 where departure_airport = A.airport_name and arrival_airport = B.airport_name
                                 and A.city = %s and arrival_airport = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     cursor.close()
@@ -2292,7 +2302,8 @@ def viewFlights():
                     query = '''select *
                             from flight
                             where departure_date between %s and %s
-                            and airline_name = %s'''
+                            and airline_name = %s
+                            order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     cursor.close()
@@ -2302,7 +2313,8 @@ def viewFlights():
                             from flight
                             where arrival_airport = %s
                             and departure_date between %s and %s
-                            and airline_name = %s'''
+                            and airline_name = %s
+                            order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (destination, from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     if (not data1):
@@ -2311,7 +2323,8 @@ def viewFlights():
                                 where arrival_airport = airport_name
                                 and city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     cursor.close()
@@ -2321,7 +2334,8 @@ def viewFlights():
                             from flight
                             where departure_airport = %s
                             and departure_date between %s and %s
-                            and airline_name = %s'''
+                            and airline_name = %s
+                            order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (source, from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     if (not data1):
@@ -2330,7 +2344,8 @@ def viewFlights():
                                 where departure_airport = airport_name
                                 and city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     cursor.close()
@@ -2340,7 +2355,8 @@ def viewFlights():
                             from flight
                             where departure_airport = %s and arrival_airport = %s
                             and departure_date between %s and %s
-                            and airline_name = %s'''
+                            and airline_name = %s
+                            order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (source, destination, from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     if (not data1):
@@ -2349,7 +2365,8 @@ def viewFlights():
                                 where departure_airport = A.airport_name and arrival_airport = B.airport_name
                                 and A.city = %s and B.city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     if (not data1):
@@ -2358,7 +2375,8 @@ def viewFlights():
                                 where departure_airport = A.airport_name and arrival_airport = B.airport_name
                                 and departure_airport = %s and B.city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     if (not data1):
@@ -2367,7 +2385,8 @@ def viewFlights():
                                 where departure_airport = A.airport_name and arrival_airport = B.airport_name
                                 and A.city = %s and arrival_airport = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     cursor.close()
@@ -2401,7 +2420,8 @@ def viewFlightsStaff():
                     cursor = conn.cursor()
                     query = '''select *
                     from flight
-                    where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s and airline_name = %s'''
+                    where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) >= %s and airline_name = %s
+                    order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     cursor.close()
@@ -2411,7 +2431,8 @@ def viewFlightsStaff():
                         from flight
                         where arrival_airport = %s
                         and departure_date between %s and %s
-                        and airline_name = %s'''
+                        and airline_name = %s
+                        order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (destination, from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     if (not data1):
@@ -2420,7 +2441,8 @@ def viewFlightsStaff():
                                 where arrival_airport = airport_name
                                 and city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     cursor.close()
@@ -2430,7 +2452,8 @@ def viewFlightsStaff():
                         from flight
                         where departure_airport = %s
                         and departure_date between %s and %s
-                        and airline_name = %s'''
+                        and airline_name = %s
+                        order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (source, from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     if (not data1):
@@ -2439,7 +2462,8 @@ def viewFlightsStaff():
                                 where departure_airport = airport_name
                                 and city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     cursor.close()
@@ -2449,7 +2473,8 @@ def viewFlightsStaff():
                         from flight
                         where departure_airport = %s and arrival_airport = %s
                         and departure_date between %s and %s
-                        and airline_name = %s'''
+                        and airline_name = %s
+                        order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (source, destination, from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     if (not data1):
@@ -2458,7 +2483,8 @@ def viewFlightsStaff():
                                 where departure_airport = A.airport_name and arrival_airport = B.airport_name
                                 and A.city = %s and B.city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     if (not data1):
@@ -2467,7 +2493,8 @@ def viewFlightsStaff():
                                 where departure_airport = A.airport_name and arrival_airport = B.airport_name
                                 and departure_airport = %s and B.city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     if (not data1):
@@ -2476,7 +2503,8 @@ def viewFlightsStaff():
                                 where departure_airport = A.airport_name and arrival_airport = B.airport_name
                                 and A.city = %s and arrival_airport = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     cursor.close()
@@ -2486,7 +2514,8 @@ def viewFlightsStaff():
                     query = '''select *
                             from flight
                             where departure_date between %s and %s
-                            and airline_name = %s'''
+                            and airline_name = %s
+                            order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     cursor.close()
@@ -2496,7 +2525,8 @@ def viewFlightsStaff():
                             from flight
                             where arrival_airport = %s
                             and departure_date between %s and %s
-                            and airline_name = %s'''
+                            and airline_name = %s
+                            order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (destination, from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     if (not data1):
@@ -2505,7 +2535,8 @@ def viewFlightsStaff():
                                 where arrival_airport = airport_name
                                 and city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     cursor.close()
@@ -2515,7 +2546,8 @@ def viewFlightsStaff():
                             from flight
                             where departure_airport = %s
                             and departure_date between %s and %s
-                            and airline_name = %s'''
+                            and airline_name = %s
+                            order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (source, from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     if (not data1):
@@ -2524,7 +2556,8 @@ def viewFlightsStaff():
                                 where departure_airport = airport_name
                                 and city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     cursor.close()
@@ -2534,7 +2567,8 @@ def viewFlightsStaff():
                             from flight
                             where departure_airport = %s and arrival_airport = %s
                             and departure_date between %s and %s
-                            and airline_name = %s'''
+                            and airline_name = %s
+                            order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                     cursor.execute(query, (source, destination, from_date, to_date, airline))
                     data1 = cursor.fetchall()
                     if (not data1):
@@ -2543,7 +2577,8 @@ def viewFlightsStaff():
                                 where departure_airport = A.airport_name and arrival_airport = B.airport_name
                                 and A.city = %s and B.city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     if (not data1):
@@ -2552,7 +2587,8 @@ def viewFlightsStaff():
                                 where departure_airport = A.airport_name and arrival_airport = B.airport_name
                                 and departure_airport = %s and B.city = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     if (not data1):
@@ -2561,7 +2597,8 @@ def viewFlightsStaff():
                                 where departure_airport = A.airport_name and arrival_airport = B.airport_name
                                 and A.city = %s and arrival_airport = %s
                                 and departure_date between %s and %s
-                                and airline_name = %s'''
+                                and airline_name = %s
+                                order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
                         cursor.execute(query, (source, destination, from_date, to_date, airline))
                         data1 = cursor.fetchall()
                     cursor.close()
@@ -2606,7 +2643,8 @@ def changeStatus():
 
             cursor = conn.cursor()
             query = '''select * from flight
-            where airline_name = %s and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()'''
+            where airline_name = %s and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
+            order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
             cursor.execute(query, (airline))
             data = cursor.fetchall()
             cursor.close()
@@ -2639,7 +2677,8 @@ def changeStatusStaff():
 
             cursor = conn.cursor()
             query = '''select * from flight
-            where airline_name = %s and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()'''
+            where airline_name = %s and timestamp(cast(departure_date as datetime)+cast(departure_time as time)) > now()
+            order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
             cursor.execute(query, (airline))
             data = cursor.fetchall()
             cursor.close()
@@ -2735,7 +2774,8 @@ def create_flight_confirm():
             cursor = conn.cursor()
             query = '''select * from flight
             where timestamp(cast(departure_date as datetime)+cast(departure_time as time)) between %s and %s
-            and airline_name = %s'''
+            and airline_name = %s
+            order by timestamp(cast(departure_date as datetime)+cast(departure_time as time)) asc'''
             cursor.execute(query, (from_date, to_date, airline))
             data1 = cursor.fetchall()
             cursor.close()
