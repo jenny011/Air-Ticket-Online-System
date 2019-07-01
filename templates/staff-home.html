@@ -72,7 +72,12 @@
     departure airport<input type="text" name="departure-airport" placeholder="departure airport" required/><br>
     arrival airport<input type="text" name="arrival-airport" placeholder="arrival airport" required/><br>
     base price<input type="number" name="base-price" placeholder="base price" required/><br>
-    status<input type="text" name="status" placeholder="status" value="on-time" required/><br>
+    status<input type="radio" id="radio-ontime" name="status" value="on-time" checked/>
+      <label for="radio-ontime">on time</label>
+      <input type="radio" id="radio-delayed" name="status" value="delayed" />
+      <label for="radio-delayed">delayed</label>
+      <input type="radio" id="radio-cancelled" name="status" value="cancelled" />
+      <label for="radio-cancelled">cancelled</label><br>
     airplane id<input type="text" name="airplane-id" placeholder="airplane id" required/><br>
     <input type="submit" value = Submit />
   </form>
