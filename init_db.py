@@ -10,11 +10,13 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port=8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='Test-Air-Ticket',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
+
 '''
 on Eileen's server:
 conn = pymysql.connect(host='localhost',
@@ -1393,7 +1395,7 @@ def purchaseCustomerRoundReturn():
 def purchaseCustomerRound():
     try:
         usertype = session['usertype']
-        if usertype == "staff":
+        if usertype == "customer":
             return redirect(url_for('purchase_customer'))
         else:
             return redirect(url_for('logout'))
@@ -2558,6 +2560,7 @@ def createFlight():
             flight_number = request.form['flight-number']
             departure_date = request.form['departure-date']
             departure_time = request.form['departure-time']
+            print("departure time", departure_time, type(departure_time))
             arrival_date = request.form['arrival-date']
             arrival_time = request.form['arrival-time']
             departure_airport = request.form['departure-airport']
@@ -2573,10 +2576,44 @@ def createFlight():
             data = cursor.fetchall()
             cursor.close()
 
+            #check airport:
+            cursor = conn.cursor()
+            query = '''select * from airport
+                        where airport_name = %s'''
+            cursor.execute(query, (departure_airport))
+            d_airport = cursor.fetchall()
+            cursor.close()
+
+            cursor = conn.cursor()
+            query = '''select * from airport where airport_name = %s'''
+            cursor.execute(query, (arrival_airport))
+            a_airport = cursor.fetchall()
+            cursor.close()
+
+            #check airplane
+            cursor = conn.cursor()
+            query = '''select * from airplane where id = %s'''
+            cursor.execute(query, (airplane_id))
+            airplane = cursor.fetchall()
+            cursor.close()
+
+            #check date
+            departure = departure_date + departure_time
+            arrival = arrival_date + arrival_time
+            if arrival <= departure:
+                return render_template('create-flight-confirm.html', exist_flight="Incorrect date or time.")
+            if not (d_airport):
+                return render_template('create-flight-confirm.html', exist_flight="Departure airport does not exist.")
+            if not (a_airport):
+                return render_template('create-flight-confirm.html', exist_flight="Arrival airport does not exist.")
+            if not (airplane):
+                return render_template('create-flight-confirm.html', exist_flight="Airplane does not exist.")
+
             exist_flight = None
             if (data):
                 return render_template('create-flight-confirm.html',exist_flight="This flight already exists.")
             else:
+
                 cursor = conn.cursor()
                 ins = 'INSERT INTO flight VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
                 cursor.execute(ins, (
@@ -2584,6 +2621,8 @@ def createFlight():
                 arrival_airport, base_price, status, airplane_id))
                 conn.commit()
                 cursor.close()
+
+
 
             # -----create tickets for that flight------
             cursor = conn.cursor()
