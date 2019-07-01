@@ -2560,7 +2560,6 @@ def createFlight():
             flight_number = request.form['flight-number']
             departure_date = request.form['departure-date']
             departure_time = request.form['departure-time']
-            print("departure time", departure_time, type(departure_time))
             arrival_date = request.form['arrival-date']
             arrival_time = request.form['arrival-time']
             departure_airport = request.form['departure-airport']
