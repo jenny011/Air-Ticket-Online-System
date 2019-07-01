@@ -51,11 +51,12 @@
 
 {% if loggedin %}
 	<a href="/logout">Logout</a>
-	<p class="message">You are logged in</p> <br>
+  <p>Some error ocurred</p>
+	<p>You are logged in</p>
   {% if usertype == 'staff' %}
-	   <a href="/staff_home">Home</a> <br>
+	   <a href="/staff_home">Go to Home</a> <br>
   {% elif usertype == 'customer' %}
-    <a href="/customer_home">Home</a> <br>
+    <a href="/customer_home">Go back to Home</a> <br>
   {% endif %}
 	<br>
 {% endif %}

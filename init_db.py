@@ -127,7 +127,6 @@ def registerStaffAuth():
             error = "This airline dose not exist"
             return render_template('register-staff.html', error=error)
 
-
 @app.route("/registerCustomerAuth", methods=['GET', 'POST'])
 def registerCustomerAuth():
     # grabs information from the forms
@@ -643,7 +642,8 @@ def checkIndex():
         query = 'select airline_name, flight_number, departure_date, departure_time, ' \
                 'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
                 'from flight ' \
-                'where airline_name = %s and flight_number = %s and departure_date = %s'
+                'where airline_name = %s and flight_number = %s and departure_date = %s'\
+                'order by departure_time asc'
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
         cursor.close()
@@ -654,7 +654,8 @@ def checkIndex():
         query = 'select airline_name, flight_number, departure_date, departure_time, ' \
                 'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
                 'from flight ' \
-                'where airline_name = %s and flight_number = %s and arrival_date = %s'
+                'where airline_name = %s and flight_number = %s and arrival_date = %s'\
+                'order by arrival_time asc'
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
         cursor.close()
@@ -671,7 +672,8 @@ def checkPublic():
         cursor = conn.cursor()
         query = 'select airline_name, flight_number, departure_date, departure_time, ' \
                 'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-                'from flight where airline_name = %s and flight_number = %s and departure_date = %s'
+                'from flight where airline_name = %s and flight_number = %s and departure_date = %s'\
+                'order by departure_time asc'
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
         cursor.close()
@@ -681,7 +683,8 @@ def checkPublic():
         cursor = conn.cursor()
         query = 'select airline_name, flight_number, departure_date, departure_time, ' \
                 'arrival_date, arrival_time, departure_airport, arrival_airport, status ' \
-                'from flight where airline_name = %s and flight_number = %s and arrival_date = %s'
+                'from flight where airline_name = %s and flight_number = %s and arrival_date = %s'\
+                'order by arrival_time asc'
         cursor.execute(query, (airline_name, flight_number, date))
         data1 = cursor.fetchall()
         cursor.close()
